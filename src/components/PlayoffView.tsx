@@ -92,13 +92,13 @@ export function PlayoffView() {
 
       {/* bracket */}
       {mode === "real" && (
-        <PlayoffBracket rounds={playoff.real.rounds} champion={playoff.real.champion} mode="real" />
+        <PlayoffBracket rounds={playoff.real.rounds} champion={playoff.real.champion} mode="real" third={playoff.real.third} />
       )}
       {mode === "majority" && (
         <PlayoffBracket rounds={playoff.majority.rounds} champion={playoff.majority.champion} mode="majority" championStatus="прогноз большинства" />
       )}
       {mode === "participant" && pdata && (
-        <PlayoffBracket rounds={pdata.rounds} champion={pdata.champion} mode="participant" championStatus={pdata.championStatus} />
+        <PlayoffBracket rounds={pdata.rounds} champion={pdata.champion} mode="participant" championStatus={pdata.championStatus} third={pdata.thirdMatch} />
       )}
     </div>
   );

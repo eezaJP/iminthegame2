@@ -293,46 +293,65 @@ const participants = NAMES.map((name, idx) => {
   };
 });
 
-// ===================== PLAYOFF (real played through 1/4; semifinals upcoming) =====================
-const STAGE_LABEL = { 1: "1/8 финала", 2: "1/4 финала", 3: "1/2 финала", 4: "финал" };
+// ===================== PLAYOFF (32 teams: 1/16 → финал; real played through 1/4) =====================
+const STAGE_LABEL = { 1: "1/16 финала", 2: "1/8 финала", 3: "1/4 финала", 4: "1/2 финала", 5: "финал" };
 const slimT = (t) => (t ? { n: t.n, f: t.f } : null);
+// standard single-elimination seeding order for n (power of 2)
+function buildSeedOrder(n) {
+  let s = [1, 2];
+  while (s.length < n) {
+    const m = s.length * 2 + 1;
+    const next = [];
+    for (const x of s) { next.push(x); next.push(m - x); }
+    s = next;
+  }
+  return s;
+}
 const playoff = (() => {
   const T = (t) => ({ n: t[0], f: t[1], s: t[2] });
+  // 12 group winners + 12 runners-up + 8 best third places = 32 teams
   const winners = favourites.map((x) => T(x.first));
-  const runners = favourites.map((x) => T(x.second)).sort((a, b) => b.s - a.s);
-  const pool = [...winners, ...runners.slice(0, 4)].sort((a, b) => b.s - a.s);
-  const seedOrder = [1, 16, 8, 9, 5, 12, 4, 13, 3, 14, 6, 11, 7, 10, 2, 15];
-  const seeds = seedOrder.map((s) => pool[s - 1]);
-  const r16pairs = [];
-  for (let i = 0; i < 16; i += 2) r16pairs.push([seeds[i], seeds[i + 1]]);
+  const runners = favourites.map((x) => T(x.second));
+  const thirds = GROUP_LETTERS
+    .map((g) => T([...GROUPS[g]].sort((x, y) => y[2] - x[2])[2]))
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 8);
+  const pool = [...winners, ...runners, ...thirds].sort((a, b) => b.s - a.s);
+  const seeds = buildSeedOrder(32).map((s) => pool[s - 1]);
+  const r32pairs = [];
+  for (let i = 0; i < 32; i += 2) r32pairs.push([seeds[i], seeds[i + 1]]);
 
-  // ---- real results (1/8 + 1/4 played; 1/2, финал, бронза — впереди) ----
+  // ---- real results (1/16 + 1/8 + 1/4 played; 1/2, финал, бронза — впереди) ----
   const rr = rng(424242);
   const realPlay = (a, b) => {
-    const aWin = a.s + (rr() - 0.5) * 0.45 >= b.s + (rr() - 0.5) * 0.45;
-    const pens = rr() < 0.18;
+    const aWin = a.s + (rr() - 0.5) * 0.16 >= b.s + (rr() - 0.5) * 0.16;
+    const pens = rr() < 0.16;
     let sa, sb;
     if (pens) { const g = Math.round(rr() * 2); sa = g; sb = g; }
     else { const hi = 1 + Math.round(rr() * 2), lo = Math.round(rr() * Math.max(0, hi - 1)); sa = aWin ? hi : lo; sb = aWin ? lo : hi; }
     return { a, b, scoreA: sa, scoreB: sb, winner: aWin ? a : b, loser: aWin ? b : a, pens, played: true };
   };
-  const realR16 = r16pairs.map(([a, b]) => realPlay(a, b));
-  const realQF = [];
-  for (let i = 0; i < 8; i += 2) realQF.push(realPlay(realR16[i].winner, realR16[i + 1].winner));
+  const adv = (round) => { const n = []; for (let i = 0; i < round.length; i += 2) n.push(realPlay(round[i].winner, round[i + 1].winner)); return n; };
+  const realR32 = r32pairs.map(([a, b]) => realPlay(a, b));
+  const realR16 = adv(realR32);
+  const realQF = adv(realR16);
   const semis = realQF.map((m) => m.winner);
   const realSF = [[semis[0], semis[1]], [semis[2], semis[3]]].map(([a, b]) => ({ a, b, scoreA: null, scoreB: null, winner: null, played: false }));
   const furthest = {}; seeds.forEach((t) => (furthest[t.n] = 1));
-  realR16.forEach((m) => (furthest[m.winner.n] = 2));
-  realQF.forEach((m) => (furthest[m.winner.n] = 3));
+  realR32.forEach((m) => (furthest[m.winner.n] = 2));
+  realR16.forEach((m) => (furthest[m.winner.n] = 3));
+  realQF.forEach((m) => (furthest[m.winner.n] = 4));
   const aliveSet = new Set(semis.map((t) => t.n));
 
+  const slimMatch = (m) => ({ a: slimT(m.a), b: slimT(m.b), scoreA: m.scoreA ?? null, scoreB: m.scoreB ?? null, winner: m.winner ? slimT(m.winner) : null, pens: !!m.pens, played: !!m.played });
   const blankF = { a: null, b: null, scoreA: null, scoreB: null, winner: null, played: false };
   const real = {
-    playedThrough: 2,
+    playedThrough: 3,
     rounds: [
-      { key: "r16", title: "1/8 финала", matches: realR16.map((m) => ({ a: slimT(m.a), b: slimT(m.b), scoreA: m.scoreA, scoreB: m.scoreB, winner: slimT(m.winner), pens: m.pens, played: true })) },
-      { key: "qf", title: "1/4 финала", matches: realQF.map((m) => ({ a: slimT(m.a), b: slimT(m.b), scoreA: m.scoreA, scoreB: m.scoreB, winner: slimT(m.winner), pens: m.pens, played: true })) },
-      { key: "sf", title: "1/2 финала", matches: realSF.map((m) => ({ a: slimT(m.a), b: slimT(m.b), scoreA: null, scoreB: null, winner: null, played: false })) },
+      { key: "r32", title: "1/16 финала", matches: realR32.map(slimMatch) },
+      { key: "r16", title: "1/8 финала", matches: realR16.map(slimMatch) },
+      { key: "qf", title: "1/4 финала", matches: realQF.map(slimMatch) },
+      { key: "sf", title: "1/2 финала", matches: realSF.map(slimMatch) },
       { key: "f", title: "Финал", matches: [{ ...blankF }] },
     ],
     third: { ...blankF },
@@ -341,6 +360,13 @@ const playoff = (() => {
   };
 
   // ---- per-participant blind brackets ----
+  const sameTeams = (m, rm) => rm && ((m.a.n === rm.a.n && m.b.n === rm.b.n) || (m.a.n === rm.b.n && m.b.n === rm.a.n));
+  const stateVs = (m, rm) => {
+    if (!sameTeams(m, rm)) return "dead";
+    if (m.winner.n !== rm.winner.n) return "miss";
+    return m.scoreA === rm.scoreA && m.scoreB === rm.scoreB ? "exact" : "hit";
+  };
+
   const brackets = NAMES.map((name, idx) => {
     const pr = rng(900000 + idx * 97);
     const noise = 1.2 - participants[idx].skill / 100; // weaker predictor → more upsets
@@ -349,23 +375,17 @@ const playoff = (() => {
       const hi = 1 + Math.round(pr() * 2), lo = Math.round(pr() * Math.max(0, hi - 1));
       return { a, b, scoreA: aWin ? hi : lo, scoreB: aWin ? lo : hi, winner: aWin ? a : b, loser: aWin ? b : a };
     };
-    const R16 = r16pairs.map(([a, b]) => pplay(a, b));
-    const QF = []; for (let i = 0; i < 8; i += 2) QF.push(pplay(R16[i].winner, R16[i + 1].winner));
-    const SF = []; for (let i = 0; i < 4; i += 2) SF.push(pplay(QF[i].winner, QF[i + 1].winner));
+    const padv = (round) => { const n = []; for (let i = 0; i < round.length; i += 2) n.push(pplay(round[i].winner, round[i + 1].winner)); return n; };
+    const R32 = r32pairs.map(([a, b]) => pplay(a, b));
+    const R16 = padv(R32);
+    const QF = padv(R16);
+    const SF = padv(QF);
     const F = pplay(SF[0].winner, SF[1].winner);
     const TH = pplay(SF[0].loser, SF[1].loser);
 
-    const stR16 = R16.map((m, i) => {
-      const rm = realR16[i];
-      if (m.winner.n !== rm.winner.n) return "miss";
-      return m.scoreA === rm.scoreA && m.scoreB === rm.scoreB ? "exact" : "hit";
-    });
-    const stQF = QF.map((m, i) => {
-      const rm = realQF[i];
-      const same = (m.a.n === rm.a.n && m.b.n === rm.b.n) || (m.a.n === rm.b.n && m.b.n === rm.a.n);
-      if (!same) return "dead";
-      return m.winner.n === rm.winner.n ? "hit" : "miss";
-    });
+    const stR32 = R32.map((m, i) => stateVs(m, realR32[i]));
+    const stR16 = R16.map((m, i) => stateVs(m, realR16[i]));
+    const stQF = QF.map((m, i) => stateVs(m, realQF[i]));
     const aliveBoth = (m) => (aliveSet.has(m.a.n) && aliveSet.has(m.b.n) ? "alive" : "dead");
     const stSF = SF.map(aliveBoth);
     const stF = aliveBoth(F);
@@ -374,7 +394,7 @@ const playoff = (() => {
     const aliveCount = finalFour.filter((t) => aliveSet.has(t.n)).length;
     const championAlive = aliveSet.has(F.winner.n);
     const finalistAlive = aliveSet.has(F.loser.n);
-    const exactPlayoff = stR16.filter((s) => s === "exact").length;
+    const exactPlayoff = [...stR32, ...stR16, ...stQF].filter((s) => s === "exact").length;
     const potential = (championAlive ? 55 : 0) + (finalistAlive ? 15 : 0) + aliveCount * 22;
 
     const mm = (m, state) => ({ a: slimT(m.a), b: slimT(m.b), scoreA: m.scoreA, scoreB: m.scoreB, winner: slimT(m.winner), state });
@@ -385,18 +405,19 @@ const playoff = (() => {
       aliveCount, potential, exactPlayoff,
       burnedChampion: championAlive ? null : { team: F.winner.n, flag: F.winner.f, stage: STAGE_LABEL[furthest[F.winner.n]] },
       rounds: [
+        { key: "r32", title: "1/16 финала", matches: R32.map((m, i) => mm(m, stR32[i])) },
         { key: "r16", title: "1/8 финала", matches: R16.map((m, i) => mm(m, stR16[i])) },
         { key: "qf", title: "1/4 финала", matches: QF.map((m, i) => mm(m, stQF[i])) },
         { key: "sf", title: "1/2 финала", matches: SF.map((m, i) => mm(m, stSF[i])) },
         { key: "f", title: "Финал", matches: [mm(F, stF)] },
       ],
       thirdMatch: mm(TH, aliveBoth(TH)),
-      // raw winners (names) per position for majority aggregation
+      _r32w: R32.map((m) => m.winner.n),
       _r16w: R16.map((m) => m.winner.n),
       _qfw: QF.map((m) => m.winner.n),
       _sfw: SF.map((m) => m.winner.n),
       _fw: F.winner.n,
-      _scores16: R16.map((m) => `${m.scoreA}:${m.scoreB}`),
+      _scores32: R32.map((m) => `${m.scoreA}:${m.scoreB}`),
     };
   });
 
@@ -409,24 +430,22 @@ const playoff = (() => {
     const [name, votes] = Object.entries(c).sort((a, b) => b[1] - a[1])[0];
     return { name, votes };
   };
-  const teamByName = (n) => { const t = seeds.find((x) => x.n === n); return slimT(t); };
+  const teamByName = (n) => slimT(seeds.find((x) => x.n === n));
   const majRound = (title, key, count, picker, pairs) =>
     ({ key, title, matches: Array.from({ length: count }, (_, i) => {
       const w = mode(brackets.map((b) => picker(b)[i]));
-      const sc = key === "r16" ? mode(brackets.map((b) => b._scores16[i])).name : null;
+      const sc = key === "r32" ? mode(brackets.map((b) => b._scores32[i])).name : null;
       return { a: pairs ? pairs[i][0] : null, b: pairs ? pairs[i][1] : null, winner: teamByName(w.name), votes: w.votes, total: NAMES.length, score: sc };
     }) });
-  const majR16 = majRound("1/8 финала", "r16", 8, (b) => b._r16w, r16pairs.map(([a, b]) => [slimT(a), slimT(b)]));
+  const pairUp = (arr) => { const p = []; for (let i = 0; i < arr.length; i += 2) p.push([arr[i], arr[i + 1]]); return p; };
+  const majR32 = majRound("1/16 финала", "r32", 16, (b) => b._r32w, r32pairs.map(([a, b]) => [slimT(a), slimT(b)]));
+  const majR16 = majRound("1/8 финала", "r16", 8, (b) => b._r16w, pairUp(majR32.matches.map((m) => m.winner)));
+  const majQF = majRound("1/4 финала", "qf", 4, (b) => b._qfw, pairUp(majR16.matches.map((m) => m.winner)));
+  const majSF = majRound("1/2 финала", "sf", 2, (b) => b._sfw, pairUp(majQF.matches.map((m) => m.winner)));
+  const majFinal = majRound("Финал", "f", 1, (b) => [b._fw], [[majSF.matches[0].winner, majSF.matches[1].winner]]);
   const majR16w = majR16.matches.map((m) => m.winner);
-  const majQFpairs = []; for (let i = 0; i < 8; i += 2) majQFpairs.push([majR16w[i], majR16w[i + 1]]);
-  const majQF = majRound("1/4 финала", "qf", 4, (b) => b._qfw, majQFpairs);
-  const majQFw = majQF.matches.map((m) => m.winner);
-  const majSFpairs = []; for (let i = 0; i < 4; i += 2) majSFpairs.push([majQFw[i], majQFw[i + 1]]);
-  const majSF = majRound("1/2 финала", "sf", 2, (b) => b._sfw, majSFpairs);
-  const majSFw = majSF.matches.map((m) => m.winner);
-  const majFinal = majRound("Финал", "f", 1, (b) => [b._fw], [[majSFw[0], majSFw[1]]]);
   const majority = {
-    rounds: [majR16, majQF, majSF, majFinal],
+    rounds: [majR32, majR16, majQF, majSF, majFinal],
     champion: majFinal.matches[0].winner,
   };
 

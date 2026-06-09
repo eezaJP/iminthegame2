@@ -6,7 +6,7 @@
    "id": 0,
    "name": "Участник 1",
    "avatarSeed": 0,
-   "champion": "Марокко",
+   "champion": "Аргентина",
    "skill": 67,
    "points": {
     "groupMatches": 110,
@@ -47,7 +47,7 @@
    "id": 1,
    "name": "Участник 2",
    "avatarSeed": 1,
-   "champion": "Испания",
+   "champion": "Аргентина",
    "skill": 70,
    "points": {
     "groupMatches": 121,
@@ -88,7 +88,7 @@
    "id": 2,
    "name": "Участник 3",
    "avatarSeed": 2,
-   "champion": "Германия",
+   "champion": "Аргентина",
    "skill": 37,
    "points": {
     "groupMatches": 82,
@@ -129,7 +129,7 @@
    "id": 3,
    "name": "Участник 4",
    "avatarSeed": 3,
-   "champion": "Аргентина",
+   "champion": "Испания",
    "skill": 74,
    "points": {
     "groupMatches": 119,
@@ -170,7 +170,7 @@
    "id": 4,
    "name": "Участник 5",
    "avatarSeed": 4,
-   "champion": "Бразилия",
+   "champion": "Испания",
    "skill": 33,
    "points": {
     "groupMatches": 74,
@@ -211,7 +211,7 @@
    "id": 5,
    "name": "Участник 6",
    "avatarSeed": 5,
-   "champion": "Бразилия",
+   "champion": "Португалия",
    "skill": 58,
    "points": {
     "groupMatches": 111,
@@ -252,7 +252,7 @@
    "id": 6,
    "name": "Участник 7",
    "avatarSeed": 6,
-   "champion": "Германия",
+   "champion": "Бразилия",
    "skill": 43,
    "points": {
     "groupMatches": 96,
@@ -293,7 +293,7 @@
    "id": 7,
    "name": "Участник 8",
    "avatarSeed": 7,
-   "champion": "Бельгия",
+   "champion": "Германия",
    "skill": 72,
    "points": {
     "groupMatches": 119,
@@ -334,7 +334,7 @@
    "id": 8,
    "name": "Участник 9",
    "avatarSeed": 8,
-   "champion": "Португалия",
+   "champion": "Германия",
    "skill": 68,
    "points": {
     "groupMatches": 83,
@@ -375,7 +375,7 @@
    "id": 9,
    "name": "Участник 10",
    "avatarSeed": 9,
-   "champion": "Германия",
+   "champion": "Аргентина",
    "skill": 36,
    "points": {
     "groupMatches": 66,
@@ -416,7 +416,7 @@
    "id": 10,
    "name": "Участник 11",
    "avatarSeed": 10,
-   "champion": "Бразилия",
+   "champion": "Англия",
    "skill": 69,
    "points": {
     "groupMatches": 113,
@@ -457,7 +457,7 @@
    "id": 11,
    "name": "Участник 12",
    "avatarSeed": 11,
-   "champion": "Аргентина",
+   "champion": "Англия",
    "skill": 72,
    "points": {
     "groupMatches": 111,
@@ -498,7 +498,7 @@
    "id": 12,
    "name": "Участник 13",
    "avatarSeed": 12,
-   "champion": "Испания",
+   "champion": "Нидерланды",
    "skill": 35,
    "points": {
     "groupMatches": 86,
@@ -580,7 +580,7 @@
    "id": 14,
    "name": "Участник 15",
    "avatarSeed": 14,
-   "champion": "Бразилия",
+   "champion": "Аргентина",
    "skill": 32,
    "points": {
     "groupMatches": 94,
@@ -623,7 +623,7 @@
    "id": 3,
    "name": "Участник 4",
    "avatarSeed": 3,
-   "champion": "Аргентина",
+   "champion": "Испания",
    "skill": 74,
    "points": {
     "groupMatches": 119,
@@ -664,7 +664,7 @@
    "id": 1,
    "name": "Участник 2",
    "avatarSeed": 1,
-   "champion": "Испания",
+   "champion": "Аргентина",
    "skill": 70,
    "points": {
     "groupMatches": 121,
@@ -1244,14 +1244,9 @@
   },
   "leagueChampions": [
    {
-    "team": "Бразилия",
+    "team": "Аргентина",
     "count": 5,
-    "flag": "br"
-   },
-   {
-    "team": "Германия",
-    "count": 3,
-    "flag": "de"
+    "flag": "ar"
    },
    {
     "team": "Испания",
@@ -1259,24 +1254,29 @@
     "flag": "es"
    },
    {
-    "team": "Аргентина",
+    "team": "Бразилия",
     "count": 2,
-    "flag": "ar"
+    "flag": "br"
    },
    {
-    "team": "Марокко",
-    "count": 1,
-    "flag": "ma"
+    "team": "Германия",
+    "count": 2,
+    "flag": "de"
    },
    {
-    "team": "Бельгия",
-    "count": 1,
-    "flag": "be"
+    "team": "Англия",
+    "count": 2,
+    "flag": "gb-eng"
    },
    {
     "team": "Португалия",
     "count": 1,
     "flag": "pt"
+   },
+   {
+    "team": "Нидерланды",
+    "count": 1,
+    "flag": "nl"
    }
   ],
   "threat": {

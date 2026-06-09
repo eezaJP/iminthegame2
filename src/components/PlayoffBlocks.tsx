@@ -98,9 +98,12 @@ export function BurnedPredictions() {
   if (!burned.length) {
     return <div className="glass p-5 text-center text-[13px] text-muted">Пока ни у кого не сгорел чемпион — все фавориты ещё в игре.</div>;
   }
+  const shown = burned.slice(0, 6);
+  const more = burned.length - shown.length;
   return (
+    <>
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {burned.map((b, i) => (
+      {shown.map((b, i) => (
         <div key={b.name} className="glass relative overflow-hidden p-4">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-rose/10 to-transparent" />
           <div className="relative">
@@ -120,6 +123,12 @@ export function BurnedPredictions() {
         </div>
       ))}
     </div>
+    {more > 0 && (
+      <p className="mt-3 text-center text-[12.5px] text-muted">
+        …и ещё у {more} участников чемпион уже вылетел. Бывает — впереди ещё много очков.
+      </p>
+    )}
+    </>
   );
 }
 
