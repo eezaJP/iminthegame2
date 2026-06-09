@@ -1,0 +1,1302 @@
+{
+ "mode": "demo",
+ "demoToday": "2026-06-24",
+ "participants": [
+  {
+   "id": 0,
+   "name": "Участник 1",
+   "avatarSeed": 0,
+   "champion": "Марокко",
+   "skill": 67,
+   "points": {
+    "groupMatches": 110,
+    "groupStandings": 14,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 124
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 55
+    },
+    {
+     "label": "Тур 2",
+     "total": 110
+    },
+    {
+     "label": "Сейчас",
+     "total": 124
+    }
+   ],
+   "stats": {
+    "exactScores": 14,
+    "correctOutcomes": 34,
+    "predictions": 48,
+    "nearMiss": 6,
+    "contrarian": 0
+   },
+   "rank": 7
+  },
+  {
+   "id": 1,
+   "name": "Участник 2",
+   "avatarSeed": 1,
+   "champion": "Испания",
+   "skill": 70,
+   "points": {
+    "groupMatches": 121,
+    "groupStandings": 15,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 136
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 66
+    },
+    {
+     "label": "Тур 2",
+     "total": 121
+    },
+    {
+     "label": "Сейчас",
+     "total": 136
+    }
+   ],
+   "stats": {
+    "exactScores": 15,
+    "correctOutcomes": 38,
+    "predictions": 48,
+    "nearMiss": 9,
+    "contrarian": 0
+   },
+   "rank": 3
+  },
+  {
+   "id": 2,
+   "name": "Участник 3",
+   "avatarSeed": 2,
+   "champion": "Германия",
+   "skill": 37,
+   "points": {
+    "groupMatches": 82,
+    "groupStandings": 8,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 90
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 27
+    },
+    {
+     "label": "Тур 2",
+     "total": 82
+    },
+    {
+     "label": "Сейчас",
+     "total": 90
+    }
+   ],
+   "stats": {
+    "exactScores": 8,
+    "correctOutcomes": 29,
+    "predictions": 48,
+    "nearMiss": 7,
+    "contrarian": 0
+   },
+   "rank": 13
+  },
+  {
+   "id": 3,
+   "name": "Участник 4",
+   "avatarSeed": 3,
+   "champion": "Аргентина",
+   "skill": 74,
+   "points": {
+    "groupMatches": 119,
+    "groupStandings": 21,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 140
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 47
+    },
+    {
+     "label": "Тур 2",
+     "total": 119
+    },
+    {
+     "label": "Сейчас",
+     "total": 140
+    }
+   ],
+   "stats": {
+    "exactScores": 15,
+    "correctOutcomes": 37,
+    "predictions": 48,
+    "nearMiss": 7,
+    "contrarian": 0
+   },
+   "rank": 1
+  },
+  {
+   "id": 4,
+   "name": "Участник 5",
+   "avatarSeed": 4,
+   "champion": "Бразилия",
+   "skill": 33,
+   "points": {
+    "groupMatches": 74,
+    "groupStandings": 9,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 83
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 46
+    },
+    {
+     "label": "Тур 2",
+     "total": 74
+    },
+    {
+     "label": "Сейчас",
+     "total": 83
+    }
+   ],
+   "stats": {
+    "exactScores": 8,
+    "correctOutcomes": 25,
+    "predictions": 48,
+    "nearMiss": 1,
+    "contrarian": 0
+   },
+   "rank": 14
+  },
+  {
+   "id": 5,
+   "name": "Участник 6",
+   "avatarSeed": 5,
+   "champion": "Бразилия",
+   "skill": 58,
+   "points": {
+    "groupMatches": 111,
+    "groupStandings": 15,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 126
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 51
+    },
+    {
+     "label": "Тур 2",
+     "total": 111
+    },
+    {
+     "label": "Сейчас",
+     "total": 126
+    }
+   ],
+   "stats": {
+    "exactScores": 13,
+    "correctOutcomes": 36,
+    "predictions": 48,
+    "nearMiss": 8,
+    "contrarian": 0
+   },
+   "rank": 6
+  },
+  {
+   "id": 6,
+   "name": "Участник 7",
+   "avatarSeed": 6,
+   "champion": "Германия",
+   "skill": 43,
+   "points": {
+    "groupMatches": 96,
+    "groupStandings": 9,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 105
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 37
+    },
+    {
+     "label": "Тур 2",
+     "total": 96
+    },
+    {
+     "label": "Сейчас",
+     "total": 105
+    }
+   ],
+   "stats": {
+    "exactScores": 10,
+    "correctOutcomes": 33,
+    "predictions": 48,
+    "nearMiss": 5,
+    "contrarian": 0
+   },
+   "rank": 9
+  },
+  {
+   "id": 7,
+   "name": "Участник 8",
+   "avatarSeed": 7,
+   "champion": "Бельгия",
+   "skill": 72,
+   "points": {
+    "groupMatches": 119,
+    "groupStandings": 19,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 138
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 52
+    },
+    {
+     "label": "Тур 2",
+     "total": 119
+    },
+    {
+     "label": "Сейчас",
+     "total": 138
+    }
+   ],
+   "stats": {
+    "exactScores": 13,
+    "correctOutcomes": 40,
+    "predictions": 48,
+    "nearMiss": 6,
+    "contrarian": 0
+   },
+   "rank": 2
+  },
+  {
+   "id": 8,
+   "name": "Участник 9",
+   "avatarSeed": 8,
+   "champion": "Португалия",
+   "skill": 68,
+   "points": {
+    "groupMatches": 83,
+    "groupStandings": 19,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 102
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 50
+    },
+    {
+     "label": "Тур 2",
+     "total": 83
+    },
+    {
+     "label": "Сейчас",
+     "total": 102
+    }
+   ],
+   "stats": {
+    "exactScores": 7,
+    "correctOutcomes": 31,
+    "predictions": 48,
+    "nearMiss": 4,
+    "contrarian": 0
+   },
+   "rank": 10
+  },
+  {
+   "id": 9,
+   "name": "Участник 10",
+   "avatarSeed": 9,
+   "champion": "Германия",
+   "skill": 36,
+   "points": {
+    "groupMatches": 66,
+    "groupStandings": 8,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 74
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 42
+    },
+    {
+     "label": "Тур 2",
+     "total": 66
+    },
+    {
+     "label": "Сейчас",
+     "total": 74
+    }
+   ],
+   "stats": {
+    "exactScores": 6,
+    "correctOutcomes": 24,
+    "predictions": 48,
+    "nearMiss": 3,
+    "contrarian": 0
+   },
+   "rank": 15
+  },
+  {
+   "id": 10,
+   "name": "Участник 11",
+   "avatarSeed": 10,
+   "champion": "Бразилия",
+   "skill": 69,
+   "points": {
+    "groupMatches": 113,
+    "groupStandings": 19,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 132
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 50
+    },
+    {
+     "label": "Тур 2",
+     "total": 113
+    },
+    {
+     "label": "Сейчас",
+     "total": 132
+    }
+   ],
+   "stats": {
+    "exactScores": 11,
+    "correctOutcomes": 40,
+    "predictions": 48,
+    "nearMiss": 5,
+    "contrarian": 0
+   },
+   "rank": 4
+  },
+  {
+   "id": 11,
+   "name": "Участник 12",
+   "avatarSeed": 11,
+   "champion": "Аргентина",
+   "skill": 72,
+   "points": {
+    "groupMatches": 111,
+    "groupStandings": 19,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 130
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 52
+    },
+    {
+     "label": "Тур 2",
+     "total": 111
+    },
+    {
+     "label": "Сейчас",
+     "total": 130
+    }
+   ],
+   "stats": {
+    "exactScores": 13,
+    "correctOutcomes": 36,
+    "predictions": 48,
+    "nearMiss": 9,
+    "contrarian": 0
+   },
+   "rank": 5
+  },
+  {
+   "id": 12,
+   "name": "Участник 13",
+   "avatarSeed": 12,
+   "champion": "Испания",
+   "skill": 35,
+   "points": {
+    "groupMatches": 86,
+    "groupStandings": 8,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 94
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 42
+    },
+    {
+     "label": "Тур 2",
+     "total": 86
+    },
+    {
+     "label": "Сейчас",
+     "total": 94
+    }
+   ],
+   "stats": {
+    "exactScores": 10,
+    "correctOutcomes": 28,
+    "predictions": 48,
+    "nearMiss": 4,
+    "contrarian": 0
+   },
+   "rank": 12
+  },
+  {
+   "id": 13,
+   "name": "Участник 14",
+   "avatarSeed": 13,
+   "champion": "Бразилия",
+   "skill": 55,
+   "points": {
+    "groupMatches": 109,
+    "groupStandings": 11,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 120
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 51
+    },
+    {
+     "label": "Тур 2",
+     "total": 109
+    },
+    {
+     "label": "Сейчас",
+     "total": 120
+    }
+   ],
+   "stats": {
+    "exactScores": 13,
+    "correctOutcomes": 35,
+    "predictions": 48,
+    "nearMiss": 9,
+    "contrarian": 0
+   },
+   "rank": 8
+  },
+  {
+   "id": 14,
+   "name": "Участник 15",
+   "avatarSeed": 14,
+   "champion": "Бразилия",
+   "skill": 32,
+   "points": {
+    "groupMatches": 94,
+    "groupStandings": 6,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 100
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 46
+    },
+    {
+     "label": "Тур 2",
+     "total": 94
+    },
+    {
+     "label": "Сейчас",
+     "total": 100
+    }
+   ],
+   "stats": {
+    "exactScores": 10,
+    "correctOutcomes": 32,
+    "predictions": 48,
+    "nearMiss": 8,
+    "contrarian": 0
+   },
+   "rank": 11
+  }
+ ],
+ "awards": {
+  "leader": {
+   "id": 3,
+   "name": "Участник 4",
+   "avatarSeed": 3,
+   "champion": "Аргентина",
+   "skill": 74,
+   "points": {
+    "groupMatches": 119,
+    "groupStandings": 21,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 140
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 47
+    },
+    {
+     "label": "Тур 2",
+     "total": 119
+    },
+    {
+     "label": "Сейчас",
+     "total": 140
+    }
+   ],
+   "stats": {
+    "exactScores": 15,
+    "correctOutcomes": 37,
+    "predictions": 48,
+    "nearMiss": 7,
+    "contrarian": 0
+   },
+   "rank": 1
+  },
+  "oracle": {
+   "id": 1,
+   "name": "Участник 2",
+   "avatarSeed": 1,
+   "champion": "Испания",
+   "skill": 70,
+   "points": {
+    "groupMatches": 121,
+    "groupStandings": 15,
+    "playoffMatches": 0,
+    "squadBonus": 0,
+    "finalBets": 0,
+    "total": 136
+   },
+   "history": [
+    {
+     "label": "Старт",
+     "total": 0
+    },
+    {
+     "label": "Тур 1",
+     "total": 66
+    },
+    {
+     "label": "Тур 2",
+     "total": 121
+    },
+    {
+     "label": "Сейчас",
+     "total": 136
+    }
+   ],
+   "stats": {
+    "exactScores": 15,
+    "correctOutcomes": 38,
+    "predictions": 48,
+    "nearMiss": 9,
+    "contrarian": 0
+   },
+   "rank": 3
+  },
+  "roundLeader": {
+   "id": 3,
+   "name": "Участник 4",
+   "delta": 72
+  },
+  "var": {
+   "id": 9,
+   "name": "Участник 10",
+   "delta": 24
+  }
+ },
+ "today": {
+  "date": "2026-06-24",
+  "matches": [
+   {
+    "id": "A5",
+    "group": "A",
+    "time": "19:00",
+    "city": "Гвадалахара",
+    "home": "Чехия",
+    "away": "ЮАР",
+    "homeFlag": "cz",
+    "awayFlag": "za",
+    "dist": {
+     "home": 7,
+     "draw": 8,
+     "away": 0
+    },
+    "popularScore": "1:1",
+    "potential": 75,
+    "impact": "Большинство ждёт ничью — группа останется открытой."
+   },
+   {
+    "id": "A6",
+    "group": "A",
+    "time": "22:00",
+    "city": "Мехико",
+    "home": "Мексика",
+    "away": "Ю. Корея",
+    "homeFlag": "mx",
+    "awayFlag": "kr",
+    "dist": {
+     "home": 8,
+     "draw": 6,
+     "away": 1
+    },
+    "popularScore": "2:1",
+    "potential": 75,
+    "impact": "Если Мексика выиграет — заметно приблизится к выходу из группы."
+   },
+   {
+    "id": "B5",
+    "group": "B",
+    "time": "01:00",
+    "city": "Атланта",
+    "home": "Швейцария",
+    "away": "Босния и Гер.",
+    "homeFlag": "ch",
+    "awayFlag": "ba",
+    "dist": {
+     "home": 7,
+     "draw": 8,
+     "away": 0
+    },
+    "popularScore": "1:1",
+    "potential": 75,
+    "impact": "Большинство ждёт ничью — группа останется открытой."
+   },
+   {
+    "id": "B6",
+    "group": "B",
+    "time": "04:00",
+    "city": "Майами",
+    "home": "Канада",
+    "away": "Катар",
+    "homeFlag": "ca",
+    "awayFlag": "qa",
+    "dist": {
+     "home": 12,
+     "draw": 3,
+     "away": 0
+    },
+    "popularScore": "2:1",
+    "potential": 75,
+    "impact": "Если Канада выиграет — заметно приблизится к выходу из группы."
+   }
+  ],
+  "potentialTotal": 300
+ },
+ "predictions": {
+  "A1": {
+   "home": 11,
+   "draw": 4,
+   "away": 0,
+   "score": "2:0"
+  },
+  "A2": {
+   "home": 4,
+   "draw": 7,
+   "away": 4,
+   "score": "1:1"
+  },
+  "A3": {
+   "home": 1,
+   "draw": 9,
+   "away": 5,
+   "score": "1:1"
+  },
+  "A4": {
+   "home": 2,
+   "draw": 5,
+   "away": 8,
+   "score": "0:2"
+  },
+  "A5": {
+   "home": 7,
+   "draw": 8,
+   "away": 0,
+   "score": "1:1"
+  },
+  "A6": {
+   "home": 8,
+   "draw": 6,
+   "away": 1,
+   "score": "2:1"
+  },
+  "B1": {
+   "home": 8,
+   "draw": 5,
+   "away": 2,
+   "score": "2:1"
+  },
+  "B2": {
+   "home": 1,
+   "draw": 5,
+   "away": 9,
+   "score": "1:2"
+  },
+  "B3": {
+   "home": 5,
+   "draw": 8,
+   "away": 2,
+   "score": "1:1"
+  },
+  "B4": {
+   "home": 5,
+   "draw": 9,
+   "away": 1,
+   "score": "1:1"
+  },
+  "B5": {
+   "home": 7,
+   "draw": 8,
+   "away": 0,
+   "score": "1:1"
+  },
+  "B6": {
+   "home": 12,
+   "draw": 3,
+   "away": 0,
+   "score": "2:1"
+  },
+  "C1": {
+   "home": 11,
+   "draw": 3,
+   "away": 1,
+   "score": "2:0"
+  },
+  "C2": {
+   "home": 0,
+   "draw": 7,
+   "away": 8,
+   "score": "1:1"
+  },
+  "C3": {
+   "home": 0,
+   "draw": 6,
+   "away": 9,
+   "score": "1:1"
+  },
+  "C4": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "2:1"
+  },
+  "C5": {
+   "home": 2,
+   "draw": 4,
+   "away": 9,
+   "score": "0:1"
+  },
+  "C6": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "1:0"
+  },
+  "D1": {
+   "home": 10,
+   "draw": 5,
+   "away": 0,
+   "score": "2:0"
+  },
+  "D2": {
+   "home": 1,
+   "draw": 8,
+   "away": 6,
+   "score": "1:1"
+  },
+  "D3": {
+   "home": 3,
+   "draw": 6,
+   "away": 6,
+   "score": "1:1"
+  },
+  "D4": {
+   "home": 5,
+   "draw": 6,
+   "away": 4,
+   "score": "1:1"
+  },
+  "D5": {
+   "home": 9,
+   "draw": 4,
+   "away": 2,
+   "score": "2:1"
+  },
+  "D6": {
+   "home": 9,
+   "draw": 4,
+   "away": 2,
+   "score": "1:1"
+  },
+  "E1": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "2:0"
+  },
+  "E2": {
+   "home": 3,
+   "draw": 7,
+   "away": 5,
+   "score": "1:1"
+  },
+  "E3": {
+   "home": 1,
+   "draw": 7,
+   "away": 7,
+   "score": "1:1"
+  },
+  "E4": {
+   "home": 0,
+   "draw": 7,
+   "away": 8,
+   "score": "1:1"
+  },
+  "E5": {
+   "home": 10,
+   "draw": 5,
+   "away": 0,
+   "score": "1:1"
+  },
+  "E6": {
+   "home": 9,
+   "draw": 6,
+   "away": 0,
+   "score": "1:1"
+  },
+  "F1": {
+   "home": 10,
+   "draw": 5,
+   "away": 0,
+   "score": "2:1"
+  },
+  "F2": {
+   "home": 6,
+   "draw": 8,
+   "away": 1,
+   "score": "1:1"
+  },
+  "F3": {
+   "home": 0,
+   "draw": 1,
+   "away": 14,
+   "score": "1:2"
+  },
+  "F4": {
+   "home": 3,
+   "draw": 8,
+   "away": 4,
+   "score": "1:1"
+  },
+  "F5": {
+   "home": 2,
+   "draw": 5,
+   "away": 8,
+   "score": "1:1"
+  },
+  "F6": {
+   "home": 9,
+   "draw": 6,
+   "away": 0,
+   "score": "2:1"
+  },
+  "G1": {
+   "home": 8,
+   "draw": 7,
+   "away": 0,
+   "score": "1:1"
+  },
+  "G2": {
+   "home": 8,
+   "draw": 7,
+   "away": 0,
+   "score": "2:1"
+  },
+  "G3": {
+   "home": 0,
+   "draw": 3,
+   "away": 12,
+   "score": "0:1"
+  },
+  "G4": {
+   "home": 6,
+   "draw": 5,
+   "away": 4,
+   "score": "1:1"
+  },
+  "G5": {
+   "home": 0,
+   "draw": 9,
+   "away": 6,
+   "score": "1:1"
+  },
+  "G6": {
+   "home": 8,
+   "draw": 6,
+   "away": 1,
+   "score": "1:1"
+  },
+  "H1": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "2:1"
+  },
+  "H2": {
+   "home": 0,
+   "draw": 3,
+   "away": 12,
+   "score": "0:1"
+  },
+  "H3": {
+   "home": 1,
+   "draw": 8,
+   "away": 6,
+   "score": "1:2"
+  },
+  "H4": {
+   "home": 3,
+   "draw": 7,
+   "away": 5,
+   "score": "1:1"
+  },
+  "H5": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "2:1"
+  },
+  "H6": {
+   "home": 14,
+   "draw": 1,
+   "away": 0,
+   "score": "1:0"
+  },
+  "I1": {
+   "home": 13,
+   "draw": 2,
+   "away": 0,
+   "score": "2:0"
+  },
+  "I2": {
+   "home": 0,
+   "draw": 3,
+   "away": 12,
+   "score": "1:2"
+  },
+  "I3": {
+   "home": 0,
+   "draw": 8,
+   "away": 7,
+   "score": "1:1"
+  },
+  "I4": {
+   "home": 13,
+   "draw": 2,
+   "away": 0,
+   "score": "2:1"
+  },
+  "I5": {
+   "home": 5,
+   "draw": 5,
+   "away": 5,
+   "score": "1:2"
+  },
+  "I6": {
+   "home": 14,
+   "draw": 1,
+   "away": 0,
+   "score": "2:0"
+  },
+  "J1": {
+   "home": 15,
+   "draw": 0,
+   "away": 0,
+   "score": "2:1"
+  },
+  "J2": {
+   "home": 10,
+   "draw": 5,
+   "away": 0,
+   "score": "2:1"
+  },
+  "J3": {
+   "home": 0,
+   "draw": 2,
+   "away": 13,
+   "score": "0:2"
+  },
+  "J4": {
+   "home": 1,
+   "draw": 8,
+   "away": 6,
+   "score": "1:1"
+  },
+  "J5": {
+   "home": 0,
+   "draw": 5,
+   "away": 10,
+   "score": "1:1"
+  },
+  "J6": {
+   "home": 13,
+   "draw": 2,
+   "away": 0,
+   "score": "2:0"
+  },
+  "K1": {
+   "home": 13,
+   "draw": 2,
+   "away": 0,
+   "score": "2:1"
+  },
+  "K2": {
+   "home": 0,
+   "draw": 5,
+   "away": 10,
+   "score": "1:1"
+  },
+  "K3": {
+   "home": 1,
+   "draw": 7,
+   "away": 7,
+   "score": "1:1"
+  },
+  "K4": {
+   "home": 7,
+   "draw": 3,
+   "away": 5,
+   "score": "2:1"
+  },
+  "K5": {
+   "home": 8,
+   "draw": 7,
+   "away": 0,
+   "score": "1:1"
+  },
+  "K6": {
+   "home": 13,
+   "draw": 2,
+   "away": 0,
+   "score": "2:0"
+  },
+  "L1": {
+   "home": 7,
+   "draw": 4,
+   "away": 4,
+   "score": "1:1"
+  },
+  "L2": {
+   "home": 4,
+   "draw": 9,
+   "away": 2,
+   "score": "1:1"
+  },
+  "L3": {
+   "home": 0,
+   "draw": 2,
+   "away": 13,
+   "score": "0:2"
+  },
+  "L4": {
+   "home": 9,
+   "draw": 4,
+   "away": 2,
+   "score": "2:1"
+  },
+  "L5": {
+   "home": 0,
+   "draw": 1,
+   "away": 14,
+   "score": "0:2"
+  },
+  "L6": {
+   "home": 10,
+   "draw": 5,
+   "away": 0,
+   "score": "2:0"
+  }
+ },
+ "facts": {
+  "comeback": {
+   "name": "Участник 4",
+   "places": 8,
+   "round": 2
+  },
+  "underPressure": {
+   "name": "Участник 1",
+   "places": 5
+  },
+  "againstCrowd": {
+   "name": "Участник 8",
+   "count": 4
+  },
+  "almostOracle": {
+   "name": "Участник 2",
+   "times": 9
+  },
+  "leagueChampions": [
+   {
+    "team": "Бразилия",
+    "count": 5,
+    "flag": "br"
+   },
+   {
+    "team": "Германия",
+    "count": 3,
+    "flag": "de"
+   },
+   {
+    "team": "Испания",
+    "count": 2,
+    "flag": "es"
+   },
+   {
+    "team": "Аргентина",
+    "count": 2,
+    "flag": "ar"
+   },
+   {
+    "team": "Марокко",
+    "count": 1,
+    "flag": "ma"
+   },
+   {
+    "team": "Бельгия",
+    "count": 1,
+    "flag": "be"
+   },
+   {
+    "team": "Португалия",
+    "count": 1,
+    "flag": "pt"
+   }
+  ],
+  "threat": {
+   "name": "Участник 8",
+   "condition": "если ЮАР победит 2:0"
+  },
+  "openPoints": {
+   "points": 300
+  },
+  "majorityScore": {
+   "score": "1:1"
+  },
+  "tableTurner": {
+   "match": "Норвегия — Франция",
+   "positions": 7
+  },
+  "rarePick": {
+   "team": "Гаити",
+   "count": 2,
+   "total": 15
+  }
+ }
+}

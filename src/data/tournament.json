@@ -1,0 +1,2564 @@
+{
+ "meta": {
+  "name": "Чемпионат мира — 2026",
+  "hosts": [
+   "США",
+   "Канада",
+   "Мексика"
+  ],
+  "start": "2026-06-11T19:00:00+03:00",
+  "tz": "МСК",
+  "participants": 15,
+  "playedThroughMatchday": 2
+ },
+ "groups": [
+  {
+   "letter": "A",
+   "teams": [
+    {
+     "name": "Мексика",
+     "flag": "mx"
+    },
+    {
+     "name": "ЮАР",
+     "flag": "za"
+    },
+    {
+     "name": "Ю. Корея",
+     "flag": "kr"
+    },
+    {
+     "name": "Чехия",
+     "flag": "cz"
+    }
+   ]
+  },
+  {
+   "letter": "B",
+   "teams": [
+    {
+     "name": "Канада",
+     "flag": "ca"
+    },
+    {
+     "name": "Босния и Гер.",
+     "flag": "ba"
+    },
+    {
+     "name": "Катар",
+     "flag": "qa"
+    },
+    {
+     "name": "Швейцария",
+     "flag": "ch"
+    }
+   ]
+  },
+  {
+   "letter": "C",
+   "teams": [
+    {
+     "name": "Бразилия",
+     "flag": "br"
+    },
+    {
+     "name": "Марокко",
+     "flag": "ma"
+    },
+    {
+     "name": "Гаити",
+     "flag": "ht"
+    },
+    {
+     "name": "Шотландия",
+     "flag": "gb-sct"
+    }
+   ]
+  },
+  {
+   "letter": "D",
+   "teams": [
+    {
+     "name": "США",
+     "flag": "us"
+    },
+    {
+     "name": "Парагвай",
+     "flag": "py"
+    },
+    {
+     "name": "Австралия",
+     "flag": "au"
+    },
+    {
+     "name": "Турция",
+     "flag": "tr"
+    }
+   ]
+  },
+  {
+   "letter": "E",
+   "teams": [
+    {
+     "name": "Германия",
+     "flag": "de"
+    },
+    {
+     "name": "Кюрасао",
+     "flag": "cw"
+    },
+    {
+     "name": "Кот-д’Ивуар",
+     "flag": "ci"
+    },
+    {
+     "name": "Эквадор",
+     "flag": "ec"
+    }
+   ]
+  },
+  {
+   "letter": "F",
+   "teams": [
+    {
+     "name": "Нидерланды",
+     "flag": "nl"
+    },
+    {
+     "name": "Япония",
+     "flag": "jp"
+    },
+    {
+     "name": "Швеция",
+     "flag": "se"
+    },
+    {
+     "name": "Тунис",
+     "flag": "tn"
+    }
+   ]
+  },
+  {
+   "letter": "G",
+   "teams": [
+    {
+     "name": "Бельгия",
+     "flag": "be"
+    },
+    {
+     "name": "Египет",
+     "flag": "eg"
+    },
+    {
+     "name": "Иран",
+     "flag": "ir"
+    },
+    {
+     "name": "Новая Зеландия",
+     "flag": "nz"
+    }
+   ]
+  },
+  {
+   "letter": "H",
+   "teams": [
+    {
+     "name": "Испания",
+     "flag": "es"
+    },
+    {
+     "name": "Кабо-Верде",
+     "flag": "cv"
+    },
+    {
+     "name": "С. Аравия",
+     "flag": "sa"
+    },
+    {
+     "name": "Уругвай",
+     "flag": "uy"
+    }
+   ]
+  },
+  {
+   "letter": "I",
+   "teams": [
+    {
+     "name": "Франция",
+     "flag": "fr"
+    },
+    {
+     "name": "Сенегал",
+     "flag": "sn"
+    },
+    {
+     "name": "Ирак",
+     "flag": "iq"
+    },
+    {
+     "name": "Норвегия",
+     "flag": "no"
+    }
+   ]
+  },
+  {
+   "letter": "J",
+   "teams": [
+    {
+     "name": "Аргентина",
+     "flag": "ar"
+    },
+    {
+     "name": "Алжир",
+     "flag": "dz"
+    },
+    {
+     "name": "Австрия",
+     "flag": "at"
+    },
+    {
+     "name": "Иордания",
+     "flag": "jo"
+    }
+   ]
+  },
+  {
+   "letter": "K",
+   "teams": [
+    {
+     "name": "Португалия",
+     "flag": "pt"
+    },
+    {
+     "name": "ДР Конго",
+     "flag": "cd"
+    },
+    {
+     "name": "Узбекистан",
+     "flag": "uz"
+    },
+    {
+     "name": "Колумбия",
+     "flag": "co"
+    }
+   ]
+  },
+  {
+   "letter": "L",
+   "teams": [
+    {
+     "name": "Англия",
+     "flag": "gb-eng"
+    },
+    {
+     "name": "Хорватия",
+     "flag": "hr"
+    },
+    {
+     "name": "Гана",
+     "flag": "gh"
+    },
+    {
+     "name": "Панама",
+     "flag": "pa"
+    }
+   ]
+  }
+ ],
+ "teams": [
+  {
+   "id": 0,
+   "name": "Мексика",
+   "flag": "mx",
+   "group": "A",
+   "strength": 0.74
+  },
+  {
+   "id": 1,
+   "name": "ЮАР",
+   "flag": "za",
+   "group": "A",
+   "strength": 0.55
+  },
+  {
+   "id": 2,
+   "name": "Ю. Корея",
+   "flag": "kr",
+   "group": "A",
+   "strength": 0.66
+  },
+  {
+   "id": 3,
+   "name": "Чехия",
+   "flag": "cz",
+   "group": "A",
+   "strength": 0.63
+  },
+  {
+   "id": 4,
+   "name": "Канада",
+   "flag": "ca",
+   "group": "B",
+   "strength": 0.68
+  },
+  {
+   "id": 5,
+   "name": "Босния и Гер.",
+   "flag": "ba",
+   "group": "B",
+   "strength": 0.58
+  },
+  {
+   "id": 6,
+   "name": "Катар",
+   "flag": "qa",
+   "group": "B",
+   "strength": 0.5
+  },
+  {
+   "id": 7,
+   "name": "Швейцария",
+   "flag": "ch",
+   "group": "B",
+   "strength": 0.71
+  },
+  {
+   "id": 8,
+   "name": "Бразилия",
+   "flag": "br",
+   "group": "C",
+   "strength": 0.93
+  },
+  {
+   "id": 9,
+   "name": "Марокко",
+   "flag": "ma",
+   "group": "C",
+   "strength": 0.74
+  },
+  {
+   "id": 10,
+   "name": "Гаити",
+   "flag": "ht",
+   "group": "C",
+   "strength": 0.42
+  },
+  {
+   "id": 11,
+   "name": "Шотландия",
+   "flag": "gb-sct",
+   "group": "C",
+   "strength": 0.61
+  },
+  {
+   "id": 12,
+   "name": "США",
+   "flag": "us",
+   "group": "D",
+   "strength": 0.72
+  },
+  {
+   "id": 13,
+   "name": "Парагвай",
+   "flag": "py",
+   "group": "D",
+   "strength": 0.6
+  },
+  {
+   "id": 14,
+   "name": "Австралия",
+   "flag": "au",
+   "group": "D",
+   "strength": 0.62
+  },
+  {
+   "id": 15,
+   "name": "Турция",
+   "flag": "tr",
+   "group": "D",
+   "strength": 0.7
+  },
+  {
+   "id": 16,
+   "name": "Германия",
+   "flag": "de",
+   "group": "E",
+   "strength": 0.88
+  },
+  {
+   "id": 17,
+   "name": "Кюрасао",
+   "flag": "cw",
+   "group": "E",
+   "strength": 0.4
+  },
+  {
+   "id": 18,
+   "name": "Кот-д’Ивуар",
+   "flag": "ci",
+   "group": "E",
+   "strength": 0.66
+  },
+  {
+   "id": 19,
+   "name": "Эквадор",
+   "flag": "ec",
+   "group": "E",
+   "strength": 0.67
+  },
+  {
+   "id": 20,
+   "name": "Нидерланды",
+   "flag": "nl",
+   "group": "F",
+   "strength": 0.85
+  },
+  {
+   "id": 21,
+   "name": "Япония",
+   "flag": "jp",
+   "group": "F",
+   "strength": 0.7
+  },
+  {
+   "id": 22,
+   "name": "Швеция",
+   "flag": "se",
+   "group": "F",
+   "strength": 0.64
+  },
+  {
+   "id": 23,
+   "name": "Тунис",
+   "flag": "tn",
+   "group": "F",
+   "strength": 0.55
+  },
+  {
+   "id": 24,
+   "name": "Бельгия",
+   "flag": "be",
+   "group": "G",
+   "strength": 0.82
+  },
+  {
+   "id": 25,
+   "name": "Египет",
+   "flag": "eg",
+   "group": "G",
+   "strength": 0.62
+  },
+  {
+   "id": 26,
+   "name": "Иран",
+   "flag": "ir",
+   "group": "G",
+   "strength": 0.6
+  },
+  {
+   "id": 27,
+   "name": "Новая Зеландия",
+   "flag": "nz",
+   "group": "G",
+   "strength": 0.45
+  },
+  {
+   "id": 28,
+   "name": "Испания",
+   "flag": "es",
+   "group": "H",
+   "strength": 0.9
+  },
+  {
+   "id": 29,
+   "name": "Кабо-Верде",
+   "flag": "cv",
+   "group": "H",
+   "strength": 0.43
+  },
+  {
+   "id": 30,
+   "name": "С. Аравия",
+   "flag": "sa",
+   "group": "H",
+   "strength": 0.52
+  },
+  {
+   "id": 31,
+   "name": "Уругвай",
+   "flag": "uy",
+   "group": "H",
+   "strength": 0.79
+  },
+  {
+   "id": 32,
+   "name": "Франция",
+   "flag": "fr",
+   "group": "I",
+   "strength": 0.92
+  },
+  {
+   "id": 33,
+   "name": "Сенегал",
+   "flag": "sn",
+   "group": "I",
+   "strength": 0.72
+  },
+  {
+   "id": 34,
+   "name": "Ирак",
+   "flag": "iq",
+   "group": "I",
+   "strength": 0.5
+  },
+  {
+   "id": 35,
+   "name": "Норвегия",
+   "flag": "no",
+   "group": "I",
+   "strength": 0.71
+  },
+  {
+   "id": 36,
+   "name": "Аргентина",
+   "flag": "ar",
+   "group": "J",
+   "strength": 0.94
+  },
+  {
+   "id": 37,
+   "name": "Алжир",
+   "flag": "dz",
+   "group": "J",
+   "strength": 0.63
+  },
+  {
+   "id": 38,
+   "name": "Австрия",
+   "flag": "at",
+   "group": "J",
+   "strength": 0.68
+  },
+  {
+   "id": 39,
+   "name": "Иордания",
+   "flag": "jo",
+   "group": "J",
+   "strength": 0.46
+  },
+  {
+   "id": 40,
+   "name": "Португалия",
+   "flag": "pt",
+   "group": "K",
+   "strength": 0.88
+  },
+  {
+   "id": 41,
+   "name": "ДР Конго",
+   "flag": "cd",
+   "group": "K",
+   "strength": 0.55
+  },
+  {
+   "id": 42,
+   "name": "Узбекистан",
+   "flag": "uz",
+   "group": "K",
+   "strength": 0.53
+  },
+  {
+   "id": 43,
+   "name": "Колумбия",
+   "flag": "co",
+   "group": "K",
+   "strength": 0.76
+  },
+  {
+   "id": 44,
+   "name": "Англия",
+   "flag": "gb-eng",
+   "group": "L",
+   "strength": 0.89
+  },
+  {
+   "id": 45,
+   "name": "Хорватия",
+   "flag": "hr",
+   "group": "L",
+   "strength": 0.78
+  },
+  {
+   "id": 46,
+   "name": "Гана",
+   "flag": "gh",
+   "group": "L",
+   "strength": 0.6
+  },
+  {
+   "id": 47,
+   "name": "Панама",
+   "flag": "pa",
+   "group": "L",
+   "strength": 0.47
+  }
+ ],
+ "matches": [
+  {
+   "id": "A1",
+   "group": "A",
+   "matchday": 1,
+   "date": "2026-06-11",
+   "time": "19:00",
+   "cityId": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "home": "Мексика",
+   "away": "ЮАР",
+   "homeFlag": "mx",
+   "awayFlag": "za",
+   "goalsHome": 0,
+   "goalsAway": 0
+  },
+  {
+   "id": "A2",
+   "group": "A",
+   "matchday": 1,
+   "date": "2026-06-11",
+   "time": "22:00",
+   "cityId": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "home": "Ю. Корея",
+   "away": "Чехия",
+   "homeFlag": "kr",
+   "awayFlag": "cz",
+   "goalsHome": 2,
+   "goalsAway": 1
+  },
+  {
+   "id": "A3",
+   "group": "A",
+   "matchday": 2,
+   "date": "2026-06-18",
+   "time": "19:00",
+   "cityId": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "home": "Чехия",
+   "away": "Мексика",
+   "homeFlag": "cz",
+   "awayFlag": "mx",
+   "goalsHome": 0,
+   "goalsAway": 0
+  },
+  {
+   "id": "A4",
+   "group": "A",
+   "matchday": 2,
+   "date": "2026-06-18",
+   "time": "22:00",
+   "cityId": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "home": "ЮАР",
+   "away": "Ю. Корея",
+   "homeFlag": "za",
+   "awayFlag": "kr",
+   "goalsHome": 1,
+   "goalsAway": 0
+  },
+  {
+   "id": "A5",
+   "group": "A",
+   "matchday": 3,
+   "date": "2026-06-24",
+   "time": "19:00",
+   "cityId": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "home": "Чехия",
+   "away": "ЮАР",
+   "homeFlag": "cz",
+   "awayFlag": "za",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "A6",
+   "group": "A",
+   "matchday": 3,
+   "date": "2026-06-24",
+   "time": "22:00",
+   "cityId": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "home": "Мексика",
+   "away": "Ю. Корея",
+   "homeFlag": "mx",
+   "awayFlag": "kr",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "B1",
+   "group": "B",
+   "matchday": 1,
+   "date": "2026-06-11",
+   "time": "01:00",
+   "cityId": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "home": "Канада",
+   "away": "Босния и Гер.",
+   "homeFlag": "ca",
+   "awayFlag": "ba",
+   "goalsHome": 2,
+   "goalsAway": 0
+  },
+  {
+   "id": "B2",
+   "group": "B",
+   "matchday": 1,
+   "date": "2026-06-11",
+   "time": "04:00",
+   "cityId": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "home": "Катар",
+   "away": "Швейцария",
+   "homeFlag": "qa",
+   "awayFlag": "ch",
+   "goalsHome": 2,
+   "goalsAway": 2
+  },
+  {
+   "id": "B3",
+   "group": "B",
+   "matchday": 2,
+   "date": "2026-06-18",
+   "time": "01:00",
+   "cityId": 8,
+   "city": "Даллас",
+   "country": "USA",
+   "home": "Швейцария",
+   "away": "Канада",
+   "homeFlag": "ch",
+   "awayFlag": "ca",
+   "goalsHome": 1,
+   "goalsAway": 2
+  },
+  {
+   "id": "B4",
+   "group": "B",
+   "matchday": 2,
+   "date": "2026-06-18",
+   "time": "04:00",
+   "cityId": 9,
+   "city": "Канзас-Сити",
+   "country": "USA",
+   "home": "Босния и Гер.",
+   "away": "Катар",
+   "homeFlag": "ba",
+   "awayFlag": "qa",
+   "goalsHome": 0,
+   "goalsAway": 0
+  },
+  {
+   "id": "B5",
+   "group": "B",
+   "matchday": 3,
+   "date": "2026-06-24",
+   "time": "01:00",
+   "cityId": 10,
+   "city": "Атланта",
+   "country": "USA",
+   "home": "Швейцария",
+   "away": "Босния и Гер.",
+   "homeFlag": "ch",
+   "awayFlag": "ba",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "B6",
+   "group": "B",
+   "matchday": 3,
+   "date": "2026-06-24",
+   "time": "04:00",
+   "cityId": 11,
+   "city": "Майами",
+   "country": "USA",
+   "home": "Канада",
+   "away": "Катар",
+   "homeFlag": "ca",
+   "awayFlag": "qa",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "C1",
+   "group": "C",
+   "matchday": 1,
+   "date": "2026-06-12",
+   "time": "19:00",
+   "cityId": 12,
+   "city": "Торонто",
+   "country": "CAN",
+   "home": "Бразилия",
+   "away": "Марокко",
+   "homeFlag": "br",
+   "awayFlag": "ma",
+   "goalsHome": 2,
+   "goalsAway": 0
+  },
+  {
+   "id": "C2",
+   "group": "C",
+   "matchday": 1,
+   "date": "2026-06-12",
+   "time": "22:00",
+   "cityId": 13,
+   "city": "Бостон",
+   "country": "USA",
+   "home": "Гаити",
+   "away": "Шотландия",
+   "homeFlag": "ht",
+   "awayFlag": "gb-sct",
+   "goalsHome": 2,
+   "goalsAway": 1
+  },
+  {
+   "id": "C3",
+   "group": "C",
+   "matchday": 2,
+   "date": "2026-06-19",
+   "time": "19:00",
+   "cityId": 14,
+   "city": "Нью-Йорк",
+   "country": "USA",
+   "home": "Шотландия",
+   "away": "Бразилия",
+   "homeFlag": "gb-sct",
+   "awayFlag": "br",
+   "goalsHome": 0,
+   "goalsAway": 0
+  },
+  {
+   "id": "C4",
+   "group": "C",
+   "matchday": 2,
+   "date": "2026-06-19",
+   "time": "22:00",
+   "cityId": 15,
+   "city": "Филадельфия",
+   "country": "USA",
+   "home": "Марокко",
+   "away": "Гаити",
+   "homeFlag": "ma",
+   "awayFlag": "ht",
+   "goalsHome": 2,
+   "goalsAway": 2
+  },
+  {
+   "id": "C5",
+   "group": "C",
+   "matchday": 3,
+   "date": "2026-06-25",
+   "time": "19:00",
+   "cityId": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "home": "Шотландия",
+   "away": "Марокко",
+   "homeFlag": "gb-sct",
+   "awayFlag": "ma",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "C6",
+   "group": "C",
+   "matchday": 3,
+   "date": "2026-06-25",
+   "time": "22:00",
+   "cityId": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "home": "Бразилия",
+   "away": "Гаити",
+   "homeFlag": "br",
+   "awayFlag": "ht",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "D1",
+   "group": "D",
+   "matchday": 1,
+   "date": "2026-06-12",
+   "time": "01:00",
+   "cityId": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "home": "США",
+   "away": "Парагвай",
+   "homeFlag": "us",
+   "awayFlag": "py",
+   "goalsHome": 0,
+   "goalsAway": 2
+  },
+  {
+   "id": "D2",
+   "group": "D",
+   "matchday": 1,
+   "date": "2026-06-12",
+   "time": "04:00",
+   "cityId": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "home": "Австралия",
+   "away": "Турция",
+   "homeFlag": "au",
+   "awayFlag": "tr",
+   "goalsHome": 2,
+   "goalsAway": 1
+  },
+  {
+   "id": "D3",
+   "group": "D",
+   "matchday": 2,
+   "date": "2026-06-19",
+   "time": "01:00",
+   "cityId": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "home": "Турция",
+   "away": "США",
+   "homeFlag": "tr",
+   "awayFlag": "us",
+   "goalsHome": 3,
+   "goalsAway": 2
+  },
+  {
+   "id": "D4",
+   "group": "D",
+   "matchday": 2,
+   "date": "2026-06-19",
+   "time": "04:00",
+   "cityId": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "home": "Парагвай",
+   "away": "Австралия",
+   "homeFlag": "py",
+   "awayFlag": "au",
+   "goalsHome": 1,
+   "goalsAway": 1
+  },
+  {
+   "id": "D5",
+   "group": "D",
+   "matchday": 3,
+   "date": "2026-06-25",
+   "time": "01:00",
+   "cityId": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "home": "Турция",
+   "away": "Парагвай",
+   "homeFlag": "tr",
+   "awayFlag": "py",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "D6",
+   "group": "D",
+   "matchday": 3,
+   "date": "2026-06-25",
+   "time": "04:00",
+   "cityId": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "home": "США",
+   "away": "Австралия",
+   "homeFlag": "us",
+   "awayFlag": "au",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "E1",
+   "group": "E",
+   "matchday": 1,
+   "date": "2026-06-13",
+   "time": "19:00",
+   "cityId": 8,
+   "city": "Даллас",
+   "country": "USA",
+   "home": "Германия",
+   "away": "Кюрасао",
+   "homeFlag": "de",
+   "awayFlag": "cw",
+   "goalsHome": 1,
+   "goalsAway": 0
+  },
+  {
+   "id": "E2",
+   "group": "E",
+   "matchday": 1,
+   "date": "2026-06-13",
+   "time": "22:00",
+   "cityId": 9,
+   "city": "Канзас-Сити",
+   "country": "USA",
+   "home": "Кот-д’Ивуар",
+   "away": "Эквадор",
+   "homeFlag": "ci",
+   "awayFlag": "ec",
+   "goalsHome": 2,
+   "goalsAway": 0
+  },
+  {
+   "id": "E3",
+   "group": "E",
+   "matchday": 2,
+   "date": "2026-06-20",
+   "time": "19:00",
+   "cityId": 10,
+   "city": "Атланта",
+   "country": "USA",
+   "home": "Эквадор",
+   "away": "Германия",
+   "homeFlag": "ec",
+   "awayFlag": "de",
+   "goalsHome": 1,
+   "goalsAway": 1
+  },
+  {
+   "id": "E4",
+   "group": "E",
+   "matchday": 2,
+   "date": "2026-06-20",
+   "time": "22:00",
+   "cityId": 11,
+   "city": "Майами",
+   "country": "USA",
+   "home": "Кюрасао",
+   "away": "Кот-д’Ивуар",
+   "homeFlag": "cw",
+   "awayFlag": "ci",
+   "goalsHome": 0,
+   "goalsAway": 3
+  },
+  {
+   "id": "E5",
+   "group": "E",
+   "matchday": 3,
+   "date": "2026-06-26",
+   "time": "19:00",
+   "cityId": 12,
+   "city": "Торонто",
+   "country": "CAN",
+   "home": "Эквадор",
+   "away": "Кюрасао",
+   "homeFlag": "ec",
+   "awayFlag": "cw",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "E6",
+   "group": "E",
+   "matchday": 3,
+   "date": "2026-06-26",
+   "time": "22:00",
+   "cityId": 13,
+   "city": "Бостон",
+   "country": "USA",
+   "home": "Германия",
+   "away": "Кот-д’Ивуар",
+   "homeFlag": "de",
+   "awayFlag": "ci",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "F1",
+   "group": "F",
+   "matchday": 1,
+   "date": "2026-06-13",
+   "time": "01:00",
+   "cityId": 14,
+   "city": "Нью-Йорк",
+   "country": "USA",
+   "home": "Нидерланды",
+   "away": "Япония",
+   "homeFlag": "nl",
+   "awayFlag": "jp",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "F2",
+   "group": "F",
+   "matchday": 1,
+   "date": "2026-06-13",
+   "time": "04:00",
+   "cityId": 15,
+   "city": "Филадельфия",
+   "country": "USA",
+   "home": "Швеция",
+   "away": "Тунис",
+   "homeFlag": "se",
+   "awayFlag": "tn",
+   "goalsHome": 0,
+   "goalsAway": 0
+  },
+  {
+   "id": "F3",
+   "group": "F",
+   "matchday": 2,
+   "date": "2026-06-20",
+   "time": "01:00",
+   "cityId": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "home": "Тунис",
+   "away": "Нидерланды",
+   "homeFlag": "tn",
+   "awayFlag": "nl",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "F4",
+   "group": "F",
+   "matchday": 2,
+   "date": "2026-06-20",
+   "time": "04:00",
+   "cityId": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "home": "Япония",
+   "away": "Швеция",
+   "homeFlag": "jp",
+   "awayFlag": "se",
+   "goalsHome": 3,
+   "goalsAway": 0
+  },
+  {
+   "id": "F5",
+   "group": "F",
+   "matchday": 3,
+   "date": "2026-06-26",
+   "time": "01:00",
+   "cityId": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "home": "Тунис",
+   "away": "Япония",
+   "homeFlag": "tn",
+   "awayFlag": "jp",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "F6",
+   "group": "F",
+   "matchday": 3,
+   "date": "2026-06-26",
+   "time": "04:00",
+   "cityId": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "home": "Нидерланды",
+   "away": "Швеция",
+   "homeFlag": "nl",
+   "awayFlag": "se",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "G1",
+   "group": "G",
+   "matchday": 1,
+   "date": "2026-06-14",
+   "time": "19:00",
+   "cityId": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "home": "Бельгия",
+   "away": "Египет",
+   "homeFlag": "be",
+   "awayFlag": "eg",
+   "goalsHome": 2,
+   "goalsAway": 1
+  },
+  {
+   "id": "G2",
+   "group": "G",
+   "matchday": 1,
+   "date": "2026-06-14",
+   "time": "22:00",
+   "cityId": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "home": "Иран",
+   "away": "Новая Зеландия",
+   "homeFlag": "ir",
+   "awayFlag": "nz",
+   "goalsHome": 5,
+   "goalsAway": 1
+  },
+  {
+   "id": "G3",
+   "group": "G",
+   "matchday": 2,
+   "date": "2026-06-21",
+   "time": "19:00",
+   "cityId": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "home": "Новая Зеландия",
+   "away": "Бельгия",
+   "homeFlag": "nz",
+   "awayFlag": "be",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "G4",
+   "group": "G",
+   "matchday": 2,
+   "date": "2026-06-21",
+   "time": "22:00",
+   "cityId": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "home": "Египет",
+   "away": "Иран",
+   "homeFlag": "eg",
+   "awayFlag": "ir",
+   "goalsHome": 3,
+   "goalsAway": 0
+  },
+  {
+   "id": "G5",
+   "group": "G",
+   "matchday": 3,
+   "date": "2026-06-27",
+   "time": "19:00",
+   "cityId": 8,
+   "city": "Даллас",
+   "country": "USA",
+   "home": "Новая Зеландия",
+   "away": "Египет",
+   "homeFlag": "nz",
+   "awayFlag": "eg",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "G6",
+   "group": "G",
+   "matchday": 3,
+   "date": "2026-06-27",
+   "time": "22:00",
+   "cityId": 9,
+   "city": "Канзас-Сити",
+   "country": "USA",
+   "home": "Бельгия",
+   "away": "Иран",
+   "homeFlag": "be",
+   "awayFlag": "ir",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "H1",
+   "group": "H",
+   "matchday": 1,
+   "date": "2026-06-14",
+   "time": "01:00",
+   "cityId": 10,
+   "city": "Атланта",
+   "country": "USA",
+   "home": "Испания",
+   "away": "Кабо-Верде",
+   "homeFlag": "es",
+   "awayFlag": "cv",
+   "goalsHome": 3,
+   "goalsAway": 1
+  },
+  {
+   "id": "H2",
+   "group": "H",
+   "matchday": 1,
+   "date": "2026-06-14",
+   "time": "04:00",
+   "cityId": 11,
+   "city": "Майами",
+   "country": "USA",
+   "home": "С. Аравия",
+   "away": "Уругвай",
+   "homeFlag": "sa",
+   "awayFlag": "uy",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "H3",
+   "group": "H",
+   "matchday": 2,
+   "date": "2026-06-21",
+   "time": "01:00",
+   "cityId": 12,
+   "city": "Торонто",
+   "country": "CAN",
+   "home": "Уругвай",
+   "away": "Испания",
+   "homeFlag": "uy",
+   "awayFlag": "es",
+   "goalsHome": 1,
+   "goalsAway": 6
+  },
+  {
+   "id": "H4",
+   "group": "H",
+   "matchday": 2,
+   "date": "2026-06-21",
+   "time": "04:00",
+   "cityId": 13,
+   "city": "Бостон",
+   "country": "USA",
+   "home": "Кабо-Верде",
+   "away": "С. Аравия",
+   "homeFlag": "cv",
+   "awayFlag": "sa",
+   "goalsHome": 1,
+   "goalsAway": 2
+  },
+  {
+   "id": "H5",
+   "group": "H",
+   "matchday": 3,
+   "date": "2026-06-27",
+   "time": "01:00",
+   "cityId": 14,
+   "city": "Нью-Йорк",
+   "country": "USA",
+   "home": "Уругвай",
+   "away": "Кабо-Верде",
+   "homeFlag": "uy",
+   "awayFlag": "cv",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "H6",
+   "group": "H",
+   "matchday": 3,
+   "date": "2026-06-27",
+   "time": "04:00",
+   "cityId": 15,
+   "city": "Филадельфия",
+   "country": "USA",
+   "home": "Испания",
+   "away": "С. Аравия",
+   "homeFlag": "es",
+   "awayFlag": "sa",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "I1",
+   "group": "I",
+   "matchday": 1,
+   "date": "2026-06-15",
+   "time": "19:00",
+   "cityId": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "home": "Франция",
+   "away": "Сенегал",
+   "homeFlag": "fr",
+   "awayFlag": "sn",
+   "goalsHome": 2,
+   "goalsAway": 0
+  },
+  {
+   "id": "I2",
+   "group": "I",
+   "matchday": 1,
+   "date": "2026-06-15",
+   "time": "22:00",
+   "cityId": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "home": "Ирак",
+   "away": "Норвегия",
+   "homeFlag": "iq",
+   "awayFlag": "no",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "I3",
+   "group": "I",
+   "matchday": 2,
+   "date": "2026-06-22",
+   "time": "19:00",
+   "cityId": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "home": "Норвегия",
+   "away": "Франция",
+   "homeFlag": "no",
+   "awayFlag": "fr",
+   "goalsHome": 3,
+   "goalsAway": 2
+  },
+  {
+   "id": "I4",
+   "group": "I",
+   "matchday": 2,
+   "date": "2026-06-22",
+   "time": "22:00",
+   "cityId": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "home": "Сенегал",
+   "away": "Ирак",
+   "homeFlag": "sn",
+   "awayFlag": "iq",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "I5",
+   "group": "I",
+   "matchday": 3,
+   "date": "2026-06-28",
+   "time": "19:00",
+   "cityId": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "home": "Норвегия",
+   "away": "Сенегал",
+   "homeFlag": "no",
+   "awayFlag": "sn",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "I6",
+   "group": "I",
+   "matchday": 3,
+   "date": "2026-06-28",
+   "time": "22:00",
+   "cityId": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "home": "Франция",
+   "away": "Ирак",
+   "homeFlag": "fr",
+   "awayFlag": "iq",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "J1",
+   "group": "J",
+   "matchday": 1,
+   "date": "2026-06-15",
+   "time": "01:00",
+   "cityId": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "home": "Аргентина",
+   "away": "Алжир",
+   "homeFlag": "ar",
+   "awayFlag": "dz",
+   "goalsHome": 2,
+   "goalsAway": 0
+  },
+  {
+   "id": "J2",
+   "group": "J",
+   "matchday": 1,
+   "date": "2026-06-15",
+   "time": "04:00",
+   "cityId": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "home": "Австрия",
+   "away": "Иордания",
+   "homeFlag": "at",
+   "awayFlag": "jo",
+   "goalsHome": 4,
+   "goalsAway": 1
+  },
+  {
+   "id": "J3",
+   "group": "J",
+   "matchday": 2,
+   "date": "2026-06-22",
+   "time": "01:00",
+   "cityId": 8,
+   "city": "Даллас",
+   "country": "USA",
+   "home": "Иордания",
+   "away": "Аргентина",
+   "homeFlag": "jo",
+   "awayFlag": "ar",
+   "goalsHome": 0,
+   "goalsAway": 2
+  },
+  {
+   "id": "J4",
+   "group": "J",
+   "matchday": 2,
+   "date": "2026-06-22",
+   "time": "04:00",
+   "cityId": 9,
+   "city": "Канзас-Сити",
+   "country": "USA",
+   "home": "Алжир",
+   "away": "Австрия",
+   "homeFlag": "dz",
+   "awayFlag": "at",
+   "goalsHome": 1,
+   "goalsAway": 2
+  },
+  {
+   "id": "J5",
+   "group": "J",
+   "matchday": 3,
+   "date": "2026-06-28",
+   "time": "01:00",
+   "cityId": 10,
+   "city": "Атланта",
+   "country": "USA",
+   "home": "Иордания",
+   "away": "Алжир",
+   "homeFlag": "jo",
+   "awayFlag": "dz",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "J6",
+   "group": "J",
+   "matchday": 3,
+   "date": "2026-06-28",
+   "time": "04:00",
+   "cityId": 11,
+   "city": "Майами",
+   "country": "USA",
+   "home": "Аргентина",
+   "away": "Австрия",
+   "homeFlag": "ar",
+   "awayFlag": "at",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "K1",
+   "group": "K",
+   "matchday": 1,
+   "date": "2026-06-16",
+   "time": "19:00",
+   "cityId": 12,
+   "city": "Торонто",
+   "country": "CAN",
+   "home": "Португалия",
+   "away": "ДР Конго",
+   "homeFlag": "pt",
+   "awayFlag": "cd",
+   "goalsHome": 3,
+   "goalsAway": 1
+  },
+  {
+   "id": "K2",
+   "group": "K",
+   "matchday": 1,
+   "date": "2026-06-16",
+   "time": "22:00",
+   "cityId": 13,
+   "city": "Бостон",
+   "country": "USA",
+   "home": "Узбекистан",
+   "away": "Колумбия",
+   "homeFlag": "uz",
+   "awayFlag": "co",
+   "goalsHome": 1,
+   "goalsAway": 2
+  },
+  {
+   "id": "K3",
+   "group": "K",
+   "matchday": 2,
+   "date": "2026-06-23",
+   "time": "19:00",
+   "cityId": 14,
+   "city": "Нью-Йорк",
+   "country": "USA",
+   "home": "Колумбия",
+   "away": "Португалия",
+   "homeFlag": "co",
+   "awayFlag": "pt",
+   "goalsHome": 0,
+   "goalsAway": 1
+  },
+  {
+   "id": "K4",
+   "group": "K",
+   "matchday": 2,
+   "date": "2026-06-23",
+   "time": "22:00",
+   "cityId": 15,
+   "city": "Филадельфия",
+   "country": "USA",
+   "home": "ДР Конго",
+   "away": "Узбекистан",
+   "homeFlag": "cd",
+   "awayFlag": "uz",
+   "goalsHome": 3,
+   "goalsAway": 0
+  },
+  {
+   "id": "K5",
+   "group": "K",
+   "matchday": 3,
+   "date": "2026-06-29",
+   "time": "19:00",
+   "cityId": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "home": "Колумбия",
+   "away": "ДР Конго",
+   "homeFlag": "co",
+   "awayFlag": "cd",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "K6",
+   "group": "K",
+   "matchday": 3,
+   "date": "2026-06-29",
+   "time": "22:00",
+   "cityId": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "home": "Португалия",
+   "away": "Узбекистан",
+   "homeFlag": "pt",
+   "awayFlag": "uz",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "L1",
+   "group": "L",
+   "matchday": 1,
+   "date": "2026-06-16",
+   "time": "01:00",
+   "cityId": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "home": "Англия",
+   "away": "Хорватия",
+   "homeFlag": "gb-eng",
+   "awayFlag": "hr",
+   "goalsHome": 1,
+   "goalsAway": 0
+  },
+  {
+   "id": "L2",
+   "group": "L",
+   "matchday": 1,
+   "date": "2026-06-16",
+   "time": "04:00",
+   "cityId": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "home": "Гана",
+   "away": "Панама",
+   "homeFlag": "gh",
+   "awayFlag": "pa",
+   "goalsHome": 0,
+   "goalsAway": 3
+  },
+  {
+   "id": "L3",
+   "group": "L",
+   "matchday": 2,
+   "date": "2026-06-23",
+   "time": "01:00",
+   "cityId": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "home": "Панама",
+   "away": "Англия",
+   "homeFlag": "pa",
+   "awayFlag": "gb-eng",
+   "goalsHome": 0,
+   "goalsAway": 3
+  },
+  {
+   "id": "L4",
+   "group": "L",
+   "matchday": 2,
+   "date": "2026-06-23",
+   "time": "04:00",
+   "cityId": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "home": "Хорватия",
+   "away": "Гана",
+   "homeFlag": "hr",
+   "awayFlag": "gh",
+   "goalsHome": 3,
+   "goalsAway": 2
+  },
+  {
+   "id": "L5",
+   "group": "L",
+   "matchday": 3,
+   "date": "2026-06-29",
+   "time": "01:00",
+   "cityId": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "home": "Панама",
+   "away": "Хорватия",
+   "homeFlag": "pa",
+   "awayFlag": "hr",
+   "goalsHome": null,
+   "goalsAway": null
+  },
+  {
+   "id": "L6",
+   "group": "L",
+   "matchday": 3,
+   "date": "2026-06-29",
+   "time": "04:00",
+   "cityId": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "home": "Англия",
+   "away": "Гана",
+   "homeFlag": "gb-eng",
+   "awayFlag": "gh",
+   "goalsHome": null,
+   "goalsAway": null
+  }
+ ],
+ "hostCities": [
+  {
+   "id": 0,
+   "city": "Ванкувер",
+   "country": "CAN",
+   "x": 112,
+   "y": 150
+  },
+  {
+   "id": 1,
+   "city": "Сиэтл",
+   "country": "USA",
+   "x": 132,
+   "y": 182
+  },
+  {
+   "id": 2,
+   "city": "Сан-Франциско",
+   "country": "USA",
+   "x": 96,
+   "y": 300
+  },
+  {
+   "id": 3,
+   "city": "Лос-Анджелес",
+   "country": "USA",
+   "x": 150,
+   "y": 346
+  },
+  {
+   "id": 4,
+   "city": "Гвадалахара",
+   "country": "MEX",
+   "x": 262,
+   "y": 486
+  },
+  {
+   "id": 5,
+   "city": "Мехико",
+   "country": "MEX",
+   "x": 312,
+   "y": 512
+  },
+  {
+   "id": 6,
+   "city": "Монтеррей",
+   "country": "MEX",
+   "x": 330,
+   "y": 440
+  },
+  {
+   "id": 7,
+   "city": "Хьюстон",
+   "country": "USA",
+   "x": 398,
+   "y": 420
+  },
+  {
+   "id": 8,
+   "city": "Даллас",
+   "country": "USA",
+   "x": 384,
+   "y": 366
+  },
+  {
+   "id": 9,
+   "city": "Канзас-Сити",
+   "country": "USA",
+   "x": 452,
+   "y": 312
+  },
+  {
+   "id": 10,
+   "city": "Атланта",
+   "country": "USA",
+   "x": 560,
+   "y": 372
+  },
+  {
+   "id": 11,
+   "city": "Майами",
+   "country": "USA",
+   "x": 624,
+   "y": 470
+  },
+  {
+   "id": 12,
+   "city": "Торонто",
+   "country": "CAN",
+   "x": 582,
+   "y": 236
+  },
+  {
+   "id": 13,
+   "city": "Бостон",
+   "country": "USA",
+   "x": 672,
+   "y": 236
+  },
+  {
+   "id": 14,
+   "city": "Нью-Йорк",
+   "country": "USA",
+   "x": 652,
+   "y": 264
+  },
+  {
+   "id": 15,
+   "city": "Филадельфия",
+   "country": "USA",
+   "x": 636,
+   "y": 282
+  }
+ ],
+ "playoffStages": [
+  {
+   "key": "r32",
+   "title": "1/16 финала",
+   "matches": 16,
+   "win": 3,
+   "exact": 8,
+   "bonus": 0
+  },
+  {
+   "key": "r16",
+   "title": "1/8 финала",
+   "matches": 8,
+   "win": 5,
+   "exact": 12,
+   "bonus": 2
+  },
+  {
+   "key": "qf",
+   "title": "1/4 финала",
+   "matches": 4,
+   "win": 8,
+   "exact": 18,
+   "bonus": 3
+  },
+  {
+   "key": "sf",
+   "title": "1/2 финала",
+   "matches": 2,
+   "win": 15,
+   "exact": 35,
+   "bonus": 5
+  },
+  {
+   "key": "tp",
+   "title": "Матч за 3-е место",
+   "matches": 1,
+   "win": 12,
+   "exact": 28,
+   "bonus": 0
+  },
+  {
+   "key": "f",
+   "title": "Финал",
+   "matches": 1,
+   "win": 25,
+   "exact": 55,
+   "bonus": 8
+  }
+ ],
+ "favourites": [
+  {
+   "group": "A",
+   "first": [
+    "Мексика",
+    "mx",
+    0.74
+   ],
+   "second": [
+    "Ю. Корея",
+    "kr",
+    0.66
+   ]
+  },
+  {
+   "group": "B",
+   "first": [
+    "Швейцария",
+    "ch",
+    0.71
+   ],
+   "second": [
+    "Канада",
+    "ca",
+    0.68
+   ]
+  },
+  {
+   "group": "C",
+   "first": [
+    "Бразилия",
+    "br",
+    0.93
+   ],
+   "second": [
+    "Марокко",
+    "ma",
+    0.74
+   ]
+  },
+  {
+   "group": "D",
+   "first": [
+    "США",
+    "us",
+    0.72
+   ],
+   "second": [
+    "Турция",
+    "tr",
+    0.7
+   ]
+  },
+  {
+   "group": "E",
+   "first": [
+    "Германия",
+    "de",
+    0.88
+   ],
+   "second": [
+    "Эквадор",
+    "ec",
+    0.67
+   ]
+  },
+  {
+   "group": "F",
+   "first": [
+    "Нидерланды",
+    "nl",
+    0.85
+   ],
+   "second": [
+    "Япония",
+    "jp",
+    0.7
+   ]
+  },
+  {
+   "group": "G",
+   "first": [
+    "Бельгия",
+    "be",
+    0.82
+   ],
+   "second": [
+    "Египет",
+    "eg",
+    0.62
+   ]
+  },
+  {
+   "group": "H",
+   "first": [
+    "Испания",
+    "es",
+    0.9
+   ],
+   "second": [
+    "Уругвай",
+    "uy",
+    0.79
+   ]
+  },
+  {
+   "group": "I",
+   "first": [
+    "Франция",
+    "fr",
+    0.92
+   ],
+   "second": [
+    "Сенегал",
+    "sn",
+    0.72
+   ]
+  },
+  {
+   "group": "J",
+   "first": [
+    "Аргентина",
+    "ar",
+    0.94
+   ],
+   "second": [
+    "Австрия",
+    "at",
+    0.68
+   ]
+  },
+  {
+   "group": "K",
+   "first": [
+    "Португалия",
+    "pt",
+    0.88
+   ],
+   "second": [
+    "Колумбия",
+    "co",
+    0.76
+   ]
+  },
+  {
+   "group": "L",
+   "first": [
+    "Англия",
+    "gb-eng",
+    0.89
+   ],
+   "second": [
+    "Хорватия",
+    "hr",
+    0.78
+   ]
+  }
+ ],
+ "bracketPreview": {
+  "rounds": [
+   {
+    "key": "r16",
+    "title": "1/8 финала",
+    "matches": [
+     {
+      "a": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "b": {
+       "name": "Швейцария",
+       "flag": "ch",
+       "s": 0.71,
+       "group": "B"
+      },
+      "scoreA": 3,
+      "scoreB": 1,
+      "winner": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "loser": {
+       "name": "Швейцария",
+       "flag": "ch",
+       "s": 0.71,
+       "group": "B"
+      }
+     },
+     {
+      "a": {
+       "name": "Нидерланды",
+       "flag": "nl",
+       "s": 0.85,
+       "group": "F"
+      },
+      "b": {
+       "name": "Бельгия",
+       "flag": "be",
+       "s": 0.82,
+       "group": "G"
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "winner": {
+       "name": "Бельгия",
+       "flag": "be",
+       "s": 0.82,
+       "group": "G"
+      },
+      "loser": {
+       "name": "Нидерланды",
+       "flag": "nl",
+       "s": 0.85,
+       "group": "F"
+      }
+     },
+     {
+      "a": {
+       "name": "Англия",
+       "flag": "gb-eng",
+       "s": 0.89,
+       "group": "L"
+      },
+      "b": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      },
+      "scoreA": 1,
+      "scoreB": 3,
+      "winner": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      },
+      "loser": {
+       "name": "Англия",
+       "flag": "gb-eng",
+       "s": 0.89,
+       "group": "L"
+      }
+     },
+     {
+      "a": {
+       "name": "Испания",
+       "flag": "es",
+       "s": 0.9,
+       "group": "H"
+      },
+      "b": {
+       "name": "Мексика",
+       "flag": "mx",
+       "s": 0.74,
+       "group": "A"
+      },
+      "scoreA": 3,
+      "scoreB": 0,
+      "winner": {
+       "name": "Испания",
+       "flag": "es",
+       "s": 0.9,
+       "group": "H"
+      },
+      "loser": {
+       "name": "Мексика",
+       "flag": "mx",
+       "s": 0.74,
+       "group": "A"
+      }
+     },
+     {
+      "a": {
+       "name": "Франция",
+       "flag": "fr",
+       "s": 0.92,
+       "group": "I"
+      },
+      "b": {
+       "name": "Марокко",
+       "flag": "ma",
+       "s": 0.74,
+       "group": "C"
+      },
+      "scoreA": 1,
+      "scoreB": 0,
+      "winner": {
+       "name": "Франция",
+       "flag": "fr",
+       "s": 0.92,
+       "group": "I"
+      },
+      "loser": {
+       "name": "Марокко",
+       "flag": "ma",
+       "s": 0.74,
+       "group": "C"
+      }
+     },
+     {
+      "a": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "b": {
+       "name": "Хорватия",
+       "flag": "hr",
+       "s": 0.78,
+       "group": "L"
+      },
+      "scoreA": 3,
+      "scoreB": 1,
+      "winner": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "loser": {
+       "name": "Хорватия",
+       "flag": "hr",
+       "s": 0.78,
+       "group": "L"
+      }
+     },
+     {
+      "a": {
+       "name": "Португалия",
+       "flag": "pt",
+       "s": 0.88,
+       "group": "K"
+      },
+      "b": {
+       "name": "Уругвай",
+       "flag": "uy",
+       "s": 0.79,
+       "group": "H"
+      },
+      "scoreA": 3,
+      "scoreB": 1,
+      "winner": {
+       "name": "Португалия",
+       "flag": "pt",
+       "s": 0.88,
+       "group": "K"
+      },
+      "loser": {
+       "name": "Уругвай",
+       "flag": "uy",
+       "s": 0.79,
+       "group": "H"
+      }
+     },
+     {
+      "a": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      },
+      "b": {
+       "name": "США",
+       "flag": "us",
+       "s": 0.72,
+       "group": "D"
+      },
+      "scoreA": 1,
+      "scoreB": 0,
+      "winner": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      },
+      "loser": {
+       "name": "США",
+       "flag": "us",
+       "s": 0.72,
+       "group": "D"
+      }
+     }
+    ]
+   },
+   {
+    "key": "qf",
+    "title": "1/4 финала",
+    "matches": [
+     {
+      "a": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "b": {
+       "name": "Бельгия",
+       "flag": "be",
+       "s": 0.82,
+       "group": "G"
+      },
+      "scoreA": 1,
+      "scoreB": 0,
+      "winner": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "loser": {
+       "name": "Бельгия",
+       "flag": "be",
+       "s": 0.82,
+       "group": "G"
+      }
+     },
+     {
+      "a": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      },
+      "b": {
+       "name": "Испания",
+       "flag": "es",
+       "s": 0.9,
+       "group": "H"
+      },
+      "scoreA": 3,
+      "scoreB": 1,
+      "winner": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      },
+      "loser": {
+       "name": "Испания",
+       "flag": "es",
+       "s": 0.9,
+       "group": "H"
+      }
+     },
+     {
+      "a": {
+       "name": "Франция",
+       "flag": "fr",
+       "s": 0.92,
+       "group": "I"
+      },
+      "b": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "scoreA": 0,
+      "scoreB": 2,
+      "winner": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "loser": {
+       "name": "Франция",
+       "flag": "fr",
+       "s": 0.92,
+       "group": "I"
+      }
+     },
+     {
+      "a": {
+       "name": "Португалия",
+       "flag": "pt",
+       "s": 0.88,
+       "group": "K"
+      },
+      "b": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      },
+      "scoreA": 0,
+      "scoreB": 1,
+      "winner": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      },
+      "loser": {
+       "name": "Португалия",
+       "flag": "pt",
+       "s": 0.88,
+       "group": "K"
+      }
+     }
+    ]
+   },
+   {
+    "key": "sf",
+    "title": "1/2 финала",
+    "matches": [
+     {
+      "a": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "b": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      },
+      "scoreA": 3,
+      "scoreB": 1,
+      "winner": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "loser": {
+       "name": "Колумбия",
+       "flag": "co",
+       "s": 0.76,
+       "group": "K"
+      }
+     },
+     {
+      "a": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "b": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      },
+      "scoreA": 3,
+      "scoreB": 2,
+      "winner": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "loser": {
+       "name": "Бразилия",
+       "flag": "br",
+       "s": 0.93,
+       "group": "C"
+      }
+     }
+    ]
+   },
+   {
+    "key": "f",
+    "title": "Финал",
+    "matches": [
+     {
+      "a": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "b": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      },
+      "scoreA": 1,
+      "scoreB": 0,
+      "winner": {
+       "name": "Аргентина",
+       "flag": "ar",
+       "s": 0.94,
+       "group": "J"
+      },
+      "loser": {
+       "name": "Германия",
+       "flag": "de",
+       "s": 0.88,
+       "group": "E"
+      }
+     }
+    ]
+   }
+  ],
+  "third": {
+   "a": {
+    "name": "Колумбия",
+    "flag": "co",
+    "s": 0.76,
+    "group": "K"
+   },
+   "b": {
+    "name": "Бразилия",
+    "flag": "br",
+    "s": 0.93,
+    "group": "C"
+   },
+   "scoreA": 0,
+   "scoreB": 1,
+   "winner": {
+    "name": "Бразилия",
+    "flag": "br",
+    "s": 0.93,
+    "group": "C"
+   },
+   "loser": {
+    "name": "Колумбия",
+    "flag": "co",
+    "s": 0.76,
+    "group": "K"
+   }
+  },
+  "champion": {
+   "name": "Аргентина",
+   "flag": "ar",
+   "s": 0.94,
+   "group": "J"
+  }
+ }
+}

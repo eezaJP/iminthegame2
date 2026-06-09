@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   WC2026 — light "stadium glass" design system
+---------------------------------------------------------------------------- */
+@theme inline {
+  --color-bg: #eef3ec;
+  --color-ink: #0c1a14;
+  --color-ink-soft: #36473e;
+  --color-muted: #66776c;
+  --color-line: rgba(12, 26, 20, 0.09);
+
+  --color-green: #0e9f6e;
+  --color-green-deep: #0a7d55;
+  --color-gold: #e0980f;
+  --color-gold-soft: #f6c453;
+  --color-sky: #2f7dd1;
+  --color-rose: #e2486b;
+
+  --font-display: var(--font-display), system-ui, sans-serif;
+  --font-sans: var(--font-sans-var), system-ui, sans-serif;
+  --font-mono: var(--font-mono-var), ui-monospace, monospace;
+
+  --radius-glass: 22px;
+}
+
+:root {
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-2: rgba(255, 255, 255, 0.42);
+  --glass-brd: rgba(255, 255, 255, 0.7);
+  --shadow-glass: 0 1px 1px rgba(12, 26, 20, 0.04), 0 12px 30px -12px rgba(12, 26, 20, 0.22);
+  --shadow-pop: 0 2px 2px rgba(12, 26, 20, 0.05), 0 24px 50px -18px rgba(12, 26, 20, 0.3);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+/* ---------- animated stadium background ---------- */
+.bg-field {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 12% 4%, #f6f9f1 0%, transparent 55%),
+    radial-gradient(120% 90% at 92% 8%, #eaf6ef 0%, transparent 55%),
+    linear-gradient(180deg, #eef4ea 0%, #e7efe6 100%);
+}
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.bg-blob.a {
+  width: 46vw; height: 46vw; left: -8vw; top: -6vw;
+  background: radial-gradient(circle, rgba(14, 159, 110, 0.55), transparent 70%);
+  animation: drift1 22s ease-in-out infinite;
+}
+.bg-blob.b {
+  width: 42vw; height: 42vw; right: -10vw; top: 2vw;
+  background: radial-gradient(circle, rgba(246, 196, 83, 0.5), transparent 70%);
+  animation: drift2 26s ease-in-out infinite;
+}
+.bg-blob.c {
+  width: 40vw; height: 40vw; left: 30vw; bottom: -16vw;
+  background: radial-gradient(circle, rgba(47, 125, 209, 0.32), transparent 70%);
+  animation: drift3 30s ease-in-out infinite;
+}
+.bg-grain {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+@keyframes drift1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(6vw, 4vw) scale(1.1); } }
+@keyframes drift2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-5vw, 5vw) scale(1.08); } }
+@keyframes drift3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(4vw, -5vw) scale(1.12); } }
+
+/* ---------- glass surfaces ---------- */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-brd);
+  box-shadow: var(--shadow-glass);
+  border-radius: var(--radius-glass);
+}
+.glass-soft {
+  background: var(--glass-2);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 16px;
+}
+.glass-hover {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.glass-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-pop);
+}
+
+/* ---------- type helpers ---------- */
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-green-deep) 0%, var(--color-green) 38%, var(--color-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* ---------- pills / chips ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+}
+
+/* ---------- live ping ---------- */
+.live-dot { position: relative; }
+.live-dot::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 999px;
+  border: 2px solid currentColor; opacity: 0.55;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping { 75%, 100% { transform: scale(2.1); opacity: 0; } }
+
+/* ---------- map glow (kept subtle; CSS opacity overrides the SVG attr) ---------- */
+.city-glow { animation: cityPulse 2.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes cityPulse {
+  0%, 100% { opacity: 0.14; transform: scale(1); }
+  50% { opacity: 0.32; transform: scale(1.25); }
+}
+
+/* ---------- podium medals (metallic, gently shimmering) ---------- */
+/* the metallic face sits in an inset, overflow-hidden layer behind the text */
+.medal-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background-size: 240% 240%;
+  animation: medalShimmer 6.5s ease-in-out infinite;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -16px 28px rgba(70, 45, 0, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.medal-gold {
+  background-image: linear-gradient(125deg, #fff7dc 0%, #f8d574 20%, #e8a423 38%, #c9810f 50%, #e8a423 62%, #f8d574 80%, #fff7dc 100%);
+}
+.medal-silver {
+  background-image: linear-gradient(125deg, #ffffff 0%, #e3eaf1 20%, #c0cbd7 38%, #9aa7b5 50%, #c0cbd7 62%, #e3eaf1 80%, #ffffff 100%);
+}
+.medal-bronze {
+  background-image: linear-gradient(125deg, #fde3c8 0%, #e9b585 20%, #cf8b4d 38%, #a96a36 50%, #cf8b4d 62%, #e9b585 80%, #fde3c8 100%);
+}
+@keyframes medalShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+/* sweeping glint (the "блик") — clipped by .medal-face */
+.medal-glint {
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.75) 47%,
+    rgba(255, 255, 255, 0.25) 53%,
+    transparent 63%
+  );
+  transform: translateX(-130%) skewX(-12deg);
+  animation: glintSweep 5s ease-in-out infinite;
+}
+@keyframes glintSweep {
+  0% { transform: translateX(-130%) skewX(-12deg); }
+  55% { transform: translateX(130%) skewX(-12deg); }
+  100% { transform: translateX(130%) skewX(-12deg); }
+}
+
+/* ---------- hero trophy float ---------- */
+.float-slow { animation: floatY 7s ease-in-out infinite; will-change: transform; }
+@keyframes floatY {
+  0%, 100% { transform: translateY(0) rotate(-0.5deg); }
+  50% { transform: translateY(-14px) rotate(0.5deg); }
+}
+.shine-sweep { animation: shineSweep 6s ease-in-out infinite; }
+@keyframes shineSweep {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* thin custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(12, 26, 20, 0.16); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(12, 26, 20, 0.28); background-clip: content-box; }
