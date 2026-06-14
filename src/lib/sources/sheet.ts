@@ -52,12 +52,15 @@ function rowsOf(wb: XLSX.WorkBook, name: string): Row[] {
   return XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", range }) as Row[];
 }
 
+// placeholder rows like "Участник 13" — excluded everywhere
+const PLACEHOLDER = /^Участник\s+\d+$/i;
+
 function parseStandings(wb: XLSX.WorkBook): Standing[] {
   const out: Standing[] = [];
   for (const r of rowsOf(wb, "ТАБЛИЦА")) {
     const rank = num(r[1]);
     const name = str(r[2]);
-    if (rank === null || !name) continue;
+    if (rank === null || !name || PLACEHOLDER.test(name)) continue;
     out.push({
       rank, name,
       total: num(r[3]) ?? 0,

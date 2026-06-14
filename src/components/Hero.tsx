@@ -85,7 +85,7 @@ export function Hero({
           variants={rise}
           className="mt-3 max-w-md text-[14px] font-semibold leading-snug text-ink-soft sm:text-[15px]"
         >
-          15 друзей. Один чемпион. Все прогнозы зафиксированы до старта.
+          {participants} друзей. Один чемпион. Все прогнозы зафиксированы до старта.
         </motion.p>
 
         <motion.div variants={rise} className="mt-5">

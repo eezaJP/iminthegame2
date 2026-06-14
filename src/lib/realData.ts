@@ -89,6 +89,21 @@ export async function getHomeData(revalidate = 60) {
     };
   });
 
+  // dense, tie-aware place: equal (points → exact → bets → playoff) share one
+  // place; the next distinct group gets the next integer (1,1,2,3,3,4 — no gaps).
+  players.sort((a, b) =>
+    b.points.total - a.points.total ||
+    b.stats.exactScores - a.stats.exactScores ||
+    b.points.finalBets - a.points.finalBets ||
+    b.points.playoffMatches - a.points.playoffMatches
+  );
+  let place = 0, prevKey = "";
+  for (const p of players) {
+    const key = `${p.points.total}|${p.stats.exactScores}|${p.points.finalBets}|${p.points.playoffMatches}`;
+    if (key !== prevKey) { place++; prevKey = key; }
+    p.rank = place;
+  }
+
   // ---- today's matches (API schedule + league prediction split) ----
   const today = mskToday();
   const upcomingDays = [...new Set(fixtures.map((f) => mskParts(f.kickoff).date))].sort();
