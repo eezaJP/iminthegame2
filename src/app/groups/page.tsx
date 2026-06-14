@@ -19,7 +19,7 @@ function SectionHeader({ id, kicker, title }: { id: string; kicker: string; titl
         <h2 className="font-display text-[22px] font-extrabold leading-tight sm:text-[26px]">{title}</h2>
       </div>
       {isDemoMode && (
-        <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[10px] font-semibold lowercase tracking-wide text-muted">
+        <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[10px] font-semibold lowercase tracking-wide text-muted dark:bg-white/[0.07]">
           demo
         </span>
       )}

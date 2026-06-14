@@ -37,7 +37,7 @@ export function PlayoffView() {
     <div className="glass p-4 sm:p-5">
       {/* switcher */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="inline-flex rounded-full bg-black/[0.05] p-1">
+        <div className="inline-flex rounded-full bg-black/[0.05] p-1 dark:bg-white/[0.07]">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -45,7 +45,7 @@ export function PlayoffView() {
               onClick={() => setMode(t.id)}
               className={cn(
                 "cursor-pointer rounded-full px-3 py-1.5 text-[12.5px] font-semibold transition-colors",
-                mode === t.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink"
+                mode === t.id ? "bg-white text-ink shadow-sm dark:bg-white/15" : "text-muted hover:text-ink"
               )}
             >
               {t.label}
@@ -56,7 +56,7 @@ export function PlayoffView() {
           <select
             value={pid}
             onChange={(e) => setPid(Number(e.target.value))}
-            className="cursor-pointer rounded-full border border-black/10 bg-white/70 px-3 py-1.5 text-[12.5px] font-semibold text-ink outline-none ring-green/30 focus:ring-2"
+            className="cursor-pointer rounded-full border border-black/10 bg-white/70 px-3 py-1.5 text-[12.5px] font-semibold text-ink outline-none ring-green/30 focus:ring-2 dark:border-white/15 dark:bg-white/10"
           >
             {playoff.brackets.map((b) => (
               <option key={b.id} value={b.id}>{b.name}</option>
@@ -67,7 +67,7 @@ export function PlayoffView() {
 
       {/* participant summary */}
       {mode === "participant" && pdata && (
-        <div className="mb-4 rounded-2xl bg-white/55 p-3.5 ring-1 ring-black/5">
+        <div className="mb-4 rounded-2xl bg-white/55 p-3.5 ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/12">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
             <span className="font-display text-[15px] font-extrabold">{pdata.name}</span>
             <span>Чемпион: <span className="font-bold">{pdata.champion?.n}</span>{" "}
@@ -80,7 +80,7 @@ export function PlayoffView() {
             <span>потенциал: <b>{pdata.potential}</b> очков</span>
             <span className="inline-flex items-center gap-1"><Target className="size-3.5 text-gold" strokeWidth={2.4} />точные в ПО: <b>{pdata.exactPlayoff}</b></span>
           </div>
-          <div className="mt-2.5 border-t border-black/5 pt-2.5"><Legend /></div>
+          <div className="mt-2.5 border-t border-black/5 pt-2.5 dark:border-white/10"><Legend /></div>
         </div>
       )}
 

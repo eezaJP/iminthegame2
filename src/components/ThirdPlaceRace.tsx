@@ -15,7 +15,7 @@ type Row = {
 const STATUS = {
   in: { label: "в зоне выхода", cls: "bg-green/12 text-green-deep" },
   edge: { label: "на грани", cls: "bg-gold/15 text-gold" },
-  out: { label: "ниже линии", cls: "bg-black/[0.05] text-muted" },
+  out: { label: "ниже линии", cls: "bg-black/[0.05] text-muted dark:bg-white/[0.07]" },
 } as const;
 
 const ROW_TINT = { in: "bg-green/[0.05]", edge: "bg-gold/[0.05]", out: "" } as const;

@@ -6,13 +6,13 @@ import { Flag } from "./Flag";
 function ScorePill({ m }: { m: Match }) {
   if (m.goalsHome === null || m.goalsAway === null) {
     return (
-      <span className="rounded-md bg-black/[0.04] px-2 py-0.5 font-mono text-[11px] font-semibold text-muted">
+      <span className="rounded-md bg-black/[0.04] px-2 py-0.5 font-mono text-[11px] font-semibold text-muted dark:bg-white/[0.07]">
         {m.time}
       </span>
     );
   }
   return (
-    <span className="rounded-md bg-ink px-2 py-0.5 font-mono text-[12px] font-bold tabular-nums text-white">
+    <span className="rounded-md bg-ink px-2 py-0.5 font-mono text-[12px] font-bold tabular-nums text-bg">
       {m.goalsHome}:{m.goalsAway}
     </span>
   );
@@ -69,7 +69,7 @@ export function GroupCard({ letter, matches }: { letter: string; matches: Match[
     <div id={`group-${letter}`} className="glass glass-hover flex scroll-mt-32 flex-col p-4">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-green to-green-deep font-display text-base font-extrabold text-white shadow-sm">
+          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#0e9f6e] to-[#0a7d55] font-display text-base font-extrabold text-white shadow-sm">
             {letter}
           </span>
           <div>
@@ -113,13 +113,13 @@ export function GroupCard({ letter, matches }: { letter: string; matches: Match[
         </tbody>
       </table>
 
-      <div className="mt-3 space-y-1 border-t border-black/5 pt-2">
+      <div className="mt-3 space-y-1 border-t border-black/5 dark:border-white/10 pt-2">
         {byMatchday.map(({ md, list }) => (
           <div key={md}>
             <div className="mt-1.5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-muted">
               <span>{md}-й тур</span>
               <span className="font-medium normal-case tracking-normal">· {ruDate(list[0].date)}</span>
-              <span className="h-px flex-1 bg-black/5" />
+              <span className="h-px flex-1 bg-black/5 dark:bg-white/10" />
             </div>
             {list.map((m) => (
               <FixtureRow key={m.id} m={m} />
@@ -128,7 +128,7 @@ export function GroupCard({ letter, matches }: { letter: string; matches: Match[
         ))}
       </div>
 
-      <div className="mt-3 border-t border-black/5 pt-2.5 text-[11.5px] leading-snug text-ink-soft">
+      <div className="mt-3 border-t border-black/5 dark:border-white/10 pt-2.5 text-[11.5px] leading-snug text-ink-soft">
         {groupSummary(letter)}
       </div>
     </div>

@@ -22,7 +22,7 @@ export function GroupStageNav({ groups }: { groups: string[] }) {
             {s.label}
           </Chip>
         ))}
-        <span className="mx-1 h-5 w-px shrink-0 bg-black/10" />
+        <span className="mx-1 h-5 w-px shrink-0 bg-black/10 dark:bg-white/15" />
         {groups.map((g) => (
           <Chip key={g} onClick={() => go(`group-${g}`)} square>
             {g}
@@ -47,7 +47,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={cn(
-        "shrink-0 cursor-pointer whitespace-nowrap rounded-full text-[12.5px] font-semibold text-ink-soft transition-colors hover:bg-green/10 hover:text-green-deep",
+        "shrink-0 cursor-pointer whitespace-nowrap rounded-full text-[12.5px] font-semibold text-ink-soft transition-[color,background-color,transform] hover:bg-green/10 hover:text-green-deep active:scale-95",
         square ? "grid size-7 place-items-center px-0 font-bold" : "px-3 py-1.5"
       )}
     >

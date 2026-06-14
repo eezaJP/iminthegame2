@@ -25,7 +25,7 @@ function Card({
       <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${accent} opacity-60`} />
       <div className="relative">
         <div className="flex items-center gap-2">
-          <span className={`grid size-7 place-items-center rounded-lg bg-white/70 ${ring} ring-1 ring-black/5`}>
+          <span className={`grid size-7 place-items-center rounded-lg bg-white/70 ${ring} ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10`}>
             <Icon className="size-4" strokeWidth={2.4} />
           </span>
           <span className="text-[11px] font-bold uppercase tracking-wide text-muted">{title}</span>
@@ -44,7 +44,7 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      <Card icon={Shuffle} title="Матч, который перевернул таблицу" accent="from-violet-200/40 to-transparent" ring="text-violet-600" i={0}>
+      <Card icon={Shuffle} title="Матч, который перевернул таблицу" accent="from-violet-200/40 to-transparent dark:from-violet-500/15" ring="text-violet-600 dark:text-violet-300" i={0}>
         <B>{facts.tableTurner.match}</B> сдвинула <B>{facts.tableTurner.positions}</B> позиций в рейтинге.
       </Card>
 
@@ -63,7 +63,7 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
         <B>{facts.rarePick.team}</B> — и забрали очки.
       </Card>
 
-      <Card icon={Users} title="Против толпы" accent="from-amber-200/40 to-transparent" ring="text-gold" i={4}>
+      <Card icon={Users} title="Против толпы" accent="from-amber-200/40 to-transparent dark:from-amber-400/15" ring="text-gold" i={4}>
         <B>{facts.againstCrowd.name}</B> чаще всех выбирает непопулярные исходы.
       </Card>
 
@@ -75,13 +75,13 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
         <B>{facts.threat.name}</B> может обойти лидера сегодня, {facts.threat.condition}.
       </Card>
 
-      <Card icon={Coins} title="Открытые очки дня" accent="from-gold-soft/40 to-transparent" ring="text-gold" i={7}>
+      <Card icon={Coins} title="Открытые очки дня" accent="from-gold-soft/40 to-transparent dark:from-gold-soft/15" ring="text-gold" i={7}>
         Сегодня в игре <B>{facts.openPoints.points}</B> потенциальных очков.
       </Card>
 
       <Card icon={BarChart3} title="Счёт большинства" accent="from-sky/15 to-transparent" ring="text-sky" i={8}>
         Самый частый прогноз дня —{" "}
-        <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[12px] font-bold text-white">
+        <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[12px] font-bold text-bg">
           {facts.majorityScore.score}
         </span>
         .
@@ -96,7 +96,7 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
         className="glass relative overflow-hidden p-4 sm:col-span-2 lg:col-span-3"
       >
         <div className="flex items-center gap-2">
-          <span className="grid size-7 place-items-center rounded-lg bg-white/70 text-gold ring-1 ring-black/5">
+          <span className="grid size-7 place-items-center rounded-lg bg-white/70 text-gold ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10">
             <Trophy className="size-4" strokeWidth={2.4} />
           </span>
           <span className="text-[11px] font-bold uppercase tracking-wide text-muted">Кого выбрала лига · прогноз на чемпиона</span>
@@ -109,7 +109,7 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
                   className="h-[13px] w-[18px] rounded-[2px] object-cover" unoptimized />
               )}
               <span className="w-20 shrink-0 truncate font-semibold">{c.team}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-black/[0.06]">
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/10">
                 <div className="h-full rounded-full bg-gradient-to-r from-green to-gold" style={{ width: `${(c.count / maxC) * 100}%` }} />
               </div>
               <span className="w-4 text-right font-mono font-bold tabular-nums">{c.count}</span>

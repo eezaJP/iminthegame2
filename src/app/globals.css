@@ -1,21 +1,26 @@
 @import "tailwindcss";
 
+/* dark: works via .dark class on <html> (set by init script / ThemeToggle) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ----------------------------------------------------------------------------
-   WC2026 — light "stadium glass" design system
+   WC2026 — "stadium glass" design system.
+   Light = дневной матч, Dark = ночной стадион.
+   Themable tokens live on :root/.dark; @theme inline maps them to utilities.
 ---------------------------------------------------------------------------- */
 @theme inline {
-  --color-bg: #eef3ec;
-  --color-ink: #0c1a14;
-  --color-ink-soft: #36473e;
-  --color-muted: #66776c;
-  --color-line: rgba(12, 26, 20, 0.09);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted-c);
+  --color-line: var(--line);
 
-  --color-green: #0e9f6e;
-  --color-green-deep: #0a7d55;
-  --color-gold: #e0980f;
-  --color-gold-soft: #f6c453;
-  --color-sky: #2f7dd1;
-  --color-rose: #e2486b;
+  --color-green: var(--green);
+  --color-green-deep: var(--green-deep);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-sky: var(--sky);
+  --color-rose: var(--rose);
 
   --font-display: var(--font-display), system-ui, sans-serif;
   --font-sans: var(--font-sans-var), system-ui, sans-serif;
@@ -25,11 +30,70 @@
 }
 
 :root {
+  --bg: #eef3ec;
+  --ink: #0c1a14;
+  --ink-soft: #36473e;
+  --muted-c: #66776c;
+  --line: rgba(12, 26, 20, 0.09);
+
+  --green: #0e9f6e;
+  --green-deep: #0a7d55;
+  --gold: #e0980f;
+  --gold-soft: #f6c453;
+  --sky: #2f7dd1;
+  --rose: #e2486b;
+
   --glass: rgba(255, 255, 255, 0.6);
   --glass-2: rgba(255, 255, 255, 0.42);
   --glass-brd: rgba(255, 255, 255, 0.7);
   --shadow-glass: 0 1px 1px rgba(12, 26, 20, 0.04), 0 12px 30px -12px rgba(12, 26, 20, 0.22);
   --shadow-pop: 0 2px 2px rgba(12, 26, 20, 0.05), 0 24px 50px -18px rgba(12, 26, 20, 0.3);
+
+  --grain-opacity: 0.4;
+  --scrollbar: rgba(12, 26, 20, 0.16);
+  --scrollbar-hover: rgba(12, 26, 20, 0.28);
+
+  /* host map (SVG fills — присваиваются через style) */
+  --map-us: #16245f;
+  --map-ca: #d12b2b;
+  --map-mx: #0e7a3d;
+  --map-inactive: #aab5ad;
+  --map-stroke: #ffffff;
+  --map-label: #0c1a14;
+  --map-halo: #ffffff;
+}
+
+.dark {
+  --bg: #0a140e;
+  --ink: #e9f4ed;
+  --ink-soft: #c0d2c7;
+  --muted-c: #8da496;
+  --line: rgba(233, 244, 237, 0.1);
+
+  --green: #2dd28e;
+  --green-deep: #7ceebb;
+  --gold: #f5b83d;
+  --gold-soft: #f8d574;
+  --sky: #6aa9e9;
+  --rose: #f0739a;
+
+  --glass: rgba(17, 32, 24, 0.55);
+  --glass-2: rgba(17, 32, 24, 0.4);
+  --glass-brd: rgba(233, 244, 237, 0.12);
+  --shadow-glass: 0 1px 1px rgba(0, 0, 0, 0.2), 0 12px 30px -12px rgba(0, 0, 0, 0.55);
+  --shadow-pop: 0 2px 2px rgba(0, 0, 0, 0.25), 0 24px 50px -18px rgba(0, 0, 0, 0.7);
+
+  --grain-opacity: 0.25;
+  --scrollbar: rgba(233, 244, 237, 0.18);
+  --scrollbar-hover: rgba(233, 244, 237, 0.32);
+
+  --map-us: #7b90ea;
+  --map-ca: #e96060;
+  --map-mx: #3ecf7d;
+  --map-inactive: #71837a;
+  --map-stroke: rgba(10, 20, 14, 0.85);
+  --map-label: #e9f4ed;
+  --map-halo: #0a140e;
 }
 
 * {
@@ -41,17 +105,18 @@ html {
 }
 
 body {
-  background: var(--color-bg);
-  color: var(--color-ink);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 ::selection {
-  background: var(--color-gold-soft);
-  color: var(--color-ink);
+  background: var(--gold-soft);
+  color: #0c1a14;
 }
 
 /* ---------- animated stadium background ---------- */
@@ -64,6 +129,13 @@ body {
     radial-gradient(120% 90% at 12% 4%, #f6f9f1 0%, transparent 55%),
     radial-gradient(120% 90% at 92% 8%, #eaf6ef 0%, transparent 55%),
     linear-gradient(180deg, #eef4ea 0%, #e7efe6 100%);
+  transition: background 0.4s ease;
+}
+.dark .bg-field {
+  background:
+    radial-gradient(120% 90% at 12% 4%, #0e1f15 0%, transparent 55%),
+    radial-gradient(120% 90% at 92% 8%, #0c1c16 0%, transparent 55%),
+    linear-gradient(180deg, #0a140e 0%, #07100b 100%);
 }
 .bg-blob {
   position: absolute;
@@ -71,6 +143,9 @@ body {
   filter: blur(70px);
   opacity: 0.5;
   will-change: transform;
+}
+.dark .bg-blob {
+  opacity: 0.32;
 }
 .bg-blob.a {
   width: 46vw; height: 46vw; left: -8vw; top: -6vw;
@@ -88,7 +163,7 @@ body {
   animation: drift3 30s ease-in-out infinite;
 }
 .bg-grain {
-  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.4;
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   mix-blend-mode: soft-light;
 }
@@ -104,16 +179,19 @@ body {
   border: 1px solid var(--glass-brd);
   box-shadow: var(--shadow-glass);
   border-radius: var(--radius-glass);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 .glass-soft {
   background: var(--glass-2);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--glass-brd);
   border-radius: 16px;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 .glass-hover {
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease,
+    background-color 0.4s ease, border-color 0.4s ease;
 }
 .glass-hover:hover {
   transform: translateY(-3px);
@@ -124,7 +202,7 @@ body {
 .font-display { font-family: var(--font-display); }
 .font-mono { font-family: var(--font-mono); }
 .text-gradient {
-  background: linear-gradient(100deg, var(--color-green-deep) 0%, var(--color-green) 38%, var(--color-gold) 100%);
+  background: linear-gradient(100deg, var(--green-deep) 0%, var(--green) 38%, var(--gold) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -136,6 +214,19 @@ body {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 11px; border-radius: 999px;
   font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+}
+
+/* surface chip: white on light, glass on dark */
+.chip-surface {
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--glass-brd);
+}
+
+/* ---------- focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 /* ---------- live ping ---------- */
@@ -176,6 +267,21 @@ body {
 .medal-bronze {
   background-image: linear-gradient(125deg, #fde3c8 0%, #e9b585 20%, #cf8b4d 38%, #a96a36 50%, #cf8b4d 62%, #e9b585 80%, #fde3c8 100%);
 }
+/* в тёмной теме металл глубже, чтобы не слепил */
+.dark .medal-gold {
+  background-image: linear-gradient(125deg, #8a6a1d 0%, #c9971f 20%, #a3741280 38%, #7d5a0e 50%, #c9971f 62%, #e8b83a 80%, #8a6a1d 100%);
+}
+.dark .medal-silver {
+  background-image: linear-gradient(125deg, #6f7d8c 0%, #93a2b1 20%, #5d6a78 38%, #4a5663 50%, #5d6a78 62%, #93a2b1 80%, #6f7d8c 100%);
+}
+.dark .medal-bronze {
+  background-image: linear-gradient(125deg, #7a4f26 0%, #9c6a39 20%, #6d4521 38%, #573619 50%, #6d4521 62%, #9c6a39 80%, #7a4f26 100%);
+}
+.dark .medal-face {
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -16px 28px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
 @keyframes medalShimmer {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -195,22 +301,72 @@ body {
   transform: translateX(-130%) skewX(-12deg);
   animation: glintSweep 5s ease-in-out infinite;
 }
+.dark .medal-glint {
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.35) 47%,
+    rgba(255, 255, 255, 0.12) 53%,
+    transparent 63%
+  );
+}
 @keyframes glintSweep {
   0% { transform: translateX(-130%) skewX(-12deg); }
   55% { transform: translateX(130%) skewX(-12deg); }
   100% { transform: translateX(130%) skewX(-12deg); }
 }
 
-/* ---------- hero trophy float ---------- */
-.float-slow { animation: floatY 7s ease-in-out infinite; will-change: transform; }
-@keyframes floatY {
-  0%, 100% { transform: translateY(0) rotate(-0.5deg); }
-  50% { transform: translateY(-14px) rotate(0.5deg); }
+/* ---------- hero trophy: блик, пробегающий по силуэту лого ---------- */
+.trophy-glint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.18) 55%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  /* блик виден только внутри силуэта кубка */
+  mask-image: url("/wc2026-logo.png");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url("/wc2026-logo.png");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  animation: trophyGlint 7s ease-in-out infinite;
 }
-.shine-sweep { animation: shineSweep 6s ease-in-out infinite; }
-@keyframes shineSweep {
-  0%, 100% { opacity: 0.25; }
-  50% { opacity: 0.6; }
+@keyframes trophyGlint {
+  0% { background-position: 160% 0; }
+  45%, 100% { background-position: -160% 0; }
+}
+
+/* ---------- nav logo: gentle pulse + hover spin ---------- */
+.logo-mark {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.logo-mark::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(14, 159, 110, 0.4), transparent 70%);
+  filter: blur(6px);
+  z-index: -1;
+  animation: logoGlow 4s ease-in-out infinite;
+}
+.group:hover .logo-mark {
+  transform: rotate(-8deg) scale(1.08);
+}
+@keyframes logoGlow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.8; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,5 +376,5 @@ body {
 
 /* thin custom scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: rgba(12, 26, 20, 0.16); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
-::-webkit-scrollbar-thumb:hover { background: rgba(12, 26, 20, 0.28); background-clip: content-box; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); background-clip: content-box; }

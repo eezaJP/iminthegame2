@@ -9,7 +9,7 @@ export function Flag({ code, name, w = 22 }: { code: string; name?: string; w?: 
       alt={name ?? ""}
       width={w}
       height={h}
-      className="rounded-[3px] object-cover ring-1 ring-black/10"
+      className="rounded-[3px] object-cover ring-1 ring-black/10 dark:ring-white/20"
       style={{ width: w, height: h }}
       unoptimized
     />

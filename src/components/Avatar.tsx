@@ -23,7 +23,7 @@ export function Avatar({
   const [from, to] = PAIRS[seed % PAIRS.length];
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full font-display font-bold text-white shadow-sm ring-2 ring-white/70"
+      className="grid shrink-0 place-items-center rounded-full font-display font-bold text-white shadow-sm ring-2 ring-white/70 dark:ring-white/25"
       style={{
         width: size,
         height: size,

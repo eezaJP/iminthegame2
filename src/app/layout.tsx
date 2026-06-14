@@ -29,7 +29,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#eef3ec",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef3ec" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a140e" },
+  ],
   width: "device-width",
   initialScale: 1,
 };
@@ -38,7 +41,20 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ru" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html
+      lang="ru"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Тема до первой отрисовки (сохранённая или системная) — без вспышки */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('wc-theme');var d=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d)}catch(e){}`,
+          }}
+        />
+      </head>
       <body>
         <Background />
         <TopNav />

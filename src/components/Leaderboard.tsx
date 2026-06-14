@@ -16,7 +16,7 @@ const MEDAL_FACE = ["medal-gold", "medal-silver", "medal-bronze"];
 function ChampionChip({ champion }: { champion: string }) {
   const code = flagOf(champion);
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-semibold text-ink-soft ring-1 ring-black/5">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-semibold text-ink-soft ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10">
       {code && (
         <Image src={flagUrl(code, 40)} alt="" width={16} height={11}
           className="h-[11px] w-4 rounded-[2px] object-cover" unoptimized />
@@ -47,7 +47,7 @@ function Podium({ top3 }: { top3: Participant[] }) {
             initial={{ opacity: 0, scale: 0.8, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: cardDelay, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            className={`glass-hover relative flex flex-col items-center rounded-[22px] border border-white/55 px-2 pb-4 pt-5 text-center shadow-[0_16px_38px_-14px_rgba(12,26,20,0.45)] ${
+            className={`glass-hover relative flex flex-col items-center rounded-[22px] border border-white/55 px-2 pb-4 pt-5 text-center shadow-[0_16px_38px_-14px_rgba(12,26,20,0.45)] dark:border-white/15 dark:shadow-[0_16px_38px_-14px_rgba(0,0,0,0.6)] ${
               isGold ? "sm:-translate-y-2" : "mt-3 sm:mt-6"
             }`}
           >
@@ -62,7 +62,7 @@ function Podium({ top3 }: { top3: Participant[] }) {
             {isGold && (
               <>
                 <Crown className="absolute -top-7 z-20 size-6 text-gold drop-shadow" strokeWidth={2.2} fill="#f6c453" />
-                <span className="absolute -top-3 right-2 z-20 rounded-full bg-ink/85 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-white">
+                <span className="absolute -top-3 right-2 z-20 rounded-full bg-ink/85 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-bg">
                   Лидер
                 </span>
               </>
@@ -123,7 +123,7 @@ export function Leaderboard({ participants }: { participants: Participant[] }) {
     <div>
       <Podium top3={top3} />
 
-      <ul className="glass mt-4 divide-y divide-black/[0.06] overflow-hidden p-1.5">
+      <ul className="glass mt-4 divide-y divide-black/[0.06] overflow-hidden p-1.5 dark:divide-white/[0.07]">
         {rest.map((p, i) => {
           const pct = Math.round((p.points.total / leaderTotal) * 100);
           const gap = leaderTotal - p.points.total;
@@ -135,7 +135,7 @@ export function Leaderboard({ participants }: { participants: Participant[] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.03, duration: 0.35 }}
-              className="group flex items-center gap-3 rounded-2xl px-2.5 py-2.5 transition-colors hover:bg-white/55 sm:px-3"
+              className="group flex items-center gap-3 rounded-2xl px-2.5 py-2.5 transition-colors hover:bg-white/55 dark:hover:bg-white/8 sm:px-3"
             >
               <span className="w-6 text-center font-mono text-sm font-bold tabular-nums text-muted">{p.rank}</span>
               <Avatar name={p.name} seed={p.avatarSeed} size={38} />
@@ -145,7 +145,7 @@ export function Leaderboard({ participants }: { participants: Participant[] }) {
                   <span className="hidden sm:block"><ChampionChip champion={p.champion} /></span>
                 </div>
                 <div className="mt-1.5 flex items-center gap-2">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/[0.06]">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/10">
                     <motion.div className="h-full rounded-full bg-gradient-to-r from-green to-gold"
                       initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }}
                       transition={{ delay: 0.1 + i * 0.03, duration: 0.7, ease: "easeOut" }} />

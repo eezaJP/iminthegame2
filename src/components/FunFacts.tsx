@@ -12,7 +12,7 @@ export function FunFacts({ awards }: { awards: Demo["awards"] }) {
       name: awards.leader.name,
       metric: `${awards.leader.points.total} очков`,
       icon: Flame,
-      accent: "from-gold-soft/60 to-gold/20",
+      accent: "from-gold-soft/60 to-gold/20 dark:from-gold-soft/20 dark:to-gold/10",
       ring: "text-gold",
       id: awards.leader.id,
     },
@@ -61,7 +61,7 @@ export function FunFacts({ awards }: { awards: Demo["awards"] }) {
             <div className={`pointer-events-none absolute inset-0 -z-0 bg-gradient-to-br ${c.accent} opacity-70`} />
             <div className="relative">
               <div className="flex items-center justify-between">
-                <span className={`grid size-8 place-items-center rounded-xl bg-white/70 ${c.ring} ring-1 ring-black/5`}>
+                <span className={`grid size-8 place-items-center rounded-xl bg-white/70 ${c.ring} ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10`}>
                   <Icon className="size-4" strokeWidth={2.4} />
                 </span>
                 <Avatar name={c.name} seed={c.id} size={30} />

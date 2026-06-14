@@ -20,14 +20,13 @@ type SlimFixture = {
 
 type Country = "USA" | "CAN" | "MEX";
 
-// colours picked from the hero "UNITED STATES · CANADA · MEXICO" line
+// colours live in globals.css (--map-*) so the dark theme can swap them;
+// SVG presentation attrs не умеют var(), поэтому всё через style={{ fill/stroke }}
 const COUNTRY: Record<Country, { label: string; color: string }> = {
-  USA: { label: "США", color: "#16245f" }, // navy blue
-  CAN: { label: "Канада", color: "#d12b2b" }, // red
-  MEX: { label: "Мексика", color: "#0e7a3d" }, // green
+  USA: { label: "США", color: "var(--map-us)" },
+  CAN: { label: "Канада", color: "var(--map-ca)" },
+  MEX: { label: "Мексика", color: "var(--map-mx)" },
 };
-
-const GREY = "#aab5ad";
 
 const LABELS: { c: Country; x: number; y: number }[] = [
   { c: "CAN", x: 300, y: 150 },
@@ -96,7 +95,7 @@ export function HostMap({ fixtures }: { fixtures: SlimFixture[] }) {
           {/* country labels — black, larger, regular weight */}
           {LABELS.map((l) => (
             <text key={l.c} x={l.x} y={l.y} textAnchor="middle" fontSize="26" fontWeight="500"
-              letterSpacing="2.5" fill="#0c1a14" opacity={0.82}>
+              letterSpacing="2.5" style={{ fill: "var(--map-label)" }} opacity={0.82}>
               {COUNTRY[l.c].label.toUpperCase()}
             </text>
           ))}
@@ -111,12 +110,14 @@ export function HostMap({ fixtures }: { fixtures: SlimFixture[] }) {
                   <path
                     key={s.id}
                     d={s.d}
-                    fill={GREY}
                     fillOpacity={0.28}
-                    stroke="#ffffff"
                     strokeWidth={0.7}
                     strokeLinejoin="round"
-                    style={{ pointerEvents: "none" }}
+                    style={{
+                      pointerEvents: "none",
+                      fill: "var(--map-inactive)",
+                      stroke: "var(--map-stroke)",
+                    }}
                   />
                 );
               }
@@ -126,13 +127,13 @@ export function HostMap({ fixtures }: { fixtures: SlimFixture[] }) {
                 <path
                   key={s.id}
                   d={s.d}
-                  fill={color}
                   fillOpacity={isHover ? 0.9 : 0.32}
-                  stroke={isHover ? color : "#ffffff"}
                   strokeWidth={isHover ? 1.4 : 0.7}
                   strokeLinejoin="round"
                   className="cursor-pointer"
                   style={{
+                    fill: color,
+                    stroke: isHover ? color : "var(--map-stroke)",
                     transform: isHover ? "translateY(-9px)" : "none",
                     filter: isHover ? "drop-shadow(0 10px 9px rgba(12,26,20,0.3))" : "none",
                     transition: "transform .25s cubic-bezier(.22,1,.36,1), fill-opacity .2s, filter .25s",
@@ -162,11 +163,12 @@ export function HostMap({ fixtures }: { fixtures: SlimFixture[] }) {
                 role="button"
                 aria-label={`${c.city}, ${COUNTRY[c.country].label}`}
               >
-                {hot && <circle r="12" fill={color} className="city-glow" />}
-                <circle r={hot ? 5.5 : 4} fill="#fff" stroke={color} strokeWidth={hot ? 3 : 2} />
+                {hot && <circle r="12" className="city-glow" style={{ fill: color }} />}
+                <circle r={hot ? 5.5 : 4} fill="#fff" strokeWidth={hot ? 3 : 2} style={{ stroke: color }} />
                 {(hot || lifted) && (
                   <text x="0" y="-13" textAnchor="middle" fontSize="13" fontWeight="700"
-                    fill="#0c1a14" style={{ paintOrder: "stroke" }} stroke="#fff" strokeWidth="3">
+                    strokeWidth="3"
+                    style={{ paintOrder: "stroke", fill: "var(--map-label)", stroke: "var(--map-halo)" }}>
                     {c.city}
                   </text>
                 )}

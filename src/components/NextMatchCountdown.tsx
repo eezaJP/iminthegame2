@@ -44,7 +44,7 @@ export function NextMatchCountdown({ matches }: { matches: M[] }) {
   if (!matches.length) return null;
 
   return (
-    <div className="inline-flex items-center gap-3 rounded-2xl bg-white/55 px-4 py-2.5 ring-1 ring-black/5">
+    <div className="inline-flex items-center gap-3 rounded-2xl bg-white/55 px-4 py-2.5 ring-1 ring-black/5 dark:bg-white/8 dark:ring-white/12">
       <div>
         <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">До следующего матча</div>
         <div className="mt-0.5 flex items-center gap-1.5 text-[13px] font-bold">
@@ -63,7 +63,7 @@ export function NextMatchCountdown({ matches }: { matches: M[] }) {
           )}
         </div>
       </div>
-      <div className="ml-1 border-l border-black/10 pl-3 text-right">
+      <div className="ml-1 border-l border-black/10 pl-3 text-right dark:border-white/15">
         <div className="font-mono text-xl font-bold tabular-nums leading-none text-ink sm:text-2xl">
           {state?.left ?? "—"}
         </div>

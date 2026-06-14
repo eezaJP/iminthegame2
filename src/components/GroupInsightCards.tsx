@@ -10,7 +10,7 @@ function TeamPills({ names }: { names: string[] }) {
       {names.map((n) => {
         const code = flagOf(n);
         return (
-          <span key={n} className="inline-flex items-center gap-1 rounded-full bg-white/60 px-2 py-0.5 text-[11.5px] font-semibold ring-1 ring-black/5">
+          <span key={n} className="inline-flex items-center gap-1 rounded-full bg-white/60 px-2 py-0.5 text-[11.5px] font-semibold ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10">
             {code && <Flag code={code} name={n} w={15} />}
             {n}
           </span>
@@ -46,7 +46,7 @@ export function GroupInsightCards({
           className="glass glass-hover block p-4"
         >
           <div className="flex items-center gap-2.5">
-            <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-green to-green-deep font-display text-sm font-extrabold text-white shadow-sm">
+            <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-[#0e9f6e] to-[#0a7d55] font-display text-sm font-extrabold text-white shadow-sm">
               {g.letter}
             </span>
             <span className="font-display text-[15px] font-extrabold">Группа {g.letter}</span>

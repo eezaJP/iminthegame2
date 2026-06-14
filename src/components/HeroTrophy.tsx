@@ -2,8 +2,10 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * Official FIFA World Cup 2026 logo (white background removed → transparent PNG
- * at public/wc2026-logo.png). Used as the hero's right-side visual.
+ * Official FIFA World Cup 2026 logo (checkerboard background removed →
+ * transparent PNG via scripts/convert-trophy.mjs, at public/wc2026-logo.png).
+ * Idle animation: a light glint sweeps across the logo silhouette every ~7s
+ * (clipped by mask-image); no floating/wobble.
  */
 export function HeroTrophy({ className }: { className?: string }) {
   return (
@@ -15,11 +17,12 @@ export function HeroTrophy({ className }: { className?: string }) {
       <Image
         src="/wc2026-logo.png"
         alt="Кубок мира FIFA 2026"
-        width={261}
-        height={550}
+        width={735}
+        height={1417}
         priority
-        className="relative size-full object-contain float-slow drop-shadow-[0_18px_40px_rgba(12,26,20,0.18)]"
+        className="relative size-full object-contain drop-shadow-[0_18px_40px_rgba(12,26,20,0.18)]"
       />
+      <div className="trophy-glint" />
     </div>
   );
 }

@@ -6,7 +6,7 @@ type Mode = "real" | "majority" | "participant";
 type Fill = "win" | "out" | "none";
 
 const POINTS: Record<string, string> = { r32: "3 / 8", r16: "5 / 12", qf: "8 / 18", sf: "15 / 35", f: "25 / 55" };
-const LINE = "rgba(11,27,17,0.22)";
+const LINE = "var(--line)";
 const CARD_W = 154;
 const GAP = 24;
 const FINAL_W = 198;
@@ -54,21 +54,21 @@ function PoMatchCard({ m, mode, gold }: { m: PoMatch; mode: Mode; gold?: boolean
   const dead = mode === "participant" && m.state === "dead";
   const exact = mode === "participant" && m.state === "exact";
   return (
-    <div className={`w-full overflow-hidden rounded-xl border ${gold ? "border-gold/50 bg-gradient-to-br from-gold-soft/45 to-gold/10 shadow-[0_10px_26px_-12px_rgba(224,152,15,0.55)]" : "glass-soft"} ${dead ? "ring-1 ring-black/5" : ""}`}>
+    <div className={`w-full overflow-hidden rounded-xl border ${gold ? "border-gold/50 bg-gradient-to-br from-gold-soft/45 to-gold/10 shadow-[0_10px_26px_-12px_rgba(224,152,15,0.55)] dark:from-gold-soft/20 dark:to-gold/5" : "glass-soft"} ${dead ? "ring-1 ring-black/5 dark:ring-white/10" : ""}`}>
       <TeamLine team={m.a} score={m.scoreA} fill={aFill} />
-      <div className="h-px bg-black/[0.06]" />
+      <div className="h-px bg-black/[0.06] dark:bg-white/10" />
       <TeamLine team={m.b} score={m.scoreB} fill={bFill} />
       {mode === "real" && m.pens && (
-        <div className="bg-black/[0.03] px-2 py-0.5 text-[10.5px] font-semibold text-muted">по пен. · счёт ОТ</div>
+        <div className="bg-black/[0.03] px-2 py-0.5 text-[10.5px] dark:bg-white/[0.05] font-semibold text-muted">по пен. · счёт ОТ</div>
       )}
       {mode === "majority" && m.votes != null && (
-        <div className="flex items-center justify-between bg-black/[0.03] px-2 py-0.5 text-[10.5px] font-semibold text-muted">
+        <div className="flex items-center justify-between bg-black/[0.03] px-2 py-0.5 text-[10.5px] dark:bg-white/[0.05] font-semibold text-muted">
           <span className="truncate">{m.winner?.n}</span>
           <span className="shrink-0 text-green-deep">{m.votes}/{m.total}</span>
         </div>
       )}
       {mode === "participant" && m.state && (
-        <div className="bg-black/[0.03] px-2 py-0.5 text-[10.5px] font-bold">
+        <div className="bg-black/[0.03] px-2 py-0.5 text-[10.5px] dark:bg-white/[0.05] font-bold">
           {exact && <span className="text-gold"><Target className="mr-0.5 inline size-3" strokeWidth={2.6} />точно</span>}
           {m.state === "hit" && <span className="text-green-deep">угадан проход</span>}
           {m.state === "alive" && <span className="text-green-deep"><Flame className="mr-0.5 inline size-3" strokeWidth={2.6} />в игре</span>}
@@ -129,7 +129,7 @@ function BronzeNode({ third, mode }: { third: PoMatch; mode: Mode }) {
   const t = tonesFor(third, mode);
   const decided = third.winner && (third.scoreA != null || mode !== "real");
   return (
-    <div className="w-full rounded-xl border border-black/5 bg-white/55 p-2">
+    <div className="w-full rounded-xl border border-black/5 bg-white/55 p-2 dark:border-white/10 dark:bg-white/8">
       <div className="mb-1 flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wide" style={{ color: "#cd7f48" }}>
         <Medal className="size-3.5" strokeWidth={2.4} />
         За 3-е место

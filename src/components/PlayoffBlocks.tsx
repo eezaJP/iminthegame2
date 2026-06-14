@@ -18,7 +18,7 @@ export function ChampionAlive() {
             <span className="font-display text-[15px] font-extrabold">{c.team}</span>
             <span
               className={`chip ml-auto px-2 py-0.5 text-[10.5px] ${
-                c.alive ? "bg-green/12 text-green-deep" : "bg-black/[0.06] text-muted"
+                c.alive ? "bg-green/12 text-green-deep" : "bg-black/[0.06] text-muted dark:bg-white/[0.07]"
               }`}
             >
               {c.status}
@@ -54,7 +54,7 @@ export function NextStakes() {
             <span><b>{s.votesA}</b> ждут {s.a?.n}</span>
             <span><b>{s.votesB}</b> ждут {s.b?.n}</span>
           </div>
-          <div className="mt-2 flex items-center gap-2 border-t border-black/5 pt-2 text-[12px]">
+          <div className="mt-2 flex items-center gap-2 border-t border-black/5 pt-2 text-[12px] dark:border-white/10">
             <Swords className="size-4 shrink-0 text-rose" strokeWidth={2.4} />
             <span>
               Для <b>{s.critical}</b> участников это матч за финалиста · потенциальный swing{" "}
