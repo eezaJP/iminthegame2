@@ -2,12 +2,22 @@
 
 import { motion } from "motion/react";
 import {
-  Shuffle, Rocket, Gauge, Gem, Users, Crosshair, Trophy, Swords, Coins, BarChart3,
+  Gem, Users, Crosshair, Trophy, Swords, Coins, BarChart3,
   type LucideIcon,
 } from "lucide-react";
-import type { Demo } from "@/lib/types";
-import { flagUrl, plural } from "@/lib/utils";
+import { flagUrl } from "@/lib/utils";
+import { flagOf } from "@/lib/teams";
 import Image from "next/image";
+
+type Facts = {
+  leagueChampions: { team: string; count: number; flag: string }[];
+  againstCrowd: { name: string; count: number };
+  almostOracle: { name: string; times: number };
+  threat: { name: string; condition: string };
+  openPoints: { points: number };
+  majorityScore: { score: string };
+  rarePick: { team: string; count: number; total: number } | null;
+};
 
 function Card({
   icon: Icon, title, accent, ring, i, children,
@@ -38,54 +48,51 @@ function Card({
 
 const B = ({ children }: { children: React.ReactNode }) => <span className="font-extrabold">{children}</span>;
 
-export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
+export function LeagueStories({ facts }: { facts: Facts }) {
   const champs = facts.leagueChampions.slice(0, 5);
   const maxC = Math.max(...champs.map((c) => c.count), 1);
+  let i = 0;
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      <Card icon={Shuffle} title="Матч, который перевернул таблицу" accent="from-violet-200/40 to-transparent dark:from-violet-500/15" ring="text-violet-600 dark:text-violet-300" i={0}>
-        <B>{facts.tableTurner.match}</B> сдвинула <B>{facts.tableTurner.positions}</B> позиций в рейтинге.
-      </Card>
+      {facts.threat.condition && (
+        <Card icon={Swords} title="Главная угроза лидеру" accent="from-rose/15 to-transparent" ring="text-rose" i={i++}>
+          <B>{facts.threat.name}</B> может обойти лидера сегодня, {facts.threat.condition}.
+        </Card>
+      )}
 
-      <Card icon={Rocket} title="Камбэк тура" accent="from-green/20 to-transparent" ring="text-green-deep" i={1}>
-        <B>{facts.comeback.name}</B> поднялся на <B>{facts.comeback.places}</B>{" "}
-        {plural(facts.comeback.places, "место", "места", "мест")} после {facts.comeback.round}-го тура.
-      </Card>
+      {facts.rarePick && (
+        <Card icon={Gem} title="Редкий прогноз" accent="from-sky/15 to-transparent dark:from-sky/10" ring="text-sky" i={i++}>
+          Только <B>{facts.rarePick.count} из {facts.rarePick.total}</B> поверили в{" "}
+          <B>{facts.rarePick.team}</B> — и забрали очки.
+        </Card>
+      )}
 
-      <Card icon={Gauge} title="Под давлением" accent="from-rose/15 to-transparent" ring="text-rose" i={2}>
-        <B>{facts.underPressure.name}</B> потерял <B>{facts.underPressure.places}</B>{" "}
-        {plural(facts.underPressure.places, "позицию", "позиции", "позиций")} — но ещё может вернуться.
-      </Card>
+      {facts.againstCrowd.count > 0 && (
+        <Card icon={Users} title="Против толпы" accent="from-amber-200/40 to-transparent dark:from-amber-400/15" ring="text-gold" i={i++}>
+          <B>{facts.againstCrowd.name}</B> чаще всех выбирает непопулярные исходы сегодня.
+        </Card>
+      )}
 
-      <Card icon={Gem} title="Редкий прогноз" accent="from-sky/15 to-transparent" ring="text-sky" i={3}>
-        Только <B>{facts.rarePick.count} из {facts.rarePick.total}</B> поверили в{" "}
-        <B>{facts.rarePick.team}</B> — и забрали очки.
-      </Card>
+      {facts.almostOracle.times > 0 && (
+        <Card icon={Crosshair} title="Почти оракул" accent="from-green/20 to-transparent" ring="text-green-deep" i={i++}>
+          <B>{facts.almostOracle.name}</B> уже <B>{facts.almostOracle.times}</B> раз промахнулся всего на один гол.
+        </Card>
+      )}
 
-      <Card icon={Users} title="Против толпы" accent="from-amber-200/40 to-transparent dark:from-amber-400/15" ring="text-gold" i={4}>
-        <B>{facts.againstCrowd.name}</B> чаще всех выбирает непопулярные исходы.
-      </Card>
-
-      <Card icon={Crosshair} title="Почти оракул" accent="from-green/20 to-transparent" ring="text-green-deep" i={5}>
-        <B>{facts.almostOracle.name}</B> уже <B>{facts.almostOracle.times}</B> раз промахнулся всего на один гол.
-      </Card>
-
-      <Card icon={Swords} title="Главная угроза лидеру" accent="from-rose/15 to-transparent" ring="text-rose" i={6}>
-        <B>{facts.threat.name}</B> может обойти лидера сегодня, {facts.threat.condition}.
-      </Card>
-
-      <Card icon={Coins} title="Открытые очки дня" accent="from-gold-soft/40 to-transparent dark:from-gold-soft/15" ring="text-gold" i={7}>
+      <Card icon={Coins} title="Открытые очки дня" accent="from-gold-soft/40 to-transparent dark:from-gold-soft/15" ring="text-gold" i={i++}>
         Сегодня в игре <B>{facts.openPoints.points}</B> потенциальных очков.
       </Card>
 
-      <Card icon={BarChart3} title="Счёт большинства" accent="from-sky/15 to-transparent" ring="text-sky" i={8}>
-        Самый частый прогноз дня —{" "}
-        <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[12px] font-bold text-bg">
-          {facts.majorityScore.score}
-        </span>
-        .
-      </Card>
+      {facts.majorityScore.score !== "—" && (
+        <Card icon={BarChart3} title="Счёт большинства" accent="from-sky/15 to-transparent dark:from-sky/10" ring="text-sky" i={i++}>
+          Самый частый прогноз дня —{" "}
+          <span className="rounded-md bg-ink px-1.5 py-0.5 font-mono text-[12px] font-bold text-bg">
+            {facts.majorityScore.score}
+          </span>
+          .
+        </Card>
+      )}
 
       {/* champions distribution — spans wider where room allows */}
       <motion.div
@@ -102,19 +109,22 @@ export function LeagueStories({ facts }: { facts: Demo["facts"] }) {
           <span className="text-[11px] font-bold uppercase tracking-wide text-muted">Кого выбрала лига · прогноз на чемпиона</span>
         </div>
         <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
-          {champs.map((c) => (
-            <div key={c.team} className="flex items-center gap-2 text-[13px]">
-              {c.flag && (
-                <Image src={flagUrl(c.flag, 40)} alt="" width={18} height={13}
-                  className="h-[13px] w-[18px] rounded-[2px] object-cover" unoptimized />
-              )}
-              <span className="w-20 shrink-0 truncate font-semibold">{c.team}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/10">
-                <div className="h-full rounded-full bg-gradient-to-r from-green to-gold" style={{ width: `${(c.count / maxC) * 100}%` }} />
+          {champs.map((c) => {
+            const code = c.flag || flagOf(c.team);
+            return (
+              <div key={c.team} className="flex items-center gap-2 text-[13px]">
+                {code && (
+                  <Image src={flagUrl(code, 40)} alt="" width={18} height={13}
+                    className="h-[13px] w-[18px] rounded-[2px] object-cover" unoptimized />
+                )}
+                <span className="w-20 shrink-0 truncate font-semibold">{c.team}</span>
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-black/[0.06] dark:bg-white/10">
+                  <div className="h-full rounded-full bg-gradient-to-r from-green to-gold" style={{ width: `${(c.count / maxC) * 100}%` }} />
+                </div>
+                <span className="w-4 text-right font-mono font-bold tabular-nums">{c.count}</span>
               </div>
-              <span className="w-4 text-right font-mono font-bold tabular-nums">{c.count}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </motion.div>
     </div>

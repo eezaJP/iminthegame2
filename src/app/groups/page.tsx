@@ -4,12 +4,10 @@ import { TodayInGame } from "@/components/TodayInGame";
 import { GroupInsightCards } from "@/components/GroupInsightCards";
 import { ThirdPlaceRace } from "@/components/ThirdPlaceRace";
 import { Reveal } from "@/components/Reveal";
-import {
-  tournament, demo, matchesByGroup, playedCount, isDemoMode,
-  intrigueGroups, almostDecidedGroups, thirdPlaceRace,
-} from "@/lib/data";
+import { getGroupsData } from "@/lib/realData";
 
 export const metadata = { title: "Групповой этап · I'm in the game" };
+export const revalidate = 60;
 
 function SectionHeader({ id, kicker, title }: { id: string; kicker: string; title: string }) {
   return (
@@ -18,29 +16,12 @@ function SectionHeader({ id, kicker, title }: { id: string; kicker: string; titl
         <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-green-deep">{kicker}</div>
         <h2 className="font-display text-[22px] font-extrabold leading-tight sm:text-[26px]">{title}</h2>
       </div>
-      {isDemoMode && (
-        <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[10px] font-semibold lowercase tracking-wide text-muted dark:bg-white/[0.07]">
-          demo
-        </span>
-      )}
     </div>
   );
 }
 
-export default function GroupsPage() {
-  const groups = tournament.groups;
-  const played = playedCount();
-  const todayCount = demo.today.matches.length;
-  const intrigue = intrigueGroups();
-  const decided = almostDecidedGroups();
-  const thirds = thirdPlaceRace();
-
-  const summary = [
-    { value: String(played), label: "сыграно" },
-    { value: String(72 - played), label: "осталось" },
-    { value: String(todayCount), label: "сегодня" },
-    { value: String(intrigue.length), label: "с интригой" },
-  ];
+export default async function GroupsPage() {
+  const data = await getGroupsData();
 
   return (
     <div className="mt-4">
@@ -63,7 +44,7 @@ export default function GroupsPage() {
             </div>
           </div>
           <div className="flex gap-5">
-            {summary.map((s) => (
+            {data.summary.map((s) => (
               <div key={s.label}>
                 <div className="font-display text-2xl font-extrabold tabular-nums">{s.value}</div>
                 <div className="text-[11px] text-muted">{s.label}</div>
@@ -74,38 +55,38 @@ export default function GroupsPage() {
       </div>
 
       <div className="mt-5">
-        <GroupStageNav groups={groups.map((g) => g.letter)} />
+        <GroupStageNav groups={data.cards.map((c) => c.letter)} />
       </div>
 
       <SectionHeader id="today" kicker="Что сегодня важно" title="Матчи сегодня" />
       <TodayInGame
-        matches={demo.today.matches}
-        potentialTotal={demo.today.potentialTotal}
+        matches={data.todayMatches}
+        potentialTotal={data.potentialTotal}
         emptyText="Сегодня матчей нет. Следующий игровой день — скоро."
       />
 
       <SectionHeader id="intrigue" kicker="Главные интриги" title="Где ещё всё открыто" />
-      <GroupInsightCards items={intrigue} variant="open" />
+      <GroupInsightCards items={data.intrigue} variant="open" />
 
       <SectionHeader id="decided" kicker="Расклад" title="Почти решено" />
-      <GroupInsightCards items={decided} variant="decided" />
+      <GroupInsightCards items={data.decided} variant="decided" />
 
       <SectionHeader id="thirds" kicker="Битва за плей-офф" title="Гонка третьих мест" />
       <Reveal>
-        <ThirdPlaceRace rows={thirds} />
+        <ThirdPlaceRace rows={data.thirds} />
       </Reveal>
 
       <SectionHeader id="all" kicker="Полная картина" title="Все группы" />
       <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3">
-        {groups.map((g, i) => (
-          <Reveal key={g.letter} delay={(i % 3) * 0.05}>
-            <GroupCard letter={g.letter} matches={matchesByGroup(g.letter)} />
+        {data.cards.map((c, i) => (
+          <Reveal key={c.letter} delay={(i % 3) * 0.05}>
+            <GroupCard letter={c.letter} table={c.table} status={c.status} matchdays={c.matchdays} summary={c.summary} />
           </Reveal>
         ))}
       </div>
 
       <footer className="mt-12 text-center text-[12px] text-muted">
-        Время матчей — московское (МСК). Данные демонстрационные — подключим Google-таблицу и API.
+        Время матчей — московское (МСК). Результаты обновляются автоматически по ходу турнира.
       </footer>
     </div>
   );

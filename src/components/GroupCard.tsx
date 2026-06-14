@@ -1,10 +1,9 @@
-import type { Match } from "@/lib/types";
-import { groupTable, groupStatus, groupSummary, predictionFor, demoToday } from "@/lib/data";
+import type { GroupTableRow, GroupMatchRow } from "@/lib/realData";
 import { ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
 
-function ScorePill({ m }: { m: Match }) {
-  if (m.goalsHome === null || m.goalsAway === null) {
+function ScorePill({ m }: { m: GroupMatchRow }) {
+  if (!m.played || m.gh === null || m.ga === null) {
     return (
       <span className="rounded-md bg-black/[0.04] px-2 py-0.5 font-mono text-[11px] font-semibold text-muted dark:bg-white/[0.07]">
         {m.time}
@@ -13,17 +12,14 @@ function ScorePill({ m }: { m: Match }) {
   }
   return (
     <span className="rounded-md bg-ink px-2 py-0.5 font-mono text-[12px] font-bold tabular-nums text-bg">
-      {m.goalsHome}:{m.goalsAway}
+      {m.gh}:{m.ga}
     </span>
   );
 }
 
-function FixtureRow({ m }: { m: Match }) {
-  const played = m.goalsHome !== null;
-  const isToday = m.date === demoToday;
-  const homeWin = played && m.goalsHome! > m.goalsAway!;
-  const awayWin = played && m.goalsAway! > m.goalsHome!;
-  const pred = !played ? predictionFor(m.id) : null;
+function FixtureRow({ m }: { m: GroupMatchRow }) {
+  const homeWin = m.played && m.gh! > m.ga!;
+  const awayWin = m.played && m.ga! > m.gh!;
   return (
     <div className="py-1.5">
       <div className="flex items-center gap-2 text-[12.5px]">
@@ -37,16 +33,16 @@ function FixtureRow({ m }: { m: Match }) {
           <span className={awayWin ? "font-bold" : "font-medium text-ink-soft"}>{m.away}</span>
         </div>
       </div>
-      {pred && (
+      {m.pred && (
         <div className="mt-1 flex items-center justify-center gap-2 text-[10.5px] text-muted">
-          {isToday && (
+          {m.isToday && (
             <span className="rounded-full bg-green/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-green-deep">
               сегодня
             </span>
           )}
-          <span>прогноз {pred.home}·{pred.draw}·{pred.away}</span>
+          <span>прогноз {m.pred.home}·{m.pred.draw}·{m.pred.away}</span>
           <span className="text-ink/30">·</span>
-          <span>счёт {pred.score}</span>
+          <span>счёт {m.pred.score}</span>
         </div>
       )}
     </div>
@@ -60,11 +56,19 @@ const TONE: Record<string, string> = {
   soon: "text-muted",
 };
 
-export function GroupCard({ letter, matches }: { letter: string; matches: Match[] }) {
-  const table = groupTable(letter);
-  const status = groupStatus(letter);
-  const byMatchday = [1, 2, 3].map((md) => ({ md, list: matches.filter((m) => m.matchday === md) }));
-
+export function GroupCard({
+  letter,
+  table,
+  status,
+  matchdays,
+  summary,
+}: {
+  letter: string;
+  table: GroupTableRow[];
+  status: { label: string; tone: "done" | "live" | "progress" | "soon" };
+  matchdays: { md: number; date: string; matches: GroupMatchRow[] }[];
+  summary: string;
+}) {
   return (
     <div id={`group-${letter}`} className="glass glass-hover flex scroll-mt-32 flex-col p-4">
       <div className="mb-3 flex items-center justify-between">
@@ -113,23 +117,23 @@ export function GroupCard({ letter, matches }: { letter: string; matches: Match[
         </tbody>
       </table>
 
-      <div className="mt-3 space-y-1 border-t border-black/5 dark:border-white/10 pt-2">
-        {byMatchday.map(({ md, list }) => (
+      <div className="mt-3 space-y-1 border-t border-black/5 pt-2 dark:border-white/10">
+        {matchdays.map(({ md, date, matches }) => (
           <div key={md}>
             <div className="mt-1.5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide text-muted">
               <span>{md}-й тур</span>
-              <span className="font-medium normal-case tracking-normal">· {ruDate(list[0].date)}</span>
+              {date && <span className="font-medium normal-case tracking-normal">· {ruDate(date)}</span>}
               <span className="h-px flex-1 bg-black/5 dark:bg-white/10" />
             </div>
-            {list.map((m) => (
-              <FixtureRow key={m.id} m={m} />
+            {matches.map((m, i) => (
+              <FixtureRow key={i} m={m} />
             ))}
           </div>
         ))}
       </div>
 
-      <div className="mt-3 border-t border-black/5 dark:border-white/10 pt-2.5 text-[11.5px] leading-snug text-ink-soft">
-        {groupSummary(letter)}
+      <div className="mt-3 border-t border-black/5 pt-2.5 text-[11.5px] leading-snug text-ink-soft dark:border-white/10">
+        {summary}
       </div>
     </div>
   );

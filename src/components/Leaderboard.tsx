@@ -6,12 +6,17 @@ import { Crown, Target, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import type { Participant } from "@/lib/types";
 import { flagUrl } from "@/lib/utils";
-import { flagOf, roundGainOf } from "@/lib/data";
+import { flagOf } from "@/lib/teams";
 import { Avatar } from "./Avatar";
 import { ScrambleText } from "./ScrambleText";
 
 const MEDAL = ["#b9740a", "#79858f", "#a5663a"];
 const MEDAL_FACE = ["medal-gold", "medal-silver", "medal-bronze"];
+
+/** Points gained in the last round, or null when per-round history isn't available yet. */
+function roundGainOf(p: Participant): number | null {
+  return p.history.length >= 3 ? p.history[2].total - p.history[1].total : null;
+}
 
 function ChampionChip({ champion }: { champion: string }) {
   const code = flagOf(champion);
@@ -91,8 +96,12 @@ function Podium({ top3 }: { top3: Participant[] }) {
               transition={{ delay: pDelay + 0.15, duration: 0.4 }}
               className="relative z-10 mt-2 flex items-center gap-2 text-[11px] font-bold text-ink/70">
               <span className="inline-flex items-center gap-0.5"><Target className="size-3" strokeWidth={2.6} />{p.stats.exactScores}</span>
-              <span className="text-ink/30">·</span>
-              <span className="text-green-deep">+{round} за тур</span>
+              {round !== null && (
+                <>
+                  <span className="text-ink/30">·</span>
+                  <span className="text-green-deep">+{round} за тур</span>
+                </>
+              )}
             </motion.div>
 
             {isGold && gapFrom2nd > 0 && (
@@ -155,9 +164,11 @@ export function Leaderboard({ participants }: { participants: Participant[] }) {
                   </span>
                 </div>
               </div>
-              <span className="hidden items-center gap-1 rounded-full bg-green/10 px-2 py-1 text-[11px] font-bold text-green-deep sm:inline-flex" title="Очки за текущий тур">
-                <TrendingUp className="size-3" strokeWidth={2.6} />+{round}
-              </span>
+              {round !== null && (
+                <span className="hidden items-center gap-1 rounded-full bg-green/10 px-2 py-1 text-[11px] font-bold text-green-deep sm:inline-flex" title="Очки за текущий тур">
+                  <TrendingUp className="size-3" strokeWidth={2.6} />+{round}
+                </span>
+              )}
               <span className="hidden items-center gap-1 rounded-full bg-gold/10 px-2 py-1 text-[11px] font-bold text-gold sm:inline-flex" title="Угаданные точные счета">
                 <Target className="size-3" strokeWidth={2.6} />{p.stats.exactScores}
               </span>

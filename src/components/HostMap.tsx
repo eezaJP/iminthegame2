@@ -34,7 +34,7 @@ const LABELS: { c: Country; x: number; y: number }[] = [
   { c: "MEX", x: 470, y: 640 },
 ];
 
-const START = "2026-06-24"; // demo clock — keep in sync with demo.demoToday
+const START = "2026-06-11"; // tournament start — real "today" is used once it's past this
 const { width: W, height: H, states, cities } = mapData as {
   width: number;
   height: number;

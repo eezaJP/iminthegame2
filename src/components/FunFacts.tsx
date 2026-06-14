@@ -1,12 +1,25 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Flame, Sparkles, TrendingUp, ScanSearch } from "lucide-react";
-import type { Demo } from "@/lib/types";
+import { Flame, Sparkles, TrendingUp, ScanSearch, Hourglass } from "lucide-react";
+import type { Participant } from "@/lib/types";
 import { Avatar } from "./Avatar";
 
-export function FunFacts({ awards }: { awards: Demo["awards"] }) {
-  const cards = [
+type Award = { id: number; name: string; delta: number } | null;
+
+type Card = {
+  title: string;
+  icon: typeof Flame;
+  accent: string;
+  ring: string;
+} & ({ pending: true } | { pending?: false; name: string; metric: string; id: number });
+
+export function FunFacts({
+  awards,
+}: {
+  awards: { leader: Participant; oracle: Participant; roundLeader: Award; var: Award };
+}) {
+  const cards: Card[] = [
     {
       title: "Лидер лиги",
       name: awards.leader.name,
@@ -25,30 +38,34 @@ export function FunFacts({ awards }: { awards: Demo["awards"] }) {
       ring: "text-green-deep",
       id: awards.oracle.id,
     },
-    {
-      title: "Прорыв тура",
-      name: awards.roundLeader.name,
-      metric: `+${awards.roundLeader.delta} за тур`,
-      icon: TrendingUp,
-      accent: "from-sky/20 to-sky/5",
-      ring: "text-sky",
-      id: awards.roundLeader.id,
-    },
-    {
-      title: "Попал под VAR",
-      name: awards.var.name,
-      metric: `всего +${awards.var.delta} за тур`,
-      icon: ScanSearch,
-      accent: "from-rose/20 to-rose/5",
-      ring: "text-rose",
-      id: awards.var.id,
-    },
+    awards.roundLeader
+      ? {
+          title: "Прорыв тура",
+          name: awards.roundLeader.name,
+          metric: `+${awards.roundLeader.delta} за тур`,
+          icon: TrendingUp,
+          accent: "from-sky/20 to-sky/5",
+          ring: "text-sky",
+          id: awards.roundLeader.id,
+        }
+      : { title: "Прорыв тура", icon: TrendingUp, accent: "from-sky/20 to-sky/5", ring: "text-sky", pending: true },
+    awards.var
+      ? {
+          title: "Попал под VAR",
+          name: awards.var.name,
+          metric: `всего +${awards.var.delta} за тур`,
+          icon: ScanSearch,
+          accent: "from-rose/20 to-rose/5",
+          ring: "text-rose",
+          id: awards.var.id,
+        }
+      : { title: "Попал под VAR", icon: ScanSearch, accent: "from-rose/20 to-rose/5", ring: "text-rose", pending: true },
   ];
 
   return (
     <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
       {cards.map((c, i) => {
-        const Icon = c.icon;
+        const Icon = c.pending ? Hourglass : c.icon;
         return (
           <motion.div
             key={c.title}
@@ -64,13 +81,19 @@ export function FunFacts({ awards }: { awards: Demo["awards"] }) {
                 <span className={`grid size-8 place-items-center rounded-xl bg-white/70 ${c.ring} ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10`}>
                   <Icon className="size-4" strokeWidth={2.4} />
                 </span>
-                <Avatar name={c.name} seed={c.id} size={30} />
+                {!c.pending && <Avatar name={c.name} seed={c.id} size={30} />}
               </div>
-              <div className="mt-3 text-[11px] font-bold uppercase tracking-wide text-muted">
-                {c.title}
-              </div>
-              <div className="mt-0.5 truncate text-[15px] font-extrabold">{c.name}</div>
-              <div className="mt-0.5 text-[12px] font-semibold text-ink-soft">{c.metric}</div>
+              <div className="mt-3 text-[11px] font-bold uppercase tracking-wide text-muted">{c.title}</div>
+              {c.pending ? (
+                <div className="mt-0.5 text-[13px] font-semibold leading-snug text-muted">
+                  Появится после следующего тура
+                </div>
+              ) : (
+                <>
+                  <div className="mt-0.5 truncate text-[15px] font-extrabold">{c.name}</div>
+                  <div className="mt-0.5 text-[12px] font-semibold text-ink-soft">{c.metric}</div>
+                </>
+              )}
             </div>
           </motion.div>
         );

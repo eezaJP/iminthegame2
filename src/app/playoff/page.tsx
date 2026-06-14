@@ -1,12 +1,10 @@
 import { PlayoffView } from "@/components/PlayoffView";
-import {
-  ChampionAlive, NextStakes, LiveBrackets, BurnedPredictions,
-  RealityVsMajority, ChampionCard, BronzeMatch,
-} from "@/components/PlayoffBlocks";
-import { Reveal } from "@/components/Reveal";
-import { isDemoMode } from "@/lib/data";
+import { ChampionAlive, ChampionCard } from "@/components/PlayoffBlocks";
+import { Hourglass } from "lucide-react";
+import { getPlayoffData } from "@/lib/realData";
 
 export const metadata = { title: "Плей-офф · I'm in the game" };
+export const revalidate = 60;
 
 const BONUS = [
   { stage: "1/8", v: "+2" },
@@ -22,16 +20,13 @@ function SectionHeader({ kicker, title }: { kicker: string; title: string }) {
         <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-green-deep">{kicker}</div>
         <h2 className="font-display text-[22px] font-extrabold leading-tight sm:text-[26px]">{title}</h2>
       </div>
-      {isDemoMode && (
-        <span className="rounded-full bg-black/[0.05] px-2 py-0.5 text-[10px] font-semibold lowercase tracking-wide text-muted dark:bg-white/[0.07]">
-          demo
-        </span>
-      )}
     </div>
   );
 }
 
-export default function PlayoffPage() {
+export default async function PlayoffPage() {
+  const data = await getPlayoffData();
+
   return (
     <div className="mt-4">
       {/* intro */}
@@ -43,7 +38,7 @@ export default function PlayoffPage() {
             <p className="mt-1.5 text-[13px] leading-snug text-ink-soft">
               Сетку каждый заполнял вслепую до старта — теперь прогнозы зафиксированы. Счёт считается
               по основному и дополнительному времени, пенальти не учитываются: победитель — тот, кто
-              прошёл дальше. Ниже — реальная сетка, прогноз большинства и сетки участников.
+              прошёл дальше.
             </p>
           </div>
           <div className="flex flex-col items-start gap-2">
@@ -57,34 +52,30 @@ export default function PlayoffPage() {
         </div>
       </div>
 
-      <SectionHeader kicker="Главная интрига" title="У кого чемпион ещё жив?" />
-      <ChampionAlive />
+      {!data.started && (
+        <div className="glass mt-4 flex items-center gap-3 px-5 py-4">
+          <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gold/12 text-gold">
+            <Hourglass className="size-5" strokeWidth={2.2} />
+          </span>
+          <div className="text-[13px] leading-snug text-ink-soft">
+            <b className="text-ink">Плей-офф ещё впереди.</b> Стадия на вылет начнётся после группового этапа.
+            Реальная сетка, живые матчи и подсчёт очков появятся здесь автоматически — а пока показываем
+            зафиксированные прогнозы участников.
+          </div>
+        </div>
+      )}
 
-      <SectionHeader kicker="Ставки растут" title="Цена следующего матча" />
-      <NextStakes />
+      <SectionHeader kicker="Прогноз лиги" title="Кого лига видит чемпионом" />
+      <ChampionAlive items={data.championAlive} />
 
-      <SectionHeader kicker="Сетка до кубка" title="Сетка плей-офф" />
-      <PlayoffView />
-
-      <SectionHeader kicker="Бронзовый матч" title="Матч за 3-е место" />
-      <BronzeMatch />
+      <SectionHeader kicker="Слепые сетки" title="Сетки участников" />
+      <PlayoffView brackets={data.brackets} />
 
       <SectionHeader kicker="Кубок" title="Чемпион" />
-      <ChampionCard />
-
-      <SectionHeader kicker="Кто ещё в деле" title="Самые живые сетки" />
-      <LiveBrackets />
-
-      <SectionHeader kicker="Без паники" title="Что уже сгорело" />
-      <BurnedPredictions />
-
-      <SectionHeader kicker="Итог" title="Реальность против большинства" />
-      <Reveal>
-        <RealityVsMajority />
-      </Reveal>
+      <ChampionCard favourite={data.favourite} total={data.brackets.length} />
 
       <footer className="mt-12 text-center text-[12px] text-muted">
-        Счёт плей-офф — по основному и дополнительному времени, без пенальти. Данные демонстрационные.
+        Счёт плей-офф — по основному и дополнительному времени, без пенальти. Данные обновляются автоматически.
       </footer>
     </div>
   );

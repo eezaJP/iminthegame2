@@ -1,5 +1,4 @@
-import playoffJson from "@/data/playoff.json";
-
+// Playoff data shapes (types only — the live data is built in realData.ts).
 export type PoTeam = { n: string; f: string } | null;
 export type PoState = "exact" | "hit" | "miss" | "dead" | "alive";
 
@@ -34,19 +33,6 @@ export type PlayoffParticipant = {
   thirdMatch: PoMatch;
 };
 
-export type PlayoffData = {
-  real: { playedThrough: number; rounds: PoRound[]; third: PoMatch; champion: PoTeam; aliveTeams: { n: string; f: string }[] };
-  majority: { rounds: PoRound[]; champion: PoTeam };
-  brackets: PlayoffParticipant[];
-  championAlive: { team: string; flag: string; count: number; alive: boolean; status: string; participants: string[] }[];
-  burned: { name: string; team: string; flag: string; stage: string; pointsLost: number }[];
-  liveBrackets: { name: string; aliveCount: number; potential: number; champion: PoTeam; championStatus: string }[];
-  nextStakes: { a: PoTeam; b: PoTeam; votesA: number; votesB: number; critical: number; swing: number }[];
-  realityVsMajority: { qfHit: number; qfTotal: number; biggestMiss: { team: string; flag: string } | null };
-  aliveTeams: { n: string; f: string }[];
+export type ChampionAliveItem = {
+  team: string; flag: string; count: number; alive: boolean; status: string; participants: string[];
 };
-
-export const playoff = playoffJson as unknown as PlayoffData;
-
-/** Champion not yet decided in this demo (semifinals upcoming). */
-export const championDecided = playoff.real.champion !== null;

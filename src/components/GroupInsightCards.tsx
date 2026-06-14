@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Flame, CheckCircle2 } from "lucide-react";
-import type { GroupInsight } from "@/lib/data";
-import { flagOf } from "@/lib/data";
+import type { GroupInsightReal as GroupInsight } from "@/lib/realData";
+import { flagOf } from "@/lib/teams";
 import { Flag } from "./Flag";
 
 function TeamPills({ names }: { names: string[] }) {
