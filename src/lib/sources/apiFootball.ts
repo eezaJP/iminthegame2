@@ -30,8 +30,10 @@ export type ApiFixture = {
   status: string;       // short, e.g. NS, 1H, HT, FT, PEN
   live: boolean;
   finished: boolean;
-  gh: number | null;
+  gh: number | null;    // goals incl. extra time (pool score), excl. penalties
   ga: number | null;
+  penHome: number | null; // penalty shootout score (knockouts only)
+  penAway: number | null;
 };
 
 function roundKey(round: string): ApiFixture["roundKey"] {
@@ -53,6 +55,7 @@ type RawFixture = {
   fixture: { id: number; date: string; timestamp: number; status: { short: string }; venue: { city: string | null } };
   teams: { home: { name: string }; away: { name: string } };
   goals: { home: number | null; away: number | null };
+  score?: { penalty?: { home: number | null; away: number | null } };
   league: { round: string };
 };
 
@@ -96,6 +99,8 @@ export async function getFixtures(revalidate = 300): Promise<ApiFixture[]> {
         finished: DONE.has(st),
         gh: f.goals.home,
         ga: f.goals.away,
+        penHome: f.score?.penalty?.home ?? null,
+        penAway: f.score?.penalty?.away ?? null,
       };
     })
     .sort((a, b) => a.timestamp - b.timestamp);

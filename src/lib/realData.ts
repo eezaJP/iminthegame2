@@ -128,6 +128,7 @@ export async function getHomeData(revalidate = 60) {
         ? `Если ${fav} выиграет — заметно приблизится к выходу из группы.`
         : "Большинство ждёт ничью — группа останется открытой.",
       status, gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
+      pens: f.penHome !== null && f.penAway !== null ? { h: f.penHome, a: f.penAway } : null,
     } as TodayMatch;
   });
   const potentialTotal = todayMatches.reduce((s, m) => s + m.potential, 0);
@@ -384,6 +385,7 @@ export async function getGroupsData(revalidate = 60) {
         : "Большинство ждёт ничью — группа останется открытой.",
       status: f.finished ? "finished" : f.live ? "live" : "upcoming",
       gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
+      pens: f.penHome !== null && f.penAway !== null ? { h: f.penHome, a: f.penAway } : null,
     };
   });
 

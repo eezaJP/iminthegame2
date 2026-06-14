@@ -108,6 +108,7 @@ export type TodayMatch = {
   status: "upcoming" | "live" | "finished";
   gh: number | null;
   ga: number | null;
+  pens: { h: number; a: number } | null; // penalty shootout (knockouts)
   kickoff: number; // epoch ms (real kickoff)
 };
 

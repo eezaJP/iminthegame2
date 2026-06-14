@@ -39,29 +39,32 @@ function MatchCard({ m }: { m: TodayMatch }) {
             </span>
           )}
         </div>
-        <div className="text-right">
-          <span className="font-mono text-[14px] font-bold tabular-nums">{m.time}</span>
-          <span className="ml-1.5 text-[11px] text-muted">{m.city} · МСК</span>
-        </div>
+        <span className="text-[11px] text-muted">{m.city} · МСК</span>
       </div>
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between gap-1.5 text-[14px] font-bold">
-          <span className={`flex items-center gap-1.5 ${played && !homeWin ? "text-ink-soft" : ""}`}>
-            <Flag code={m.homeFlag} name={m.home} w={20} />
-            {m.home}
-          </span>
-          {played && (
-            <span className={`font-mono tabular-nums ${homeWin ? "text-ink" : "text-muted"}`}>{m.gh}</span>
+      <div className="flex items-center gap-2.5">
+        <div className={`flex flex-1 items-center justify-end gap-1.5 text-right text-[14px] font-bold ${played && !homeWin ? "text-ink-soft" : ""}`}>
+          <span className="min-w-0 truncate">{m.home}</span>
+          <Flag code={m.homeFlag} name={m.home} w={20} />
+        </div>
+        <div className="flex shrink-0 flex-col items-center">
+          {played ? (
+            <span className="rounded-lg bg-[#0a7d55] px-2.5 py-1 font-mono text-[15px] font-extrabold tabular-nums text-white shadow-sm">
+              {m.gh}:{m.ga}
+            </span>
+          ) : (
+            <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 font-mono text-[13px] font-bold tabular-nums text-muted dark:bg-white/[0.07]">
+              {m.time}
+            </span>
+          )}
+          {m.pens && (
+            <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-muted">
+              пен {m.pens.h}:{m.pens.a}
+            </span>
           )}
         </div>
-        <div className="flex items-center justify-between gap-1.5 text-[14px] font-bold">
-          <span className={`flex items-center gap-1.5 ${played && !awayWin ? "text-ink-soft" : ""}`}>
-            <Flag code={m.awayFlag} name={m.away} w={20} />
-            {m.away}
-          </span>
-          {played && (
-            <span className={`font-mono tabular-nums ${awayWin ? "text-ink" : "text-muted"}`}>{m.ga}</span>
-          )}
+        <div className={`flex flex-1 items-center gap-1.5 text-[14px] font-bold ${played && !awayWin ? "text-ink-soft" : ""}`}>
+          <Flag code={m.awayFlag} name={m.away} w={20} />
+          <span className="min-w-0 truncate">{m.away}</span>
         </div>
       </div>
 
