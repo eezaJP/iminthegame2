@@ -113,6 +113,7 @@ export async function getHomeData(revalidate = 60) {
     const fav = h >= a && h >= d ? home : a >= d ? away : null;
     const { time } = mskParts(f.kickoff);
     const cityId = CITY_ID[f.cityEn] ?? -1;
+    const status = f.finished ? "finished" : f.live ? "live" : "upcoming";
     return {
       id: f.id.toString(),
       group: f.group,
@@ -126,9 +127,21 @@ export async function getHomeData(revalidate = 60) {
       impact: fav
         ? `Если ${fav} выиграет — заметно приблизится к выходу из группы.`
         : "Большинство ждёт ничью — группа останется открытой.",
-    };
+      status, gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
+    } as TodayMatch;
   });
   const potentialTotal = todayMatches.reduce((s, m) => s + m.potential, 0);
+
+  // ---- next upcoming matches for the live countdown (real timestamps) ----
+  const nowMs = Date.now();
+  const nextMatches = fixtures
+    .filter((f) => f.homeRu && f.awayRu && f.timestamp * 1000 > nowMs)
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .slice(0, 8)
+    .map((f) => ({
+      kickoff: f.timestamp * 1000, time: mskParts(f.kickoff).time,
+      home: f.homeRu!, away: f.awayRu!, homeFlag: flagOf(f.homeRu!), awayFlag: flagOf(f.awayRu!),
+    }));
 
   // ---- all group fixtures (slim, for the host map) ----
   const slimFixtures = fixtures
@@ -237,7 +250,7 @@ export async function getHomeData(revalidate = 60) {
     stats,
     players,
     todayMatches,
-    todaySlim: todayMatches.map((m) => ({ time: m.time, home: m.home, away: m.away, homeFlag: m.homeFlag, awayFlag: m.awayFlag })),
+    nextMatches,
     potentialTotal,
     riser: facts.threat,
     awards,
@@ -369,6 +382,8 @@ export async function getGroupsData(revalidate = 60) {
       potential: 75,
       impact: fav ? `Если ${fav} выиграет — заметно приблизится к выходу из группы.`
         : "Большинство ждёт ничью — группа останется открытой.",
+      status: f.finished ? "finished" : f.live ? "live" : "upcoming",
+      gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
     };
   });
 

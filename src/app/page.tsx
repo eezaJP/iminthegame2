@@ -26,7 +26,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <Hero participants={data.participantsCount} stats={data.stats} todayMatches={data.todaySlim} />
+      <Hero participants={data.participantsCount} stats={data.stats} nextMatches={data.nextMatches} />
 
       <SectionHeader kicker="Что сегодня важно" title="Сегодня в игре" />
       <TodayInGame matches={data.todayMatches} potentialTotal={data.potentialTotal} riser={data.riser} />

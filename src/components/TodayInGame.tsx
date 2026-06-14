@@ -18,25 +18,50 @@ function DistRow({ label, count, color }: { label: string; count: number; color:
 }
 
 function MatchCard({ m }: { m: TodayMatch }) {
+  const played = m.status !== "upcoming" && m.gh !== null && m.ga !== null;
+  const homeWin = played && m.gh! > m.ga!;
+  const awayWin = played && m.ga! > m.gh!;
   return (
     <div className="glass glass-hover flex flex-col p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="rounded-md bg-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-deep">
-          Группа {m.group}
-        </span>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <span className="rounded-md bg-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-green-deep">
+            Группа {m.group}
+          </span>
+          {m.status === "live" && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-rose/12 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-rose">
+              <span className="live-dot inline-block size-1.5 rounded-full bg-rose" />live
+            </span>
+          )}
+          {m.status === "finished" && (
+            <span className="rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-muted dark:bg-white/[0.07]">
+              завершён
+            </span>
+          )}
+        </div>
         <div className="text-right">
           <span className="font-mono text-[14px] font-bold tabular-nums">{m.time}</span>
           <span className="ml-1.5 text-[11px] text-muted">{m.city} · МСК</span>
         </div>
       </div>
       <div className="space-y-1.5">
-        <div className="flex items-center gap-1.5 text-[14px] font-bold">
-          <Flag code={m.homeFlag} name={m.home} w={20} />
-          {m.home}
+        <div className="flex items-center justify-between gap-1.5 text-[14px] font-bold">
+          <span className={`flex items-center gap-1.5 ${played && !homeWin ? "text-ink-soft" : ""}`}>
+            <Flag code={m.homeFlag} name={m.home} w={20} />
+            {m.home}
+          </span>
+          {played && (
+            <span className={`font-mono tabular-nums ${homeWin ? "text-ink" : "text-muted"}`}>{m.gh}</span>
+          )}
         </div>
-        <div className="flex items-center gap-1.5 text-[14px] font-bold">
-          <Flag code={m.awayFlag} name={m.away} w={20} />
-          {m.away}
+        <div className="flex items-center justify-between gap-1.5 text-[14px] font-bold">
+          <span className={`flex items-center gap-1.5 ${played && !awayWin ? "text-ink-soft" : ""}`}>
+            <Flag code={m.awayFlag} name={m.away} w={20} />
+            {m.away}
+          </span>
+          {played && (
+            <span className={`font-mono tabular-nums ${awayWin ? "text-ink" : "text-muted"}`}>{m.ga}</span>
+          )}
         </div>
       </div>
 

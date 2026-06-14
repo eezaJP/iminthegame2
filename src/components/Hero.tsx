@@ -5,8 +5,7 @@ import { Users, Radio } from "lucide-react";
 import { ScrambleText } from "./ScrambleText";
 import { NextMatchCountdown } from "./NextMatchCountdown";
 import { HeroTrophy } from "./HeroTrophy";
-
-type M ={ time: string; home: string; away: string; homeFlag: string; awayFlag: string };
+import type { NextMatch } from "@/lib/types";
 
 /* каскадное появление: контейнер раздаёт задержки детям */
 const stagger = {
@@ -33,11 +32,11 @@ function HostLine() {
 export function Hero({
   participants,
   stats,
-  todayMatches,
+  nextMatches,
 }: {
   participants: number;
   stats: { label: string; value: string }[];
-  todayMatches: M[];
+  nextMatches: NextMatch[];
 }) {
   return (
     <section
@@ -90,7 +89,7 @@ export function Hero({
         </motion.p>
 
         <motion.div variants={rise} className="mt-5">
-          <NextMatchCountdown matches={todayMatches} />
+          <NextMatchCountdown matches={nextMatches} />
         </motion.div>
 
         <motion.div

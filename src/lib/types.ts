@@ -105,6 +105,19 @@ export type TodayMatch = {
   popularScore: string;
   potential: number;
   impact?: string;
+  status: "upcoming" | "live" | "finished";
+  gh: number | null;
+  ga: number | null;
+  kickoff: number; // epoch ms (real kickoff)
+};
+
+export type NextMatch = {
+  kickoff: number; // epoch ms
+  time: string;    // HH:MM МСК
+  home: string;
+  away: string;
+  homeFlag: string;
+  awayFlag: string;
 };
 
 export type PredictionDist = { home: number; draw: number; away: number; score: string };
