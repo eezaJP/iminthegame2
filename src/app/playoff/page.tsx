@@ -68,8 +68,8 @@ export default async function PlayoffPage() {
       <SectionHeader kicker="Прогноз лиги" title="Кого лига видит чемпионом" />
       <ChampionAlive items={data.championAlive} />
 
-      <SectionHeader kicker="Слепые сетки" title="Сетки участников" />
-      <PlayoffView brackets={data.brackets} />
+      <SectionHeader kicker="Реальная сетка и прогнозы" title="Сетка плей-офф" />
+      <PlayoffView brackets={data.brackets} real={data.real} />
 
       <SectionHeader kicker="Кубок" title="Чемпион" />
       <ChampionCard favourite={data.favourite} total={data.brackets.length} />

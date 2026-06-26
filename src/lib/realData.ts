@@ -7,8 +7,9 @@
 import { getSheetData, type Score, type SheetData } from "./sources/sheet";
 import { getFixtures, type ApiFixture } from "./sources/apiFootball";
 import { TEAMS, flagOf } from "./teams";
+import { plural, ruDate } from "./utils";
 import type { Participant, TodayMatch } from "./types";
-import type { PlayoffParticipant, PoRound, PoTeam, ChampionAliveItem } from "./playoff";
+import type { PlayoffParticipant, PoRound, PoMatch, PoTeam, ChampionAliveItem } from "./playoff";
 
 // API venue city → our host-city id (matches map.json ids 0-15).
 const CITY_ID: Record<string, number> = {
@@ -254,6 +255,302 @@ export async function getHomeData(revalidate = 60) {
     tableTurner: null as { match: string; positions: number } | null,
   };
 
+  // ======================= DASHBOARD STORY LAYER =======================
+  // Derived blocks for the focused home dashboard: a dynamic "story of the day",
+  // who can climb today, and short stories. All built from data already loaded —
+  // no extra fetches, no new scoring logic.
+
+  const finishedToday = todayFixtures.filter((f) => f.finished && f.gh !== null && f.ga !== null);
+  const upcomingToday = todayFixtures.filter((f) => !f.finished);
+
+  // per-participant day board: points earned today + potential still in play
+  const dayBoard = players.map((p) => {
+    const preds = sheet.participants[p.name]?.predictions ?? {};
+    let gained = 0, potRemain = 0, exactToday = 0;
+    for (const f of finishedToday) {
+      const pick = predFor(preds, f.homeRu!, f.awayRu!);
+      if (!pick) continue;
+      const pts = gmPoints([pick.ph, pick.pa], [f.gh!, f.ga!]);
+      gained += pts;
+      if (pts === 5) exactToday++;
+    }
+    for (const f of upcomingToday) if (predFor(preds, f.homeRu!, f.awayRu!)) potRemain += 5;
+    return {
+      id: p.id, name: p.name, avatarSeed: p.avatarSeed, rank: p.rank,
+      total: p.points.total, gained, potRemain, exactToday, ceiling: p.points.total + potRemain,
+    };
+  });
+
+  // condition text from a participant's pick in the next upcoming match today
+  const conditionFor = (name: string): string => {
+    const preds = sheet.participants[name]?.predictions ?? {};
+    for (const f of upcomingToday) {
+      const pick = predFor(preds, f.homeRu!, f.awayRu!);
+      if (!pick) continue;
+      return pick.ph === pick.pa
+        ? `если ${f.homeRu} и ${f.awayRu} сыграют вничью`
+        : `если ${pick.ph > pick.pa ? f.homeRu : f.awayRu} победит ${Math.max(pick.ph, pick.pa)}:${Math.min(pick.ph, pick.pa)}`;
+    }
+    return "";
+  };
+
+  const matchCount = todayMatches.length;
+  const nextDay = upcomingDays.find((d) => d > today) ?? null;
+
+  // ---- main story of the day (dynamic) ----
+  let mainStory: {
+    kind: "rest" | "leadChange" | "top3" | "gap";
+    title: string; text: string; potential: number; matchCount: number;
+  };
+  if (matchCount === 0) {
+    mainStory = {
+      kind: "rest",
+      title: "Сегодня матчей нет",
+      text: nextDay
+        ? `Следующий игровой день — ${ruDate(nextDay)}. Прогнозы зафиксированы, ждём матчи.`
+        : "Групповой этап завершается — впереди плей-офф.",
+      potential: 0, matchCount: 0,
+    };
+  } else {
+    const mc = `${matchCount} ${plural(matchCount, "матч", "матча", "матчей")}`;
+    const challengers = dayBoard.filter((d) => d.rank > 1 && d.potRemain > 0 && d.ceiling >= leader.points.total);
+    const top3Total = players[2]?.points.total ?? 0;
+    const toTop3 = dayBoard.filter((d) => d.rank > 3 && d.potRemain > 0 && d.ceiling >= top3Total);
+    if (challengers.length) {
+      const names = challengers.slice(0, 2).map((c) => c.name);
+      mainStory = {
+        kind: "leadChange", title: "Сегодня может смениться лидер",
+        text: `В игре ${mc} и ${potentialTotal} потенциальных очков. ${names.join(" и ")} ${names.length > 1 ? "могут" : "может"} обойти лидера.`,
+        potential: potentialTotal, matchCount,
+      };
+    } else if (toTop3.length) {
+      const names = toTop3.slice(0, 2).map((c) => c.name);
+      mainStory = {
+        kind: "top3", title: "Сегодня может измениться топ-3",
+        text: `В игре ${mc} и ${potentialTotal} потенциальных очков. ${names.join(" и ")} ${names.length > 1 ? "могут" : "может"} приблизиться к лидерам.`,
+        potential: potentialTotal, matchCount,
+      };
+    } else {
+      const top = dayBoard.filter((d) => d.rank > 1 && d.potRemain > 0).sort((a, b) => b.potRemain - a.potRemain).slice(0, 2).map((c) => c.name);
+      mainStory = {
+        kind: "gap", title: "Сегодня — борьба за очки",
+        text: `В игре ${mc} и ${potentialTotal} потенциальных очков.${top.length ? ` ${top.join(" и ")} ${top.length > 1 ? "могут" : "может"} сократить отставание.` : ""}`,
+        potential: potentialTotal, matchCount,
+      };
+    }
+  }
+
+  // ---- who can climb today (top potential, with condition) ----
+  const climbers = dayBoard
+    .filter((d) => d.potRemain > 0 && d.rank > 1)
+    .sort((a, b) => b.potRemain - a.potRemain || a.rank - b.rank)
+    .slice(0, 4)
+    .map((d) => {
+      const idx = players.findIndex((p) => p.id === d.id);
+      const above = players[idx - 1];
+      const canPass = above && d.ceiling >= above.points.total;
+      return {
+        id: d.id, name: d.name, avatarSeed: d.avatarSeed, rank: d.rank, potential: d.potRemain,
+        move: canPass ? `подняться на ${above.rank}-е место` : "сократить отставание",
+        condition: conditionFor(d.name),
+      };
+    });
+
+  // ---- stories of the day (max 4, best available) ----
+  type Story = {
+    kind: string; title: string; tone: "gold" | "green" | "sky" | "rose";
+    name: string; id: number; text: string; metric: string;
+  };
+  const stories: Story[] = [];
+
+  const dayLeader = [...dayBoard].sort((a, b) => b.gained - a.gained || b.exactToday - a.exactToday)[0];
+  if (dayLeader && dayLeader.gained > 0) {
+    let exactMatch = "";
+    const preds = sheet.participants[dayLeader.name]?.predictions ?? {};
+    for (const f of finishedToday) {
+      const pick = predFor(preds, f.homeRu!, f.awayRu!);
+      if (pick && gmPoints([pick.ph, pick.pa], [f.gh!, f.ga!]) === 5) { exactMatch = `${f.homeRu} — ${f.awayRu}`; break; }
+    }
+    stories.push({
+      kind: "leader", title: "Лидер дня", tone: "gold", name: dayLeader.name, id: dayLeader.id,
+      text: exactMatch ? `Угадал точный счёт в матче ${exactMatch}.` : "Больше всех очков сегодня по сыгранным матчам.",
+      metric: `+${dayLeader.gained} ${plural(dayLeader.gained, "очко", "очка", "очков")}`,
+    });
+  }
+
+  if (facts.againstCrowd.count > 0) {
+    const ac = players.find((p) => p.name === facts.againstCrowd.name);
+    stories.push({
+      kind: "contrarian", title: "Против большинства", tone: "sky", name: facts.againstCrowd.name, id: ac?.id ?? 0,
+      text: `Чаще всех идёт против большинства сегодня — ${facts.againstCrowd.count} ${plural(facts.againstCrowd.count, "прогноз", "прогноза", "прогнозов")}.`,
+      metric: "против большинства",
+    });
+  }
+
+  // riskiest: someone who alone backs a particular scoreline in an upcoming match
+  let risky: { name: string; id: number; match: string; score: string } | null = null;
+  for (const f of upcomingToday) {
+    const owners: Record<string, string[]> = {};
+    for (const p of players) {
+      const pick = predFor(sheet.participants[p.name]?.predictions ?? {}, f.homeRu!, f.awayRu!);
+      if (!pick) continue;
+      (owners[`${pick.ph}:${pick.pa}`] ??= []).push(p.name);
+    }
+    const solo = Object.entries(owners).find(([, o]) => o.length === 1);
+    if (solo) {
+      const owner = players.find((p) => p.name === solo[1][0])!;
+      risky = { name: owner.name, id: owner.id, match: `${f.homeRu} — ${f.awayRu}`, score: solo[0] };
+      break;
+    }
+  }
+  if (risky) {
+    stories.push({
+      kind: "risky", title: "Самый рискованный", tone: "rose", name: risky.name, id: risky.id,
+      text: `Единственный поставил счёт ${risky.score} в матче ${risky.match}.`, metric: "high risk",
+    });
+  }
+
+  if (facts.threat.condition) {
+    const th = players.find((p) => p.name === facts.threat.name);
+    stories.push({
+      kind: "threat", title: "Угроза лидеру", tone: "green", name: facts.threat.name, id: th?.id ?? 0,
+      text: `Может обойти лидера сегодня, ${facts.threat.condition}.`, metric: "претендент",
+    });
+  } else if (facts.rarePick) {
+    stories.push({
+      kind: "rare", title: "Редкий прогноз", tone: "green", name: "", id: 0,
+      text: `Только ${facts.rarePick.count} из ${facts.rarePick.total} поверили в ${facts.rarePick.team} — и забрали очки.`,
+      metric: "редкий прогноз",
+    });
+  }
+
+  const playedTotal = sheet.results.filter((r) => r.gh !== null && r.ga !== null).length;
+
+  // ======================= RATING PAGE LAYER =======================
+  // Standings-focused derived blocks. Honest daily movement is computed from
+  // matches that FINISHED today: rank-before-today (total minus today's gains)
+  // vs rank-now. No per-round history is invented.
+  const matchesLeft = Math.max(0, 72 - playedTotal);
+
+  // rank a list densely (equal value → same place, next distinct value → +1)
+  const denseRank = (rows: { id: number; v: number }[]) => {
+    const sorted = [...rows].sort((a, b) => b.v - a.v);
+    const map = new Map<number, number>();
+    let place = 0;
+    let prev: number | null = null;
+    for (const r of sorted) {
+      if (prev === null || r.v !== prev) { place++; prev = r.v; }
+      map.set(r.id, place);
+    }
+    return map;
+  };
+
+  const beforeRank = denseRank(
+    players.map((p) => {
+      const db = dayBoard.find((d) => d.id === p.id);
+      return { id: p.id, v: p.points.total - (db?.gained ?? 0) };
+    })
+  );
+  const movement = players.map((p) => {
+    const prev = beforeRank.get(p.id) ?? p.rank;
+    return { id: p.id, name: p.name, avatarSeed: p.avatarSeed, prevRank: prev, nowRank: p.rank, delta: prev - p.rank };
+  });
+  // movers first (largest jump), then steady high-rankers, to always fill the panel
+  const dayMovers = [...movement]
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta) || a.nowRank - b.nowRank)
+    .slice(0, 5);
+  const biggestJump = movement.filter((m) => m.delta > 0).sort((a, b) => b.delta - a.delta)[0] ?? null;
+
+  // remaining reachable points per participant (group stage)
+  const remainingPredicted = (name: string) => {
+    const preds = sheet.participants[name]?.predictions ?? {};
+    let n = 0;
+    for (const f of fixtures) {
+      if (f.roundKey !== "GROUP" || f.finished || !f.homeRu || !f.awayRu) continue;
+      if (predFor(preds, f.homeRu, f.awayRu)) n++;
+    }
+    return n;
+  };
+  const potentials = players.map((p) => {
+    const rem = remainingPredicted(p.name);
+    return {
+      id: p.id, name: p.name, avatarSeed: p.avatarSeed, rank: p.rank,
+      total: p.points.total, champion: p.champion, championFlag: flagOf(p.champion),
+      max: p.points.total + rem * 5,
+    };
+  });
+
+  // best-by-category cards — SEASON/cumulative, deliberately distinct from the
+  // home page's daily "Истории дня".
+  const byExact = [...players].sort((a, b) => b.stats.exactScores - a.stats.exactScores || b.points.total - a.points.total)[0];
+  const byOutcomes = [...players].sort((a, b) => b.stats.correctOutcomes - a.stats.correctOutcomes || b.points.total - a.points.total)[0];
+  const byNear = [...players].sort((a, b) => b.stats.nearMiss - a.stats.nearMiss)[0];
+  const byPotential = [...potentials].sort((a, b) => b.max - a.max)[0];
+  const chaser = players[1] ?? null;
+  // dark horse: backs the least popular champion in the league
+  const rarestChampion = [...players]
+    .filter((p) => p.champion)
+    .sort((a, b) => (champCount[a.champion] ?? 99) - (champCount[b.champion] ?? 99) || b.points.total - a.points.total)[0];
+
+  type CatCard = { key: string; title: string; tone: "gold" | "green" | "sky" | "rose"; icon: string; name: string; id: number; value: string; sub: string };
+  const catCandidates: (CatCard | null)[] = [
+    byExact && byExact.stats.exactScores > 0
+      ? { key: "exact", title: "Больше всех точных счётов", tone: "gold", icon: "target", name: byExact.name, id: byExact.id, value: String(byExact.stats.exactScores), sub: plural(byExact.stats.exactScores, "точный счёт", "точных счёта", "точных счётов") }
+      : null,
+    byOutcomes && byOutcomes.stats.correctOutcomes > 0
+      ? { key: "outcomes", title: "Точнее всех по исходам", tone: "green", icon: "check", name: byOutcomes.name, id: byOutcomes.id, value: String(byOutcomes.stats.correctOutcomes), sub: plural(byOutcomes.stats.correctOutcomes, "угаданный исход", "угаданных исхода", "угаданных исходов") }
+      : null,
+    biggestJump
+      ? { key: "jump", title: "Самый большой рывок", tone: "green", icon: "trend", name: biggestJump.name, id: biggestJump.id, value: `+${biggestJump.delta}`, sub: `${plural(biggestJump.delta, "место", "места", "мест")} за день` }
+      : null,
+    byNear && byNear.stats.nearMiss > 0
+      ? { key: "near", title: "Почти оракул", tone: "sky", icon: "crosshair", name: byNear.name, id: byNear.id, value: String(byNear.stats.nearMiss), sub: "раз мимо на один гол" }
+      : null,
+    byPotential
+      ? { key: "potential", title: "Лидер по потенциалу", tone: "gold", icon: "flame", name: byPotential.name, id: byPotential.id, value: `${byPotential.max}`, sub: "очков максимум" }
+      : null,
+    rarestChampion
+      ? { key: "darkhorse", title: "Тёмная лошадка", tone: "sky", icon: "gem", name: rarestChampion.name, id: rarestChampion.id, value: rarestChampion.champion, sub: "ставит на редкого чемпиона" }
+      : null,
+    chaser
+      ? { key: "chaser", title: "Главный претендент", tone: "rose", icon: "swords", name: chaser.name, id: chaser.id, value: `−${(players[0]?.points.total ?? 0) - chaser.points.total}`, sub: "до лидера" }
+      : null,
+  ];
+  const bestByCategory = catCandidates.filter((c): c is CatCard => c !== null).slice(0, 6);
+
+  // overtake scenarios — pairwise, with a checklist of today's conditions
+  const overtakeScenarios = climbers.slice(0, 2).map((c) => {
+    const preds = sheet.participants[c.name]?.predictions ?? {};
+    const conditions: string[] = [];
+    for (const f of upcomingToday) {
+      const pick = predFor(preds, f.homeRu!, f.awayRu!);
+      if (!pick) continue;
+      conditions.push(
+        pick.ph === pick.pa
+          ? `${f.homeRu} и ${f.awayRu} сыграют вничью`
+          : `${pick.ph > pick.pa ? f.homeRu : f.awayRu} обыграет ${pick.ph > pick.pa ? f.awayRu : f.homeRu} ${Math.max(pick.ph, pick.pa)}:${Math.min(pick.ph, pick.pa)}`
+      );
+      if (conditions.length >= 3) break;
+    }
+    const idx = players.findIndex((p) => p.id === c.id);
+    const above = players[idx - 1];
+    return {
+      id: c.id, name: c.name, avatarSeed: c.avatarSeed,
+      target: above?.name ?? "лидера", place: above?.rank ?? 1,
+      conditions, maxGain: c.potential,
+    };
+  });
+
+  const rating = {
+    matchesLeft,
+    seasonPotential: matchesLeft * 5,
+    movement,
+    dayMovers,
+    overtakeScenarios,
+    bestByCategory,
+    potentials,
+  };
+
   const stats = [
     { value: "72", label: "матча в группах" },
     { value: "48", label: "команд" },
@@ -273,6 +570,13 @@ export async function getHomeData(revalidate = 60) {
     facts,
     fixtures: slimFixtures,
     spotlightDay: day,
+    matchesAreToday: day === today,
+    nextDay,
+    playedTotal,
+    mainStory,
+    climbers,
+    stories: stories.slice(0, 4),
+    rating,
   };
 }
 
@@ -506,7 +810,52 @@ export async function getPlayoffData(revalidate = 60) {
     .sort((a, b) => b.count - a.count);
   const favourite = championAlive[0] ?? null;
 
-  return { started, brackets, championAlive, favourite };
+  // ---- REAL bracket from live knockout fixtures (TBD until knockouts start) ----
+  const RK_KEY: Record<string, string> = { R32: "r32", R16: "r16", QF: "qf", SF: "sf", FINAL: "f" };
+  const realBuckets: Record<string, PoMatch[]> = { r32: [], r16: [], qf: [], sf: [], f: [] };
+  let realThird: PoMatch = { a: null, b: null };
+  const koFixtures = fixtures
+    .filter((f) => f.roundKey !== "GROUP" && f.roundKey !== "OTHER")
+    .sort((a, b) => a.timestamp - b.timestamp);
+  for (const f of koFixtures) {
+    const a = teamRef(f.homeRu ?? "");
+    const b = teamRef(f.awayRu ?? "");
+    let winner: PoTeam = null;
+    if (f.finished && f.gh !== null && f.ga !== null) {
+      if (f.gh > f.ga) winner = a;
+      else if (f.ga > f.gh) winner = b;
+      else if (f.penHome !== null && f.penAway !== null) winner = f.penHome > f.penAway ? a : b;
+    }
+    const m: PoMatch = {
+      a, b,
+      scoreA: f.finished ? f.gh : null,
+      scoreB: f.finished ? f.ga : null,
+      winner: winner ?? undefined,
+      pens: f.penHome !== null && f.penAway !== null,
+      played: f.finished,
+    };
+    if (f.roundKey === "THIRD") { realThird = m; continue; }
+    const key = RK_KEY[f.roundKey];
+    if (key) realBuckets[key].push(m);
+  }
+  // full bracket skeleton — every slot exists; real pairs drop in as the API
+  // resolves them (1/16 fills first, third-place qualifiers slot in last).
+  const PO_COUNTS: Record<string, number> = { r32: 16, r16: 8, qf: 4, sf: 2, f: 1 };
+  const blankMatch = (): PoMatch => ({ a: null, b: null, scoreA: null, scoreB: null, winner: undefined, played: false });
+  const realRounds: PoRound[] = ORDER.map((k) => {
+    const matches = [...realBuckets[k]];
+    while (matches.length < PO_COUNTS[k]) matches.push(blankMatch());
+    return { key: k, title: TITLES[k], matches: matches.slice(0, PO_COUNTS[k]) };
+  });
+  const real = {
+    started,
+    knownMatches: koFixtures.length,
+    rounds: realRounds,
+    third: realThird.a || realThird.b ? realThird : blankMatch(),
+    champion: realBuckets.f[0]?.winner ?? null,
+  };
+
+  return { started, brackets, championAlive, favourite, real };
 }
 
 export type PlayoffPageData = Awaited<ReturnType<typeof getPlayoffData>>;

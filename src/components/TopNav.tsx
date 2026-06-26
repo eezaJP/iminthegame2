@@ -4,14 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { Trophy, LayoutGrid, GitFork } from "lucide-react";
+import { Flame, Medal, LayoutGrid, GitFork, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 
 const TABS = [
-  { href: "/", label: "Главная", icon: Trophy },
-  { href: "/groups", label: "Групповой этап", icon: LayoutGrid },
+  { href: "/", label: "Сегодня", icon: Flame },
+  { href: "/rating", label: "Рейтинг", icon: Medal },
+  { href: "/groups", label: "Группы", icon: LayoutGrid },
   { href: "/playoff", label: "Плей-офф", icon: GitFork },
+  { href: "/rules", label: "Правила", icon: BookOpen },
 ];
 
 export function TopNav() {
@@ -62,7 +64,7 @@ export function TopNav() {
                     />
                   )}
                   <Icon className="size-4 shrink-0" strokeWidth={2.2} />
-                  <span className="hidden sm:inline">{t.label}</span>
+                  <span className="hidden md:inline">{t.label}</span>
                 </Link>
               </li>
             );
