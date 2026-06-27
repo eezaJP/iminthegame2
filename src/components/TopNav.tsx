@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { motion } from "motion/react";
 import { Flame, Medal, LayoutGrid, GitFork, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { refreshData } from "@/app/actions";
 import { ThemeToggle } from "./ThemeToggle";
 
 const TABS = [
@@ -18,28 +20,47 @@ const TABS = [
 
 export function TopNav() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [refreshing, startRefresh] = useTransition();
+
+  // Tap the logo to pull fresh data: purge the server data cache, then re-render
+  // the current route. Lets an open PWA update without being closed and reopened.
+  const refresh = () =>
+    startRefresh(async () => {
+      await refreshData();
+      router.refresh();
+    });
 
   return (
     <header className="sticky top-0 z-50 mx-auto w-full max-w-[1180px] px-4 pt-3 sm:px-6">
       <nav className="glass flex items-center justify-between gap-2 px-3 py-2.5">
-        <Link href="/" className="group flex items-center gap-2.5 pl-1">
-          <span className="logo-mark grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#0e9f6e] to-[#0a7d55] text-white shadow-sm">
+        <button
+          type="button"
+          onClick={refresh}
+          disabled={refreshing}
+          aria-label="Обновить данные"
+          title="Обновить данные"
+          className="group flex items-center gap-2.5 pl-1"
+        >
+          <span className="logo-mark grid size-9 place-items-center rounded-xl bg-gradient-to-br from-[#0e9f6e] to-[#0a7d55] text-white shadow-sm transition-transform active:scale-95">
             <Image
               src="/player-icon.png"
               alt=""
               width={24}
               height={24}
-              className="size-6 object-contain"
+              className={cn("size-6 object-contain", refreshing && "animate-spin")}
               unoptimized
             />
           </span>
-          <span className="hidden flex-col leading-tight sm:flex">
+          <span className="hidden flex-col leading-tight text-left sm:flex">
             <span className="font-display text-[15px] font-extrabold tracking-tight">
               I&rsquo;m in the game
             </span>
-            <span className="text-[11px] font-medium text-muted">World Cup 2026 · прогнозы друзей</span>
+            <span className="text-[11px] font-medium text-muted">
+              {refreshing ? "Обновляем…" : "World Cup 2026 · прогнозы друзей"}
+            </span>
           </span>
-        </Link>
+        </button>
 
         <ul className="flex items-center gap-1">
           {TABS.map((t) => {

@@ -23,9 +23,16 @@ const mono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  applicationName: "I'm in the game",
   title: "ЧМ-2026 · Лига прогнозов",
   description:
     "Дашборд дружеской лиги прогнозов на Чемпионат мира по футболу 2026: рейтинг, групповой этап, плей-офф и интерактивная карта городов-хозяев.",
+  // Home-screen app (iOS): show our logo + this label instead of a screenshot/letter.
+  appleWebApp: {
+    capable: true,
+    title: "I'm in the game",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {
