@@ -405,6 +405,26 @@ export async function getHomeData(revalidate = 60) {
         .map((f) => koTodayMatch(f, koDepths, koPairMap))
     : [];
 
+  // who guessed the most real knockout pairs (which exact pairs they predicted)
+  const realKo = fixtures.filter((f) => KO_STAGE[f.roundKey] && f.homeRu && f.awayRu);
+  const guessedByPlayer = new Map<string, { home: string; away: string; stage: string; homeFlag: string; awayFlag: string }[]>();
+  for (const f of realKo) {
+    const guessers = koPairMap.get(`${RK2KEY[f.roundKey]}|${pairKeyOf(f.homeRu!, f.awayRu!)}`) ?? [];
+    for (const g of guessers) {
+      if (!guessedByPlayer.has(g.name)) guessedByPlayer.set(g.name, []);
+      guessedByPlayer.get(g.name)!.push({
+        home: f.homeRu!, away: f.awayRu!, stage: KO_STAGE[f.roundKey].label,
+        homeFlag: flagOf(f.homeRu!), awayFlag: flagOf(f.awayRu!),
+      });
+    }
+  }
+  const pairLeaders = players
+    .map((p) => {
+      const pairs = guessedByPlayer.get(p.name) ?? [];
+      return { id: p.id, name: p.name, avatarSeed: p.avatarSeed, count: pairs.length, pairs };
+    })
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
   // home "matches" block: current knockout round in playoff phase, else today's games
   const usePlayoffRound = groupStageDone && roundMatches.length > 0;
   const homeMatches = usePlayoffRound ? roundMatches : todayMatches;
@@ -714,6 +734,7 @@ export async function getHomeData(revalidate = 60) {
     overtakeScenarios,
     bestByCategory,
     potentials,
+    pairLeaders,
   };
 
   // whole-tournament match count: 72 group + 32 knockout (16+8+4+2+1+1) = 104

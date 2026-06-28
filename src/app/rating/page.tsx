@@ -3,6 +3,7 @@ import { RatingTable } from "@/components/RatingTable";
 import { DayMovement } from "@/components/DayMovement";
 import { OvertakeScenarios } from "@/components/OvertakeScenarios";
 import { BestByCategory } from "@/components/BestByCategory";
+import { PairLeaders } from "@/components/PairLeaders";
 import { ParticipantsStrip } from "@/components/ParticipantsStrip";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getHomeData } from "@/lib/realData";
@@ -56,6 +57,14 @@ export default async function RatingPage() {
       {/* best by category — rating-specific stories (distinct from home) */}
       <SectionHeader kicker="Лидеры сезона" title="Лучшие по категориям" />
       <BestByCategory cards={r.bestByCategory} />
+
+      {/* who guessed the most knockout pairs (playoff phase) */}
+      {r.pairLeaders.some((l) => l.count > 0) && (
+        <>
+          <SectionHeader kicker="Король сетки" title="Угадал больше всех пар" />
+          <PairLeaders leaders={r.pairLeaders} />
+        </>
+      )}
 
       {/* participants strip */}
       <div className="mt-10">
