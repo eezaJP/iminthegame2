@@ -1052,6 +1052,7 @@ export async function getPlayoffData(revalidate = 60) {
   return {
     started, brackets, championAlive, favourite, real,
     todayMatches,
+    participants: sheet.standings.length,
     matchesAreToday: koDay === today,
     dayLabel: koDay ? ruDate(koDay) : "",
   };

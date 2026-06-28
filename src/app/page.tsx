@@ -47,6 +47,7 @@ export default async function DashboardPage() {
           dayLabel=""
           title={data.homeMatchesTitle}
           allHref={data.homeMatchesHref}
+          total={data.participantsCount}
         />
       </section>
 

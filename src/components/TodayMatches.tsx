@@ -78,7 +78,7 @@ function Live({ status }: { status: TodayMatch["status"] }) {
   return null;
 }
 
-function Row({ m }: { m: TodayMatch }) {
+function Row({ m, total }: { m: TodayMatch; total?: number }) {
   const fav = majority(m);
   return (
     <li className="px-3 py-3 transition-colors hover:bg-white/45 dark:hover:bg-white/[0.05] sm:px-4">
@@ -94,7 +94,7 @@ function Row({ m }: { m: TodayMatch }) {
           <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Пару угадали" : "Частый счёт"}</div>
           {m.isKnockout ? (
             <div>
-              <PairGuessers icon count={m.pairGuessed ?? 0} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} stage={m.stage} />
+              <PairGuessers icon count={m.pairGuessed ?? 0} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} />
               <div className="text-[10px] font-semibold text-muted">{m.stage}</div>
             </div>
           ) : (
@@ -148,7 +148,7 @@ function Row({ m }: { m: TodayMatch }) {
               <span className="text-muted">Лига ставит на <span className="font-bold text-ink">{fav}</span></span>
               {typeof m.pairGuessed === "number" && (
                 <span className="shrink-0 text-muted">
-                  пару угадали <PairGuessers count={m.pairGuessed} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} stage={m.stage} />
+                  пару угадали <PairGuessers count={m.pairGuessed} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} />
                 </span>
               )}
             </>
@@ -179,6 +179,7 @@ export function TodayMatches({
   title,
   allHref = "/groups",
   emptyText = "Сегодня матчей нет — прогнозы зафиксированы, ждём следующий игровой день.",
+  total,
 }: {
   matches: TodayMatch[];
   potentialTotal: number;
@@ -187,6 +188,7 @@ export function TodayMatches({
   title?: string;
   allHref?: string | null;
   emptyText?: string;
+  total?: number;
 }) {
   if (!matches.length) {
     return <div className="glass p-6 text-center text-[14px] text-muted">{emptyText}</div>;
@@ -216,7 +218,7 @@ export function TodayMatches({
 
       <ul className="glass divide-y divide-black/[0.06] overflow-hidden p-1 dark:divide-white/[0.07]">
         {matches.map((m) => (
-          <Row key={m.id} m={m} />
+          <Row key={m.id} m={m} total={total} />
         ))}
       </ul>
 

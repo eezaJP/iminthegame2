@@ -74,6 +74,7 @@ export default async function PlayoffPage() {
           title={data.matchesAreToday ? "Матчи плей-офф сегодня" : "Ближайшие матчи плей-офф"}
           allHref="#po-bracket"
           emptyText="Матчей плей-офф пока нет — расписание появится, когда стартует стадия на вылет."
+          total={data.participants}
         />
       </section>
 
