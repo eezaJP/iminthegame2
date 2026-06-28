@@ -12,20 +12,23 @@ type Row = {
   status: "in" | "edge" | "out";
 };
 
-const STATUS = {
-  in: { label: "в зоне выхода", cls: "bg-green/12 text-green-deep" },
-  edge: { label: "на грани", cls: "bg-gold/15 text-gold" },
-  out: { label: "ниже линии", cls: "bg-black/[0.05] text-muted dark:bg-white/[0.07]" },
+const CLS = {
+  in: "bg-green/12 text-green-deep",
+  edge: "bg-gold/15 text-gold",
+  out: "bg-black/[0.05] text-muted dark:bg-white/[0.07]",
 } as const;
 
 const ROW_TINT = { in: "bg-green/[0.05]", edge: "bg-gold/[0.05]", out: "" } as const;
 
-export function ThirdPlaceRace({ rows }: { rows: Row[] }) {
+export function ThirdPlaceRace({ rows, done = false }: { rows: Row[]; done?: boolean }) {
+  const label = (s: Row["status"]) =>
+    s === "in" ? (done ? "прошёл" : "в зоне выхода") : s === "edge" ? "на грани" : done ? "не прошёл" : "ниже линии";
   return (
     <div className="glass overflow-hidden p-4 sm:p-5">
       <p className="mb-3 text-[13px] text-ink-soft">
-        8 лучших команд с третьих мест проходят в 1/16 финала. Зелёные — в зоне выхода,
-        песочные — на грани.
+        {done
+          ? "8 лучших команд с третьих мест прошли в 1/16 финала. Зелёные — прошли дальше."
+          : "8 лучших команд с третьих мест проходят в 1/16 финала. Зелёные — в зоне выхода, песочные — на грани."}
       </p>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[440px] border-separate border-spacing-y-1 text-[13px]">
@@ -71,8 +74,8 @@ export function ThirdPlaceRace({ rows }: { rows: Row[] }) {
                   </td>
                   <td className="text-center font-mono tabular-nums text-ink-soft">{r.gf}</td>
                   <td className="rounded-r-lg pr-1 text-right">
-                    <span className={`chip ${STATUS[r.status].cls} px-2 py-0.5 text-[10.5px]`}>
-                      {STATUS[r.status].label}
+                    <span className={`chip ${CLS[r.status]} px-2 py-0.5 text-[10.5px]`}>
+                      {label(r.status)}
                     </span>
                   </td>
                 </tr>

@@ -19,7 +19,13 @@ function Badge({ delta }: { delta: number }) {
   return <Minus className="size-4 text-muted" strokeWidth={2.6} />;
 }
 
-export function DayMovement({ movers }: { movers: Mover[] }) {
+export function DayMovement({
+  movers,
+  emptyText = "Сегодня рейтинг ещё не двигался — появится после сыгранных матчей дня.",
+}: {
+  movers: Mover[];
+  emptyText?: string;
+}) {
   const hasMovement = movers.some((m) => m.delta !== 0);
 
   return (
@@ -45,9 +51,7 @@ export function DayMovement({ movers }: { movers: Mover[] }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-[13px] leading-snug text-muted">
-          Сегодня рейтинг ещё не двигался — появится после сыгранных матчей дня.
-        </p>
+        <p className="mt-3 text-[13px] leading-snug text-muted">{emptyText}</p>
       )}
 
       <a

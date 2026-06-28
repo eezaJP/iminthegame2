@@ -40,8 +40,16 @@ export default async function RatingPage() {
           <RatingTable players={data.players} movement={r.movement} />
         </div>
         <div className="flex flex-col gap-3">
-          <DayMovement movers={r.dayMovers} />
-          <OvertakeScenarios scenarios={r.overtakeScenarios} />
+          <DayMovement
+            movers={r.dayMovers}
+            emptyText={r.phase === "playoff" ? "Движение появится после первых матчей плей-офф." : undefined}
+          />
+          <OvertakeScenarios
+            scenarios={r.overtakeScenarios}
+            emptyText={r.phase === "playoff" ? "В плей-офф очки кратно дороже — обойти можно почти любого. Конкретные сценарии появятся, когда пойдут матчи на вылет." : undefined}
+            linkHref={r.phase === "playoff" ? "/playoff" : "/groups"}
+            linkLabel={r.phase === "playoff" ? "Сетка плей-офф" : "Все матчи дня"}
+          />
         </div>
       </div>
 

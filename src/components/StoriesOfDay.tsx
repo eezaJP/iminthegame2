@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Trophy, Users, Flame, Swords, Gem, Sparkles, type LucideIcon } from "lucide-react";
+import Image from "next/image";
+import { Trophy, Users, Flame, Swords, Gem, Sparkles, Crosshair, type LucideIcon } from "lucide-react";
+import { flagUrl } from "@/lib/utils";
 import { Avatar } from "./Avatar";
 
 type Tone = "gold" | "green" | "sky" | "rose";
@@ -13,6 +15,8 @@ type Story = {
   id: number;
   text: string;
   metric: string;
+  flag?: string;
+  isTeam?: boolean;
 };
 
 const ICON: Record<string, LucideIcon> = {
@@ -21,6 +25,11 @@ const ICON: Record<string, LucideIcon> = {
   risky: Flame,
   threat: Swords,
   rare: Gem,
+  // playoff
+  favorite: Trophy,
+  darkhorse: Gem,
+  against: Swords,
+  oracle: Crosshair,
 };
 
 const TONE: Record<Tone, { ring: string; accent: string; metric: string }> = {
@@ -53,7 +62,11 @@ export function StoriesOfDay({ stories }: { stories: Story[] }) {
                 <span className={`grid size-10 place-items-center rounded-2xl bg-white/70 ${t.ring} ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10`}>
                   <Icon className="size-5" strokeWidth={2.3} />
                 </span>
-                {s.name && <Avatar name={s.name} seed={s.id} size={32} />}
+                {s.isTeam && s.flag ? (
+                  <Image src={flagUrl(s.flag, 80)} alt="" width={34} height={24} className="h-6 w-[34px] rounded-[3px] object-cover ring-1 ring-black/10 dark:ring-white/20" unoptimized />
+                ) : (
+                  s.name && <Avatar name={s.name} seed={s.id} size={32} />
+                )}
               </div>
               <div className="mt-3 w-fit rounded-full bg-black/[0.05] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted dark:bg-white/[0.07]">
                 {s.title}

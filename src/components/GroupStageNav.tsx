@@ -10,14 +10,14 @@ const SECTIONS = [
   { id: "all", label: "Все группы" },
 ];
 
-export function GroupStageNav({ groups }: { groups: string[] }) {
+export function GroupStageNav({ groups, sections = SECTIONS }: { groups: string[]; sections?: { id: string; label: string }[] }) {
   const go = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   return (
     <div className="sticky top-[68px] z-40 -mx-4 mb-5 px-4 sm:-mx-6 sm:px-6">
       <div className="glass flex items-center gap-1.5 overflow-x-auto px-2 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {SECTIONS.map((s) => (
+        {sections.map((s) => (
           <Chip key={s.id} onClick={() => go(s.id)}>
             {s.label}
           </Chip>

@@ -458,10 +458,26 @@ export async function getHomeData(revalidate = 60) {
   // ---- stories of the day (max 4, best available) ----
   type Story = {
     kind: string; title: string; tone: "gold" | "green" | "sky" | "rose";
-    name: string; id: number; text: string; metric: string;
+    name: string; id: number; text: string; metric: string; flag?: string; isTeam?: boolean;
   };
   const stories: Story[] = [];
 
+  if (groupStageDone) {
+    // ---- playoff stories from the blind brackets (group-day stories no longer apply) ----
+    const fav = leagueChampions[0];
+    if (fav) stories.push({ kind: "favorite", title: "Фаворит лиги", tone: "gold", name: fav.team, id: 0, flag: fav.flag, isTeam: true, text: `${fav.count} из ${players.length} поставили на этот трофей до старта.`, metric: `${fav.count} ${plural(fav.count, "голос", "голоса", "голосов")}` });
+    const rare = [...leagueChampions].reverse().find((c) => c.count >= 1);
+    if (rare && (!fav || rare.team !== fav.team)) {
+      const fan = players.find((p) => p.champion === rare.team);
+      if (fan) stories.push({ kind: "darkhorse", title: "Тёмная лошадка", tone: "sky", name: fan.name, id: fan.id, flag: rare.flag, text: `Верит в ${rare.team} — самый редкий выбор чемпиона в лиге.`, metric: rare.team });
+    }
+    if (fav) {
+      const rebels = players.filter((p) => p.champion && p.champion !== fav.team);
+      if (rebels[0]) stories.push({ kind: "against", title: "Против фаворита", tone: "rose", name: rebels[0].name, id: rebels[0].id, flag: flagOf(rebels[0].champion), text: `Не верит в ${fav.team} — поставил на ${rebels[0].champion}.`, metric: `${rebels.length} ${plural(rebels.length, "скептик", "скептика", "скептиков")}` });
+    }
+    const oracleP = [...players].sort((a, b) => b.stats.exactScores - a.stats.exactScores)[0];
+    if (oracleP) stories.push({ kind: "oracle", title: "Оракул группового", tone: "green", name: oracleP.name, id: oracleP.id, text: "Больше всех точных счётов в группах — острый глаз перед плей-офф.", metric: `${oracleP.stats.exactScores} точных` });
+  } else {
   const dayLeader = [...dayBoard].sort((a, b) => b.gained - a.gained || b.exactToday - a.exactToday)[0];
   if (dayLeader && dayLeader.gained > 0) {
     let exactMatch = "";
@@ -521,6 +537,7 @@ export async function getHomeData(revalidate = 60) {
       text: `Только ${facts.rarePick.count} из ${facts.rarePick.total} поверили в ${facts.rarePick.team} — и забрали очки.`,
       metric: "редкий прогноз",
     });
+  }
   }
 
   const playedTotal = sheet.results.filter((r) => r.gh !== null && r.ga !== null).length;
@@ -768,6 +785,7 @@ function buildGroupTable(letter: string, fx: ApiFixture[]): GroupTableRow[] {
 export async function getGroupsData(revalidate = 60) {
   const [sheet, fixtures] = await Promise.all([getSheetData(revalidate), getFixtures(revalidate)]);
   const today = mskToday();
+  const done = fixtures.filter((f) => f.roundKey === "GROUP" && f.finished).length >= 72;
 
   const tables: Record<string, GroupTableRow[]> = {};
   for (const g of GROUP_LETTERS) tables[g] = buildGroupTable(g, fixtures);
@@ -812,7 +830,8 @@ export async function getGroupsData(revalidate = 60) {
     .sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf || a.name.localeCompare(b.name));
   const thirds = thirdRows.map((r, i) => ({
     name: r.name, flag: r.flag, group: r.group, points: r.points, gd: r.gd, gf: r.gf,
-    raceRank: i + 1, status: (i < 8 ? "in" : i < 10 ? "edge" : "out") as "in" | "edge" | "out",
+    raceRank: i + 1,
+    status: (done ? (i < 8 ? "in" : "out") : i < 8 ? "in" : i < 10 ? "edge" : "out") as "in" | "edge" | "out",
   }));
 
   // today's matches (group stage)
@@ -838,14 +857,21 @@ export async function getGroupsData(revalidate = 60) {
 
   const playedTotal = fixtures.filter((f) => f.roundKey === "GROUP" && f.finished).length;
   return {
-    cards, intrigue, decided, thirds, todayMatches,
+    done, cards, intrigue, decided, thirds, todayMatches,
     potentialTotal: todayMatches.reduce((s, m) => s + m.potential, 0),
-    summary: [
-      { value: String(playedTotal), label: "сыграно" },
-      { value: String(72 - playedTotal), label: "осталось" },
-      { value: String(todayMatches.length), label: "сегодня" },
-      { value: String(intrigue.length), label: "с интригой" },
-    ],
+    summary: done
+      ? [
+          { value: "72", label: "матча сыграно" },
+          { value: "12", label: "групп" },
+          { value: "32", label: "в плей-офф" },
+          { value: "8", label: "лучших третьих" },
+        ]
+      : [
+          { value: String(playedTotal), label: "сыграно" },
+          { value: String(72 - playedTotal), label: "осталось" },
+          { value: String(todayMatches.length), label: "сегодня" },
+          { value: String(intrigue.length), label: "с интригой" },
+        ],
   };
 }
 

@@ -11,7 +11,17 @@ type Scenario = {
   maxGain: number;
 };
 
-export function OvertakeScenarios({ scenarios }: { scenarios: Scenario[] }) {
+export function OvertakeScenarios({
+  scenarios,
+  emptyText = "Сценарии обгона появятся ближе к матчам — когда будут открытые очки дня.",
+  linkHref = "/groups",
+  linkLabel = "Все матчи дня",
+}: {
+  scenarios: Scenario[];
+  emptyText?: string;
+  linkHref?: string;
+  linkLabel?: string;
+}) {
   return (
     <section className="glass p-4 sm:p-5">
       <div className="flex items-center gap-2">
@@ -49,16 +59,14 @@ export function OvertakeScenarios({ scenarios }: { scenarios: Scenario[] }) {
           ))}
         </div>
       ) : (
-        <p className="mt-3 text-[13px] leading-snug text-muted">
-          Сценарии обгона появятся ближе к матчам — когда будут открытые очки дня.
-        </p>
+        <p className="mt-3 text-[13px] leading-snug text-muted">{emptyText}</p>
       )}
 
       <a
-        href="/groups"
+        href={linkHref}
         className="mt-3 inline-flex items-center gap-1 text-[12px] font-semibold text-green-deep transition-colors hover:text-green"
       >
-        Все матчи дня
+        {linkLabel}
         <ArrowRight className="size-3.5" strokeWidth={2.6} />
       </a>
     </section>
