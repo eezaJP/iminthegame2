@@ -47,9 +47,9 @@ export function PairGuessers({
 
       {open && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setOpen(false)}>
-          <div className="absolute inset-0 bg-black/45 backdrop-blur-[3px]" />
+          <div className="absolute inset-0 bg-black/55" />
           <div
-            className="glass relative z-10 w-full max-w-[300px] p-5"
+            className="relative z-10 w-full max-w-[300px] rounded-[22px] border border-black/10 bg-[var(--bg)] p-5 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.55)] dark:border-white/12"
             role="dialog"
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
@@ -72,7 +72,7 @@ export function PairGuessers({
               Угадали пару: {count}
             </div>
 
-            <ul className="mt-3.5 space-y-2">
+            <ul className="mt-3.5 max-h-[55vh] space-y-2 overflow-y-auto">
               {guessers.map((g) => (
                 <li key={g.name} className="flex items-center gap-2.5">
                   <Avatar name={g.name} seed={g.seed} size={30} />
