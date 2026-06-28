@@ -11,9 +11,9 @@ type RealBracket = { started: boolean; knownMatches: number; rounds: PoRound[]; 
 /** Playoff view: switch between the REAL bracket (live knockout results) and any
  *  participant's blind bracket (locked predictions). */
 export function PlayoffView({ brackets, real }: { brackets: PlayoffParticipant[]; real: RealBracket }) {
-  // default to the first participant who actually filled a bracket
+  // default to the REAL tournament bracket; participants' blind brackets are secondary
   const firstFilled = brackets.find((b) => b.rounds.some((r) => r.matches.length)) ?? brackets[0];
-  const [view, setView] = useState<"real" | "participant">("participant");
+  const [view, setView] = useState<"real" | "participant">("real");
   const [pid, setPid] = useState(firstFilled?.id ?? 0);
   const p = brackets.find((b) => b.id === pid) ?? brackets[0];
 
@@ -22,8 +22,8 @@ export function PlayoffView({ brackets, real }: { brackets: PlayoffParticipant[]
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-sm text-[12.5px] text-muted">
           {view === "real"
-            ? "Настоящая сетка турнира — по живым результатам плей-офф."
-            : "Слепые сетки участников — зафиксированы до старта."}
+            ? "Настоящая сетка турнира — заполняется по живым результатам плей-офф."
+            : `Слепой прогноз — сетка «${p?.name}», зафиксирована до старта.`}
         </p>
 
         <div className="flex items-center gap-2">
@@ -95,6 +95,11 @@ export function PlayoffView({ brackets, real }: { brackets: PlayoffParticipant[]
           <PlayoffBracket rounds={p.rounds} champion={p.champion} mode="majority" championStatus="прогноз" third={p.thirdMatch} />
         </>
       )}
+
+      <p className="mt-3 border-t border-black/5 pt-2.5 text-[11px] leading-snug text-muted dark:border-white/10">
+        Цифры у стадии — очки за <b className="font-semibold text-ink-soft">исход / точный счёт</b>. Зелёным
+        подсвечен прошедший дальше; счёт — по основному и дополнительному времени (пенальти не учитываются).
+      </p>
     </div>
   );
 }

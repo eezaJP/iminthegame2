@@ -11,8 +11,8 @@ import { ThemeToggle } from "./ThemeToggle";
 const TABS = [
   { href: "/", label: "Сегодня", icon: Flame },
   { href: "/rating", label: "Рейтинг", icon: Medal },
-  { href: "/groups", label: "Группы", icon: LayoutGrid },
   { href: "/playoff", label: "Плей-офф", icon: GitFork },
+  { href: "/groups", label: "Группы", icon: LayoutGrid },
   { href: "/rules", label: "Правила", icon: BookOpen },
 ];
 

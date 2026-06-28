@@ -25,7 +25,14 @@ export default async function RatingPage() {
 
   return (
     <div className="mt-3">
-      <RatingHero matchesLeft={r.matchesLeft} seasonPotential={r.seasonPotential} />
+      <RatingHero
+        phase={r.phase}
+        matchesLeft={r.matchesLeft}
+        seasonPotential={r.seasonPotential}
+        roundLabel={r.roundLabel}
+        koMatchesLeft={r.koMatchesLeft}
+        playoffPotential={r.playoffPotential}
+      />
 
       {/* standings + side panels */}
       <div className="mt-6 grid items-start gap-3 lg:grid-cols-[1.7fr_1fr]">

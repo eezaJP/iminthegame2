@@ -95,6 +95,9 @@ export type Participant = {
 export type TodayMatch = {
   id: string;
   group: string;
+  isKnockout?: boolean;
+  stage?: string; // e.g. "1/16 финала" for knockout matches
+  date?: string;  // MSK date, YYYY-MM-DD (for weekday + date label)
   time: string;
   city: string;
   home: string;

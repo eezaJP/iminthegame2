@@ -8,7 +8,6 @@ import { FixedBanner } from "@/components/FixedBanner";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Reveal } from "@/components/Reveal";
 import { getHomeData } from "@/lib/realData";
-import { ruDate } from "@/lib/utils";
 
 // Live data: re-fetch (sheet + API-Football) at most once per minute.
 export const revalidate = 60;
@@ -29,7 +28,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="mt-3">
-      <SummaryBar friends={data.participantsCount} played={data.playedTotal} total={72} stats={data.stats} />
+      <SummaryBar friends={data.participantsCount} played={data.totalPlayed} total={data.totalMatches} stats={data.stats} />
 
       {/* hero row: main story + short leaderboard */}
       <div className="mt-3 grid gap-3 lg:grid-cols-[1.7fr_1fr]">
@@ -42,10 +41,12 @@ export default async function DashboardPage() {
       {/* today's matches */}
       <section id="today" className="mt-10 scroll-mt-24">
         <TodayMatches
-          matches={data.todayMatches}
+          matches={data.homeMatches}
           potentialTotal={data.potentialTotal}
-          areToday={data.matchesAreToday}
-          dayLabel={ruDate(data.spotlightDay)}
+          areToday
+          dayLabel=""
+          title={data.homeMatchesTitle}
+          allHref={data.homeMatchesHref}
         />
       </section>
 

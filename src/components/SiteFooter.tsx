@@ -5,8 +5,8 @@ import { Send, MessageCircle, Globe } from "lucide-react";
 const NAV = [
   { href: "/", label: "Сегодня" },
   { href: "/rating", label: "Рейтинг" },
-  { href: "/groups", label: "Группы" },
   { href: "/playoff", label: "Плей-офф" },
+  { href: "/groups", label: "Группы" },
   { href: "/rules", label: "Правила" },
 ];
 

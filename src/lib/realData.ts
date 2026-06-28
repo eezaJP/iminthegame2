@@ -24,6 +24,59 @@ const CITY_RU: Record<number, string> = {
   10: "Атланта", 11: "Майами", 12: "Торонто", 13: "Бостон", 14: "Нью-Йорк", 15: "Филадельфия",
 };
 
+// knockout round → label + max exact points per match (shared by home + playoff)
+const KO_STAGE: Record<string, { label: string; pts: number }> = {
+  R32: { label: "1/16 финала", pts: 8 }, R16: { label: "1/8 финала", pts: 12 },
+  QF: { label: "1/4 финала", pts: 18 }, SF: { label: "1/2 финала", pts: 35 },
+  THIRD: { label: "за 3-е место", pts: 28 }, FINAL: { label: "финал", pts: 55 },
+};
+const KO_ORDER = ["R32", "R16", "QF", "SF", "THIRD", "FINAL"];
+
+const ROUND_DEPTH: Record<string, number> = { r32: 1, r16: 2, qf: 3, sf: 4, f: 5, third: 3 };
+
+/** Per-participant map of team → furthest round they predicted it to win (blind bracket). */
+function bracketDepths(sheet: SheetData): Map<string, number>[] {
+  return sheet.standings.map((s) => {
+    const depth = new Map<string, number>();
+    for (const pick of sheet.participants[s.name]?.bracket ?? []) {
+      const r = stageToRound(pick.stage);
+      if (!r) continue;
+      const d = ROUND_DEPTH[r.key] ?? 0;
+      const adv = pick.advances || (pick.gh != null && pick.ga != null ? (pick.gh >= pick.ga ? pick.home : pick.away) : "");
+      if (adv) depth.set(adv, Math.max(depth.get(adv) ?? 0, d));
+    }
+    return depth;
+  });
+}
+
+/** League majority for a knockout tie — how many favour each side (by predicted bracket depth). */
+function koMajority(depths: Map<string, number>[], home: string, away: string) {
+  let h = 0, a = 0;
+  for (const dm of depths) {
+    const dh = dm.get(home) ?? 0, da = dm.get(away) ?? 0;
+    if (dh > da) h++; else if (da > dh) a++;
+  }
+  return { home: h, draw: 0, away: a };
+}
+
+/** Build a TodayMatch from a knockout fixture; dist = league bracket majority if provided. */
+function koTodayMatch(f: ApiFixture, depths?: Map<string, number>[]): TodayMatch {
+  const ko = KO_STAGE[f.roundKey];
+  const { date, time } = mskParts(f.kickoff);
+  const home = f.homeRu!, away = f.awayRu!;
+  return {
+    id: f.id.toString(), group: f.group, isKnockout: true, stage: ko.label,
+    date, time, city: CITY_RU[CITY_ID[f.cityEn] ?? -1] ?? f.cityEn,
+    home, away, homeFlag: flagOf(home), awayFlag: flagOf(away),
+    dist: depths ? koMajority(depths, home, away) : { home: 0, draw: 0, away: 0 },
+    popularScore: "—", potential: ko.pts,
+    impact: "Матч на вылет — проигравший выбывает.",
+    status: f.finished ? "finished" : f.live ? "live" : "upcoming",
+    gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
+    pens: f.penHome !== null && f.penAway !== null ? { h: f.penHome, a: f.penAway } : null,
+  };
+}
+
 const MSK_MS = 3 * 3600 * 1000;
 const mskParts = (iso: string) => {
   const m = new Date(new Date(iso).getTime() + MSK_MS).toISOString();
@@ -116,38 +169,49 @@ export async function getHomeData(revalidate = 60) {
 
   const todayMatches: TodayMatch[] = todayFixtures.map((f) => {
     const home = f.homeRu!, away = f.awayRu!;
+    const ko = f.roundKey !== "GROUP" ? KO_STAGE[f.roundKey] : null;
     let h = 0, d = 0, a = 0;
     const scoreCount: Record<string, number> = {};
-    for (const s of sheet.standings) {
-      const pick = predFor(sheet.participants[s.name]?.predictions ?? {}, home, away);
-      if (!pick) continue;
-      if (pick.ph > pick.pa) h++; else if (pick.ph < pick.pa) a++; else d++;
-      const k = `${pick.ph}:${pick.pa}`;
-      scoreCount[k] = (scoreCount[k] || 0) + 1;
+    if (!ko) {
+      for (const s of sheet.standings) {
+        const pick = predFor(sheet.participants[s.name]?.predictions ?? {}, home, away);
+        if (!pick) continue;
+        if (pick.ph > pick.pa) h++; else if (pick.ph < pick.pa) a++; else d++;
+        const k = `${pick.ph}:${pick.pa}`;
+        scoreCount[k] = (scoreCount[k] || 0) + 1;
+      }
     }
-    const popularScore = Object.entries(scoreCount).sort((x, y) => y[1] - x[1])[0]?.[0] ?? "—";
+    const popularScore = ko ? "—" : (Object.entries(scoreCount).sort((x, y) => y[1] - x[1])[0]?.[0] ?? "—");
     const fav = h >= a && h >= d ? home : a >= d ? away : null;
-    const { time } = mskParts(f.kickoff);
+    const { date, time } = mskParts(f.kickoff);
     const cityId = CITY_ID[f.cityEn] ?? -1;
     const status = f.finished ? "finished" : f.live ? "live" : "upcoming";
     return {
       id: f.id.toString(),
       group: f.group,
+      isKnockout: !!ko,
+      stage: ko?.label ?? "",
+      date,
       time,
       city: CITY_RU[cityId] ?? f.cityEn,
       home, away,
       homeFlag: flagOf(home), awayFlag: flagOf(away),
       dist: { home: h, draw: d, away: a },
       popularScore,
-      potential: 75,
-      impact: fav
-        ? `Если ${fav} выиграет — заметно приблизится к выходу из группы.`
-        : "Большинство ждёт ничью — группа останется открытой.",
+      potential: ko ? ko.pts : 75,
+      impact: ko
+        ? "Матч на вылет — проигравший выбывает."
+        : fav
+          ? `Если ${fav} выиграет — заметно приблизится к выходу из группы.`
+          : "Большинство ждёт ничью — группа останется открытой.",
       status, gh: f.gh, ga: f.ga, kickoff: f.timestamp * 1000,
       pens: f.penHome !== null && f.penAway !== null ? { h: f.penHome, a: f.penAway } : null,
     } as TodayMatch;
   });
-  const potentialTotal = todayMatches.reduce((s, m) => s + m.potential, 0);
+  // league points "in play" badge = upcoming group matches only (not finished, not knockout)
+  const potentialTotal = todayMatches
+    .filter((m) => !m.isKnockout && m.status === "upcoming")
+    .reduce((s, m) => s + m.potential, 0);
 
   // ---- next upcoming matches for the live countdown (real timestamps) ----
   const nowMs = Date.now();
@@ -296,13 +360,48 @@ export async function getHomeData(revalidate = 60) {
 
   const matchCount = todayMatches.length;
   const nextDay = upcomingDays.find((d) => d > today) ?? null;
+  const groupStageDone = fixtures.filter((f) => f.roundKey === "GROUP" && f.finished).length >= 72;
+
+  // current knockout round (earliest with unplayed matches) + its full match list
+  let currentRoundKey = "R32";
+  for (const rk of KO_ORDER) {
+    const rs = fixtures.filter((f) => f.roundKey === rk && f.homeRu && f.awayRu);
+    if (rs.length && rs.some((f) => !f.finished)) { currentRoundKey = rk; break; }
+  }
+  const currentRoundLabel = KO_STAGE[currentRoundKey]?.label ?? "1/16 финала";
+  const koDepths = bracketDepths(sheet);
+  const roundMatches = groupStageDone
+    ? fixtures
+        .filter((f) => f.roundKey === currentRoundKey && f.homeRu && f.awayRu)
+        .sort((a, b) => a.timestamp - b.timestamp)
+        .map((f) => koTodayMatch(f, koDepths))
+    : [];
+
+  // home "matches" block: current knockout round in playoff phase, else today's games
+  const usePlayoffRound = groupStageDone && roundMatches.length > 0;
+  const homeMatches = usePlayoffRound ? roundMatches : todayMatches;
+  const homeMatchesTitle = usePlayoffRound
+    ? `Матчи ${currentRoundLabel}`
+    : (day === today ? "Матчи сегодня" : "Ближайшие матчи");
+  const homeMatchesHref = groupStageDone ? "/playoff" : "/groups";
 
   // ---- main story of the day (dynamic) ----
   let mainStory: {
     kind: "rest" | "leadChange" | "top3" | "gap";
     title: string; text: string; potential: number; matchCount: number;
   };
-  if (matchCount === 0) {
+  if (groupStageDone) {
+    // playoff phase — the group-stage "potential/climbers" framing no longer applies
+    const rc = roundMatches.length;
+    mainStory = {
+      kind: "gap",
+      title: "Плей-офф: цена ошибки максимальная",
+      text: rc
+        ? `Групповой этап позади. ${currentRoundLabel}: ${rc} ${plural(rc, "пара", "пары", "пар")} на вылет — в плей-офф очки кратно дороже, расклад ещё может перевернуться.`
+        : "Групповой этап позади. Впереди матчи на вылет — там очки кратно дороже.",
+      potential: 0, matchCount,
+    };
+  } else if (matchCount === 0) {
     mainStory = {
       kind: "rest",
       title: "Сегодня матчей нет",
@@ -541,7 +640,28 @@ export async function getHomeData(revalidate = 60) {
     };
   });
 
+  // tournament phase — group stage vs knockouts (drives the rating hero + labels)
+  const groupDone = playedTotal >= 72;
+  const koAll = fixtures.filter((f) => f.roundKey !== "GROUP" && f.roundKey !== "OTHER");
+  const koPlayed = koAll.filter((f) => f.finished).length;
+  const KO_TOTAL = 32; // 16 + 8 + 4 + 2 + 1 (за 3-е) + 1 (финал)
+  const RK_LABEL: Record<string, string> = { R32: "1/16 финала", R16: "1/8 финала", QF: "1/4 финала", SF: "1/2 финала", FINAL: "финал" };
+  let roundLabel = "1/16 финала";
+  for (const rk of ["R32", "R16", "QF", "SF", "FINAL"]) {
+    const rs = koAll.filter((f) => f.roundKey === rk);
+    if (rs.length && rs.some((f) => !f.finished)) { roundLabel = RK_LABEL[rk]; break; }
+  }
+  // theoretical max points still in play in the playoff (match + squad bonus + final bets)
+  const playoffPotential =
+    (16 * 8 + 8 * 12 + 4 * 18 + 2 * 35 + 28 + 55) + // perfect match points (449)
+    (16 * 2 + 8 * 3 + 4 * 5 + 2 * 8) +              // squad bonus (92)
+    (55 + 15 + 8);                                  // final bets (78) → 619
+
   const rating = {
+    phase: groupDone ? ("playoff" as const) : ("group" as const),
+    roundLabel,
+    koMatchesLeft: Math.max(0, KO_TOTAL - koPlayed),
+    playoffPotential,
     matchesLeft,
     seasonPotential: matchesLeft * 5,
     movement,
@@ -551,8 +671,11 @@ export async function getHomeData(revalidate = 60) {
     potentials,
   };
 
+  // whole-tournament match count: 72 group + 32 knockout (16+8+4+2+1+1) = 104
+  const totalMatches = 72 + KO_TOTAL;
+  const totalPlayed = playedTotal + koPlayed;
   const stats = [
-    { value: "72", label: "матча в группах" },
+    { value: String(totalMatches), label: "матча" },
     { value: "48", label: "команд" },
     { value: "16", label: "городов" },
     { value: "12", label: "групп" },
@@ -563,6 +686,9 @@ export async function getHomeData(revalidate = 60) {
     stats,
     players,
     todayMatches,
+    homeMatches,
+    homeMatchesTitle,
+    homeMatchesHref,
     nextMatches,
     potentialTotal,
     riser: facts.threat,
@@ -573,6 +699,8 @@ export async function getHomeData(revalidate = 60) {
     matchesAreToday: day === today,
     nextDay,
     playedTotal,
+    totalPlayed,
+    totalMatches,
     mainStory,
     climbers,
     stories: stories.slice(0, 4),
@@ -855,7 +983,23 @@ export async function getPlayoffData(revalidate = 60) {
     champion: realBuckets.f[0]?.winner ?? null,
   };
 
-  return { started, brackets, championAlive, favourite, real };
+  // ---- today's (or next) knockout matches, for the "Матчи плей-офф" section ----
+  const today = mskToday();
+  const koSchedule = fixtures.filter((f) => KO_STAGE[f.roundKey] && f.homeRu && f.awayRu);
+  const koDays = [...new Set(koSchedule.map((f) => mskParts(f.kickoff).date))].sort();
+  const koDay = koDays.includes(today) ? today : (koDays.find((d) => d >= today) ?? null);
+  const koDepths = bracketDepths(sheet);
+  const todayMatches: TodayMatch[] = !koDay ? [] : koSchedule
+    .filter((f) => mskParts(f.kickoff).date === koDay)
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .map((f) => koTodayMatch(f, koDepths));
+
+  return {
+    started, brackets, championAlive, favourite, real,
+    todayMatches,
+    matchesAreToday: koDay === today,
+    dayLabel: koDay ? ruDate(koDay) : "",
+  };
 }
 
 export type PlayoffPageData = Awaited<ReturnType<typeof getPlayoffData>>;

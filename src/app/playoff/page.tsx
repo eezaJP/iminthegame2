@@ -1,5 +1,6 @@
 import { PlayoffView } from "@/components/PlayoffView";
 import { ChampionAlive, ChampionCard } from "@/components/PlayoffBlocks";
+import { TodayMatches } from "@/components/TodayMatches";
 import { Hourglass } from "lucide-react";
 import { getPlayoffData } from "@/lib/realData";
 
@@ -13,9 +14,9 @@ const BONUS = [
   { stage: "Финал", v: "+8" },
 ];
 
-function SectionHeader({ kicker, title }: { kicker: string; title: string }) {
+function SectionHeader({ id, kicker, title }: { id?: string; kicker: string; title: string }) {
   return (
-    <div className="mb-3 mt-10 flex scroll-mt-24 items-end justify-between gap-3">
+    <div id={id} className="mb-3 mt-10 flex scroll-mt-24 items-end justify-between gap-3">
       <div>
         <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-green-deep">{kicker}</div>
         <h2 className="font-display text-[22px] font-extrabold leading-tight sm:text-[26px]">{title}</h2>
@@ -58,18 +59,29 @@ export default async function PlayoffPage() {
             <Hourglass className="size-5" strokeWidth={2.2} />
           </span>
           <div className="text-[13px] leading-snug text-ink-soft">
-            <b className="text-ink">Плей-офф ещё впереди.</b> Стадия на вылет начнётся после группового этапа.
-            Реальная сетка, живые матчи и подсчёт очков появятся здесь автоматически — а пока показываем
-            зафиксированные прогнозы участников.
+            <b className="text-ink">Плей-офф начинается.</b> Групповой этап позади — стартуют матчи на вылет.
+            Реальная сетка и подсчёт очков заполняются автоматически по ходу матчей.
           </div>
         </div>
       )}
 
+      <section className="mt-8">
+        <TodayMatches
+          matches={data.todayMatches}
+          potentialTotal={0}
+          areToday={data.matchesAreToday}
+          dayLabel={data.dayLabel}
+          title={data.matchesAreToday ? "Матчи плей-офф сегодня" : "Ближайшие матчи плей-офф"}
+          allHref="#po-bracket"
+          emptyText="Матчей плей-офф пока нет — расписание появится, когда стартует стадия на вылет."
+        />
+      </section>
+
+      <SectionHeader id="po-bracket" kicker="Реальная сетка и прогнозы" title="Сетка плей-офф" />
+      <PlayoffView brackets={data.brackets} real={data.real} />
+
       <SectionHeader kicker="Прогноз лиги" title="Кого лига видит чемпионом" />
       <ChampionAlive items={data.championAlive} />
-
-      <SectionHeader kicker="Реальная сетка и прогнозы" title="Сетка плей-офф" />
-      <PlayoffView brackets={data.brackets} real={data.real} />
 
       <SectionHeader kicker="Кубок" title="Чемпион" />
       <ChampionCard favourite={data.favourite} total={data.brackets.length} />
