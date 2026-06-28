@@ -3,6 +3,7 @@ import { Flame, BarChart3, Info, ArrowRight } from "lucide-react";
 import type { TodayMatch } from "@/lib/types";
 import { ruWeekday, ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
+import { PairGuessers } from "./PairGuessers";
 
 /** "ПН, 29 июня" from an MSK date string (YYYY-MM-DD). */
 function whenLabel(date?: string): string {
@@ -90,9 +91,12 @@ function Row({ m }: { m: TodayMatch }) {
           <div className="truncate text-[13px] font-bold">{fav}</div>
         </div>
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Стадия" : "Частый счёт"}</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Пару угадали" : "Частый счёт"}</div>
           {m.isKnockout ? (
-            <span className="text-[12px] font-bold">{m.stage}</span>
+            <div>
+              <PairGuessers icon count={m.pairGuessed ?? 0} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} stage={m.stage} />
+              <div className="text-[10px] font-semibold text-muted">{m.stage}</div>
+            </div>
           ) : (
             <span className="mt-0.5 inline-block rounded-md bg-ink px-1.5 py-0.5 font-mono text-[12px] font-bold text-bg">
               {m.popularScore}
@@ -140,9 +144,14 @@ function Row({ m }: { m: TodayMatch }) {
         <Teams m={m} />
         <div className="mt-2.5 flex items-center justify-between gap-2 text-[12px]">
           {m.isKnockout ? (
-            <span className="text-muted">
-              Лига ставит на <span className="font-bold text-ink">{fav}</span>
-            </span>
+            <>
+              <span className="text-muted">Лига ставит на <span className="font-bold text-ink">{fav}</span></span>
+              {typeof m.pairGuessed === "number" && (
+                <span className="shrink-0 text-muted">
+                  пару угадали <PairGuessers count={m.pairGuessed} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} stage={m.stage} />
+                </span>
+              )}
+            </>
           ) : (
             <>
               <span className="text-muted">

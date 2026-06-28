@@ -59,13 +59,40 @@ function koMajority(depths: Map<string, number>[], home: string, away: string) {
   return { home: h, draw: 0, away: a };
 }
 
+// API round → bracket round key (matches stageToRound output)
+const RK2KEY: Record<string, string> = { R32: "r32", R16: "r16", QF: "qf", SF: "sf", THIRD: "third", FINAL: "f" };
+const pairKeyOf = (a: string, b: string) => [a, b].sort().join("|");
+
+type Guesser = { name: string; seed: number };
+
+/** Map "roundKey|pairKey" → participants who predicted that exact pair (with avatar seed). */
+function bracketPairGuessers(sheet: SheetData): Map<string, Guesser[]> {
+  const map = new Map<string, Guesser[]>();
+  sheet.standings.forEach((s, i) => {
+    for (const pick of sheet.participants[s.name]?.bracket ?? []) {
+      const r = stageToRound(pick.stage);
+      if (!r || !pick.home || !pick.away) continue;
+      const key = `${r.key}|${pairKeyOf(pick.home, pick.away)}`;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push({ name: s.name, seed: i });
+    }
+  });
+  return map;
+}
+
+function pairGuessersFor(map: Map<string, Guesser[]>, roundKey: string, home: string, away: string): Guesser[] {
+  return map.get(`${RK2KEY[roundKey] ?? ""}|${pairKeyOf(home, away)}`) ?? [];
+}
+
 /** Build a TodayMatch from a knockout fixture; dist = league bracket majority if provided. */
-function koTodayMatch(f: ApiFixture, depths?: Map<string, number>[]): TodayMatch {
+function koTodayMatch(f: ApiFixture, depths?: Map<string, number>[], pairMap?: Map<string, Guesser[]>): TodayMatch {
   const ko = KO_STAGE[f.roundKey];
   const { date, time } = mskParts(f.kickoff);
   const home = f.homeRu!, away = f.awayRu!;
+  const guessers = pairMap ? pairGuessersFor(pairMap, f.roundKey, home, away) : undefined;
   return {
     id: f.id.toString(), group: f.group, isKnockout: true, stage: ko.label,
+    pairGuessed: guessers?.length, pairGuessers: guessers,
     date, time, city: CITY_RU[CITY_ID[f.cityEn] ?? -1] ?? f.cityEn,
     home, away, homeFlag: flagOf(home), awayFlag: flagOf(away),
     dist: depths ? koMajority(depths, home, away) : { home: 0, draw: 0, away: 0 },
@@ -370,11 +397,12 @@ export async function getHomeData(revalidate = 60) {
   }
   const currentRoundLabel = KO_STAGE[currentRoundKey]?.label ?? "1/16 финала";
   const koDepths = bracketDepths(sheet);
+  const koPairMap = bracketPairGuessers(sheet);
   const roundMatches = groupStageDone
     ? fixtures
         .filter((f) => f.roundKey === currentRoundKey && f.homeRu && f.awayRu)
         .sort((a, b) => a.timestamp - b.timestamp)
-        .map((f) => koTodayMatch(f, koDepths))
+        .map((f) => koTodayMatch(f, koDepths, koPairMap))
     : [];
 
   // home "matches" block: current knockout round in playoff phase, else today's games
@@ -1015,10 +1043,11 @@ export async function getPlayoffData(revalidate = 60) {
   const koDays = [...new Set(koSchedule.map((f) => mskParts(f.kickoff).date))].sort();
   const koDay = koDays.includes(today) ? today : (koDays.find((d) => d >= today) ?? null);
   const koDepths = bracketDepths(sheet);
+  const koPairMap = bracketPairGuessers(sheet);
   const todayMatches: TodayMatch[] = !koDay ? [] : koSchedule
     .filter((f) => mskParts(f.kickoff).date === koDay)
     .sort((a, b) => a.timestamp - b.timestamp)
-    .map((f) => koTodayMatch(f, koDepths));
+    .map((f) => koTodayMatch(f, koDepths, koPairMap));
 
   return {
     started, brackets, championAlive, favourite, real,

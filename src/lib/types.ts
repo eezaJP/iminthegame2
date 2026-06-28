@@ -97,6 +97,8 @@ export type TodayMatch = {
   group: string;
   isKnockout?: boolean;
   stage?: string; // e.g. "1/16 финала" for knockout matches
+  pairGuessed?: number; // how many participants predicted this exact knockout pair
+  pairGuessers?: { name: string; seed: number }[]; // who predicted it (for the modal)
   date?: string;  // MSK date, YYYY-MM-DD (for weekday + date label)
   time: string;
   city: string;
