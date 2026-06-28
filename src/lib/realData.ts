@@ -54,16 +54,25 @@ export async function getHomeData(revalidate = 60) {
   // ---- participants (Participant[]) ----
   const players: Participant[] = sheet.standings.map((s, idx) => {
     const sp = sheet.participants[s.name];
-    let groupMatches = 0, correctOutcomes = 0, nearMiss = 0, predictions = 0;
-    for (const [key, pred] of Object.entries(sp?.predictions ?? {})) {
-      predictions++;
-      const res = results.get(key);
-      if (!res) continue;
-      const pts = gmPoints(pred, res);
+    const preds = sp?.predictions ?? {};
+    const predictions = Object.keys(preds).length;
+    // Score every PLAYED match against the participant's pick. We iterate the
+    // results (source of truth) and look the pick up with predFor so a match
+    // entered home/away-flipped from the "Результаты" tab still counts — the
+    // raw key lookup used to drop those silently. exact/outcome counts are
+    // derived here too (same pass), so the table columns can never disagree
+    // with each other or with the rules.
+    let groupMatches = 0, correctOutcomes = 0, exactScores = 0, nearMiss = 0;
+    for (const [key, res] of results) {
+      const [home, away] = key.split("|");
+      const pick = predFor(preds, home, away);
+      if (!pick) continue;
+      const pts = gmPoints([pick.ph, pick.pa], res);
       groupMatches += pts;
+      if (pts === 5) exactScores++;
       if (pts >= 2) {
         correctOutcomes++;
-        if (Math.abs(pred[0] - res[0]) + Math.abs(pred[1] - res[1]) === 1) nearMiss++;
+        if (Math.abs(pick.ph - res[0]) + Math.abs(pick.pa - res[1]) === 1) nearMiss++;
       }
     }
     return {
@@ -86,7 +95,7 @@ export async function getHomeData(revalidate = 60) {
         { label: "Старт", total: 0 },
         { label: "Сейчас", total: s.total },
       ],
-      stats: { exactScores: s.exact, correctOutcomes, predictions, nearMiss, contrarian: 0 },
+      stats: { exactScores, correctOutcomes, predictions, nearMiss, contrarian: 0 },
     };
   });
 
@@ -847,9 +856,13 @@ export async function getPlayoffData(revalidate = 60) {
     while (matches.length < PO_COUNTS[k]) matches.push(blankMatch());
     return { key: k, title: TITLES[k], matches: matches.slice(0, PO_COUNTS[k]) };
   });
+  // resolved 1/16 pairs (both teams known) — what the "N из 16" label reports.
+  // koFixtures.length counted EVERY knockout match (1/16…final + 3rd place), so
+  // the label read far above 16 once later rounds appeared in the schedule.
+  const knownMatches = realBuckets.r32.filter((m) => m.a && m.b).length;
   const real = {
     started,
-    knownMatches: koFixtures.length,
+    knownMatches,
     rounds: realRounds,
     third: realThird.a || realThird.b ? realThird : blankMatch(),
     champion: realBuckets.f[0]?.winner ?? null,
