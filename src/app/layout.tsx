@@ -4,6 +4,7 @@ import "./globals.css";
 import { TopNav } from "@/components/TopNav";
 import { Background } from "@/components/Background";
 import { BackToTop } from "@/components/BackToTop";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 const display = Unbounded({
   subsets: ["latin", "cyrillic"],
@@ -57,6 +58,7 @@ export default function RootLayout({
       </head>
       <body>
         <Background />
+        <AutoRefresh />
         <TopNav />
         <main className="mx-auto w-full max-w-[1180px] px-4 pb-24 pt-4 sm:px-6">
           {children}

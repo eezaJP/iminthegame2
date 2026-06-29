@@ -12,7 +12,7 @@
 //                     1/8 +2, 1/4 +3, 1/2 +5, финал +8  (no bonus for the 1/16)
 //   Final bets:       champion 55, finalist 15, 3rd place 8
 //   Tie-break:        more exact scores → more bet points → more playoff points → split
-import type { Score, SheetParticipant, Standing } from "./sources/sheet";
+import type { Score, SheetParticipant, Standing, GainItem } from "./sources/sheet";
 
 export type StageKey = "r32" | "r16" | "qf" | "sf" | "third" | "final";
 
@@ -41,6 +41,10 @@ const KO_PTS: Record<StageKey, [number, number]> = {
 };
 // squad bonus per team reaching the stage (none for r32 / third)
 const SQUAD_BONUS: Partial<Record<StageKey, number>> = { r16: 2, qf: 3, sf: 5, final: 8 };
+// localized stage label for the 24h breakdown modal
+const STAGE_LABEL: Record<StageKey, string> = {
+  r32: "1/16 финала", r16: "1/8 финала", qf: "1/4 финала", sf: "1/2 финала", third: "матч за 3-е место", final: "финал",
+};
 
 /** Normalise a stage label (sheet/bracket) or API round key to a StageKey. */
 export function stageKey(label: string): StageKey | null {
@@ -177,4 +181,85 @@ export function computeStandings(participants: SheetParticipant[], a: Actuals): 
   rows.sort((x, y) => y.total - x.total || y.exact - x.exact || y.betPts - x.betPts || y.playoffPts - x.playoffPts || x.name.localeCompare(y.name));
   const standings: Standing[] = rows.map((r, i) => ({ rank: i + 1, ...r }));
   return { standings, breakdown };
+}
+
+/** Matches/events that resolved in the last 24h (RU names), used to itemise a gain. */
+export type RecentEvents = {
+  ko: KoResult[];                               // KO matches finished in the window
+  group: { home: string; away: string; gh: number; ga: number }[]; // group matches in the window
+  reached: { team: string; stage: StageKey }[]; // teams that reached a bonus stage in the window
+  champion?: string | null;                     // set if the final resolved in the window
+  finalist?: string | null;
+  third?: string | null;                        // set if the 3rd-place match resolved in the window
+};
+
+/**
+ * Itemise the points a participant earned from the window's events (which match /
+ * which bonus / which bet → how many points). Sum equals their 24h gain except for
+ * rare group-standing shifts, which getPoolData reconciles as a remainder line.
+ */
+export function dayGainItems(p: SheetParticipant, r: RecentEvents): GainItem[] {
+  const items: GainItem[] = [];
+
+  // playoff match points — best pick per real match (never double-counts)
+  const bestByMatch = new Map<string, GainItem>();
+  for (const pick of p.bracket) {
+    const k = stageKey(pick.stage);
+    if (!k || !pick.home || !pick.away) continue;
+    const real = r.ko.find(
+      (m) => m.stage === k && ((m.home === pick.home && m.away === pick.away) || (m.home === pick.away && m.away === pick.home))
+    );
+    if (!real) continue;
+    const [PE, PW] = KO_PTS[k];
+    const actHome = real.home === pick.home ? real.gh : real.ga;
+    const actAway = real.home === pick.home ? real.ga : real.gh;
+    let pts = 0, why = "";
+    if (pick.gh !== null && pick.ga !== null && pick.gh === actHome && pick.ga === actAway) { pts = PE; why = "точный счёт"; }
+    else {
+      const predW = pick.advances || (pick.gh != null && pick.ga != null ? (pick.gh > pick.ga ? pick.home : pick.ga > pick.gh ? pick.away : "") : "");
+      if (predW && predW === real.winner) { pts = PW; why = "угадан победитель"; }
+    }
+    if (pts <= 0) continue;
+    const id = `${real.stage}|${real.home}|${real.away}`;
+    const cur = bestByMatch.get(id);
+    if (!cur || pts > cur.points)
+      bestByMatch.set(id, { kind: "match", label: `${real.home} — ${real.away}`, detail: `${STAGE_LABEL[k]} · ${why}`, points: pts, home: real.home, away: real.away });
+  }
+  items.push(...bestByMatch.values());
+
+  // squad bonus — per unique predicted team that reached a stage in the window
+  const predByStage: Record<string, Set<string>> = {};
+  for (const pick of p.bracket) {
+    const k = stageKey(pick.stage); if (!k) continue;
+    (predByStage[k] ??= new Set());
+    if (pick.home) predByStage[k].add(pick.home);
+    if (pick.away) predByStage[k].add(pick.away);
+  }
+  const seenBonus = new Set<string>();
+  for (const rc of r.reached) {
+    const per = SQUAD_BONUS[rc.stage];
+    if (!per || !predByStage[rc.stage]?.has(rc.team)) continue;
+    const key = `${rc.stage}|${rc.team}`;
+    if (seenBonus.has(key)) continue;
+    seenBonus.add(key);
+    items.push({ kind: "bonus", label: `${rc.team} — выход в ${STAGE_LABEL[rc.stage]}`, detail: "бонус за состав стадии", points: per, home: rc.team });
+  }
+
+  // group match points (rare during knockouts, kept for generality)
+  for (const g of r.group) {
+    const fwd = p.predictions[`${g.home}|${g.away}`];
+    const rev = p.predictions[`${g.away}|${g.home}`];
+    const pred: Score | null = fwd ?? (rev ? [rev[1], rev[0]] : null);
+    if (!pred) continue;
+    const pts = gmPoints(pred, [g.gh, g.ga]);
+    if (pts <= 0) continue;
+    items.push({ kind: "group", label: `${g.home} — ${g.away}`, detail: pts === 5 ? "групповой этап · точный счёт" : "групповой этап · угадан исход", points: pts, home: g.home, away: g.away });
+  }
+
+  // final bets resolved in the window
+  if (r.champion && p.bets.champion === r.champion) items.push({ kind: "bet", label: `Чемпион: ${r.champion}`, detail: "финальная ставка", points: 55, home: r.champion });
+  if (r.finalist && p.bets.finalist === r.finalist) items.push({ kind: "bet", label: `Финалист: ${r.finalist}`, detail: "финальная ставка", points: 15, home: r.finalist });
+  if (r.third && p.bets.third === r.third) items.push({ kind: "bet", label: `3-е место: ${r.third}`, detail: "финальная ставка", points: 8, home: r.third });
+
+  return items.sort((a, b) => b.points - a.points);
 }

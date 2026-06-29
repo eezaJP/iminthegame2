@@ -33,12 +33,24 @@ export type SheetParticipant = {
 export type Standing = {
   rank: number; name: string; total: number; exact: number; betPts: number; playoffPts: number;
 };
+// one line of a participant's 24h points breakdown (for the summary modal)
+export type GainItem = {
+  kind: "match" | "bonus" | "group" | "bet";
+  label: string;   // headline, e.g. "ЮАР — Канада" or "Канада — выход в 1/8 финала"
+  detail: string;  // sub-line, e.g. "1/16 финала · угадан победитель"
+  points: number;
+  home?: string;   // RU team name(s) for flag rendering (match/bonus)
+  away?: string;
+};
+
 export type SheetData = {
   standings: Standing[];
   participants: Record<string, SheetParticipant>;
   results: GroupResult[];
   fetchedAt: number;
-  dayGains?: Record<string, number>; // points each participant gained in the last 24h
+  dayGains?: Record<string, number>;            // points each participant gained on the game day
+  dayBreakdown?: Record<string, GainItem[]>;    // itemised: for which match / event
+  dayDate?: string;                             // YYYY-MM-DD (MSK) of that game day
 };
 
 type Row = (string | number)[];

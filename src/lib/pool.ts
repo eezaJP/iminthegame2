@@ -4,8 +4,8 @@
 // the app already consumes, so realData.ts / components are unchanged.
 import { getFixtures, getStandings, type ApiFixture } from "./sources/apiFootball";
 import { PARTICIPANTS } from "./predictions";
-import { computeStandings, stageKey, type Actuals, type KoResult, type StageKey, type GroupStanding } from "./scoring";
-import type { Score, SheetData, SheetParticipant, GroupResult } from "./sources/sheet";
+import { computeStandings, dayGainItems, stageKey, type Actuals, type KoResult, type StageKey, type GroupStanding, type RecentEvents } from "./scoring";
+import type { Score, SheetData, SheetParticipant, GroupResult, GainItem } from "./sources/sheet";
 
 const koWinner = (f: ApiFixture, home: string, away: string): string => {
   if (f.gh === null || f.ga === null) return "";
@@ -81,24 +81,63 @@ function buildResults(fixtures: ApiFixture[]): GroupResult[] {
   return out;
 }
 
+// previous round → the bonus stage a winner of it reaches (none for sf→third)
+const PREV_TO_STAGE: Partial<Record<StageKey, StageKey>> = { r32: "r16", r16: "qf", qf: "sf", sf: "final" };
+
+/** Map the matches that resolved in the last 24h into RecentEvents (RU names). */
+function buildRecentEvents(recentFixtures: ApiFixture[]): RecentEvents {
+  const ko: KoResult[] = [];
+  const group: { home: string; away: string; gh: number; ga: number }[] = [];
+  const reached: { team: string; stage: StageKey }[] = [];
+  let champion: string | null = null, finalist: string | null = null, third: string | null = null;
+  for (const f of recentFixtures) {
+    if (!f.homeRu || !f.awayRu || f.gh === null || f.ga === null) continue;
+    if (f.roundKey === "GROUP") { group.push({ home: f.homeRu, away: f.awayRu, gh: f.gh, ga: f.ga }); continue; }
+    const k = stageKey(f.roundKey);
+    if (!k) continue;
+    const w = koWinner(f, f.homeRu, f.awayRu);
+    ko.push({ stage: k, home: f.homeRu, away: f.awayRu, gh: f.gh, ga: f.ga, winner: w });
+    const next = PREV_TO_STAGE[k];
+    if (next && w) reached.push({ team: w, stage: next });
+    if (k === "final" && w) { champion = w; finalist = w === f.homeRu ? f.awayRu : f.homeRu; }
+    if (k === "third" && w) third = w;
+  }
+  return { ko, group, reached, champion, finalist, third };
+}
+
 /** Drop-in replacement for getSheetData: same SheetData shape, computed by us. */
 export async function getPoolData(revalidate = 60): Promise<SheetData> {
   const [fixtures, standingsApi] = await Promise.all([getFixtures(revalidate), getStandings(revalidate)]);
   const actuals = buildActuals(fixtures, standingsApi);
   const { standings, breakdown } = computeStandings(PARTICIPANTS, actuals);
 
-  // Points gained in the last 24h = total now − total re-scored from scratch with
-  // the matches that finished in the last 24h removed. Computed by re-running the
-  // engine, so it covers match points, squad bonus AND final bets — never invented.
+  // GAME-DAY summary = the latest MSK calendar day on which any match was played,
+  // counting every match that KICKED OFF that day (a 23:30 match that ends after
+  // midnight still belongs to its start day). Gains = total now − total re-scored
+  // without that day's matches, so it covers match points, squad bonus AND final
+  // bets — never invented. The day rolls forward as soon as a newer match finishes.
   const now = Date.now();
-  const RECENT_MS = (24 + 2.5) * 3600 * 1000; // 24h window + ~match duration after kickoff
-  const olderFixtures = fixtures.filter((f) => !(f.finished && now - f.timestamp * 1000 <= RECENT_MS));
-  const { breakdown: before } = computeStandings(PARTICIPANTS, buildActuals(olderFixtures, standingsApi));
+  const MSK_MS = 3 * 3600 * 1000;
+  const mskDate = (ms: number) => new Date(ms + MSK_MS).toISOString().slice(0, 10);
+  const playedDates = fixtures.filter((f) => f.finished).map((f) => mskDate(f.timestamp * 1000)).sort();
+  const dayDate = playedDates.length ? playedDates[playedDates.length - 1] : mskDate(now);
+  const recent = (f: ApiFixture) => f.finished && mskDate(f.timestamp * 1000) === dayDate;
+  const { breakdown: before } = computeStandings(PARTICIPANTS, buildActuals(fixtures.filter((f) => !recent(f)), standingsApi));
   const dayGains: Record<string, number> = {};
   for (const p of PARTICIPANTS) dayGains[p.name] = breakdown[p.name].total - before[p.name].total;
+
+  // itemised breakdown — which match / bonus / bet gave each participant points that day
+  const recentEvents = buildRecentEvents(fixtures.filter(recent));
+  const dayBreakdown: Record<string, GainItem[]> = {};
+  for (const p of PARTICIPANTS) {
+    const items = dayGainItems(p, recentEvents);
+    const remainder = dayGains[p.name] - items.reduce((s, it) => s + it.points, 0);
+    if (remainder > 0) items.push({ kind: "group", label: "Прочие очки за день", detail: "пересчёт по итогам этапа", points: remainder });
+    dayBreakdown[p.name] = items;
+  }
 
   const participants: Record<string, SheetParticipant> = {};
   for (const p of PARTICIPANTS) participants[p.name] = p;
 
-  return { standings, participants, results: buildResults(fixtures), fetchedAt: now, dayGains };
+  return { standings, participants, results: buildResults(fixtures), fetchedAt: now, dayGains, dayBreakdown, dayDate };
 }

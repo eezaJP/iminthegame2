@@ -94,7 +94,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
           <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Пару угадали" : "Частый счёт"}</div>
           {m.isKnockout ? (
             <div>
-              <PairGuessers icon count={m.pairGuessed ?? 0} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} />
+              <PairGuessers icon count={m.pairGuessed ?? 0} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} gh={m.gh} ga={m.ga} status={m.status} time={m.time} pens={m.pens} />
               <div className="text-[10px] font-semibold text-muted">{m.stage}</div>
             </div>
           ) : (
@@ -148,7 +148,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
               <span className="text-muted">Лига ставит на <span className="font-bold text-ink">{fav}</span></span>
               {typeof m.pairGuessed === "number" && (
                 <span className="shrink-0 text-muted">
-                  пару угадали <PairGuessers count={m.pairGuessed} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} />
+                  пару угадали <PairGuessers count={m.pairGuessed} guessers={m.pairGuessers ?? []} home={m.home} away={m.away} homeFlag={m.homeFlag} awayFlag={m.awayFlag} stage={m.stage} total={total} gh={m.gh} ga={m.ga} status={m.status} time={m.time} pens={m.pens} />
                 </span>
               )}
             </>

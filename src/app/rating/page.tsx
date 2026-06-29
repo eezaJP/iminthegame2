@@ -42,6 +42,7 @@ export default async function RatingPage() {
         <div className="flex flex-col gap-3">
           <DaySummary
             rows={r.daySummary}
+            dayLabel={r.dayLabel}
             linkHref={r.phase === "playoff" ? "/playoff" : "/groups"}
             linkLabel={r.phase === "playoff" ? "Сетка плей-офф" : "Все матчи дня"}
           />

@@ -65,9 +65,9 @@ function koMajority(depths: Map<string, number>[], home: string, away: string) {
 const RK2KEY: Record<string, string> = { R32: "r32", R16: "r16", QF: "qf", SF: "sf", THIRD: "third", FINAL: "f" };
 const pairKeyOf = (a: string, b: string) => [a, b].sort().join("|");
 
-type Guesser = { name: string; seed: number };
+type Guesser = { name: string; seed: number; pick: string }; // pick = team they backed to advance
 
-/** Map "roundKey|pairKey" → participants who predicted that exact pair (with avatar seed). */
+/** Map "roundKey|pairKey" → participants who predicted that exact pair (with avatar seed + who they backed). */
 function bracketPairGuessers(sheet: SheetData): Map<string, Guesser[]> {
   const map = new Map<string, Guesser[]>();
   sheet.standings.forEach((s, i) => {
@@ -78,8 +78,11 @@ function bracketPairGuessers(sheet: SheetData): Map<string, Guesser[]> {
       const key = `${r.key}|${pairKeyOf(pick.home, pick.away)}`;
       if (seen.has(key)) continue;
       seen.add(key);
+      // who they backed to advance (matches scoring.ts: a predicted draw with no
+      // explicit advancer → unknown, lands in the modal's "без указания" group)
+      const adv = pick.advances || (pick.gh != null && pick.ga != null ? (pick.gh > pick.ga ? pick.home : pick.ga > pick.gh ? pick.away : "") : "");
       if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push({ name: s.name, seed: i });
+      map.get(key)!.push({ name: s.name, seed: i, pick: adv });
     }
   });
   return map;
@@ -633,7 +636,11 @@ export async function getHomeData(revalidate = 60) {
   // 24-hour summary — exactly how many points each participant earned in the last
   // 24h (computed in getPoolData by re-scoring without the recent results).
   const daySummary = players
-    .map((p) => ({ id: p.id, name: p.name, avatarSeed: p.avatarSeed, rank: p.rank, gained: sheet.dayGains?.[p.name] ?? 0 }))
+    .map((p) => ({
+      id: p.id, name: p.name, avatarSeed: p.avatarSeed, rank: p.rank,
+      gained: sheet.dayGains?.[p.name] ?? 0,
+      items: sheet.dayBreakdown?.[p.name] ?? [],
+    }))
     .sort((a, b) => b.gained - a.gained || a.rank - b.rank);
 
   // remaining reachable points per participant (group stage)
@@ -743,6 +750,7 @@ export async function getHomeData(revalidate = 60) {
     movement,
     dayMovers,
     daySummary,
+    dayLabel: ruDate(sheet.dayDate ?? today),
     overtakeScenarios,
     bestByCategory,
     potentials,
