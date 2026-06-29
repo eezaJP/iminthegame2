@@ -1,7 +1,6 @@
 import { RatingHero } from "@/components/RatingHero";
 import { RatingTable } from "@/components/RatingTable";
-import { DayMovement } from "@/components/DayMovement";
-import { OvertakeScenarios } from "@/components/OvertakeScenarios";
+import { DaySummary } from "@/components/DaySummary";
 import { BestByCategory } from "@/components/BestByCategory";
 import { PairLeaders } from "@/components/PairLeaders";
 import { ParticipantsStrip } from "@/components/ParticipantsStrip";
@@ -41,13 +40,8 @@ export default async function RatingPage() {
           <RatingTable players={data.players} movement={r.movement} />
         </div>
         <div className="flex flex-col gap-3">
-          <DayMovement
-            movers={r.dayMovers}
-            emptyText={r.phase === "playoff" ? "Движение появится после первых матчей плей-офф." : undefined}
-          />
-          <OvertakeScenarios
-            scenarios={r.overtakeScenarios}
-            emptyText={r.phase === "playoff" ? "В плей-офф очки кратно дороже — обойти можно почти любого. Конкретные сценарии появятся, когда пойдут матчи на вылет." : undefined}
+          <DaySummary
+            rows={r.daySummary}
             linkHref={r.phase === "playoff" ? "/playoff" : "/groups"}
             linkLabel={r.phase === "playoff" ? "Сетка плей-офф" : "Все матчи дня"}
           />

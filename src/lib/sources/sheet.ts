@@ -38,6 +38,7 @@ export type SheetData = {
   participants: Record<string, SheetParticipant>;
   results: GroupResult[];
   fetchedAt: number;
+  dayGains?: Record<string, number>; // points each participant gained in the last 24h
 };
 
 type Row = (string | number)[];

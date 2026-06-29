@@ -85,10 +85,20 @@ function buildResults(fixtures: ApiFixture[]): GroupResult[] {
 export async function getPoolData(revalidate = 60): Promise<SheetData> {
   const [fixtures, standingsApi] = await Promise.all([getFixtures(revalidate), getStandings(revalidate)]);
   const actuals = buildActuals(fixtures, standingsApi);
-  const { standings } = computeStandings(PARTICIPANTS, actuals);
+  const { standings, breakdown } = computeStandings(PARTICIPANTS, actuals);
+
+  // Points gained in the last 24h = total now − total re-scored from scratch with
+  // the matches that finished in the last 24h removed. Computed by re-running the
+  // engine, so it covers match points, squad bonus AND final bets — never invented.
+  const now = Date.now();
+  const RECENT_MS = (24 + 2.5) * 3600 * 1000; // 24h window + ~match duration after kickoff
+  const olderFixtures = fixtures.filter((f) => !(f.finished && now - f.timestamp * 1000 <= RECENT_MS));
+  const { breakdown: before } = computeStandings(PARTICIPANTS, buildActuals(olderFixtures, standingsApi));
+  const dayGains: Record<string, number> = {};
+  for (const p of PARTICIPANTS) dayGains[p.name] = breakdown[p.name].total - before[p.name].total;
 
   const participants: Record<string, SheetParticipant> = {};
   for (const p of PARTICIPANTS) participants[p.name] = p;
 
-  return { standings, participants, results: buildResults(fixtures), fetchedAt: Date.now() };
+  return { standings, participants, results: buildResults(fixtures), fetchedAt: now, dayGains };
 }

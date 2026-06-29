@@ -630,6 +630,12 @@ export async function getHomeData(revalidate = 60) {
     .slice(0, 5);
   const biggestJump = movement.filter((m) => m.delta > 0).sort((a, b) => b.delta - a.delta)[0] ?? null;
 
+  // 24-hour summary — exactly how many points each participant earned in the last
+  // 24h (computed in getPoolData by re-scoring without the recent results).
+  const daySummary = players
+    .map((p) => ({ id: p.id, name: p.name, avatarSeed: p.avatarSeed, rank: p.rank, gained: sheet.dayGains?.[p.name] ?? 0 }))
+    .sort((a, b) => b.gained - a.gained || a.rank - b.rank);
+
   // remaining reachable points per participant (group stage)
   const remainingPredicted = (name: string) => {
     const preds = sheet.participants[name]?.predictions ?? {};
@@ -736,6 +742,7 @@ export async function getHomeData(revalidate = 60) {
     seasonPotential: matchesLeft * 5,
     movement,
     dayMovers,
+    daySummary,
     overtakeScenarios,
     bestByCategory,
     potentials,
