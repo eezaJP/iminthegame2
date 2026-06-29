@@ -33,26 +33,27 @@ export function MainStory({ story, nextMatches }: { story: Story; nextMatches: N
         <HeroTrophy className="size-full" />
       </motion.div>
 
-      <div className="relative z-10 flex flex-1 flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-        <div className="max-w-[34rem]">
-          <span className="chip w-fit bg-gold/12 text-gold">
-            <Sparkles className="size-3.5" strokeWidth={2.6} />
-            Главная интрига дня
-          </span>
+      <div className="relative z-10 flex flex-1 flex-col">
+        <span className="chip w-fit bg-gold/12 text-gold">
+          <Sparkles className="size-3.5" strokeWidth={2.6} />
+          Главная интрига дня
+        </span>
 
-          <h1 className="mt-3 font-display text-[26px] font-extrabold leading-[1.05] tracking-tight sm:text-[34px]">
-            {story.title}
-          </h1>
-          <p className="mt-2.5 max-w-md text-[14px] font-medium leading-snug text-ink-soft sm:text-[15px]">
+        <h1 className="mt-3 max-w-[34rem] font-display text-[26px] font-extrabold leading-[1.05] tracking-tight sm:text-[34px]">
+          {story.title}
+        </h1>
+
+        {/* body text + next-match countdown, aligned by their top edge */}
+        <div className="mt-2.5 flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+          <p className="max-w-md text-[14px] font-medium leading-snug text-ink-soft sm:text-[15px]">
             {story.text}
           </p>
+          {nextMatches.length > 0 && (
+            <div className="shrink-0">
+              <NextMatchCountdown matches={nextMatches} size="lg" />
+            </div>
+          )}
         </div>
-
-        {nextMatches.length > 0 && (
-          <div className="shrink-0 self-start">
-            <NextMatchCountdown matches={nextMatches} size="lg" />
-          </div>
-        )}
       </div>
     </motion.section>
   );
