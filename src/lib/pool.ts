@@ -39,12 +39,18 @@ export function buildActuals(fixtures: ApiFixture[], standings: { group: string;
     groupStandings[letter] = { first: r[0].team, second: r[1].team, third: r[2].team, thirdAdvanced: !!r[2].advanced };
   }
 
-  // knockout results
+  // knockout results — deduped by match (stage + unordered pair). A knockout
+  // match is played once; guarding against any duplicate API fixture stops a
+  // LOSER from leaking into reachedStage (which would double a squad bonus).
   const koResults: KoResult[] = [];
+  const seenKo = new Set<string>();
   for (const f of fixtures) {
     const k = stageKey(f.roundKey);
     if (!k) continue;
     if (!f.finished || f.gh === null || f.ga === null || !f.homeRu || !f.awayRu) continue;
+    const matchKey = `${k}|${[f.homeRu, f.awayRu].sort().join("|")}`;
+    if (seenKo.has(matchKey)) continue;
+    seenKo.add(matchKey);
     const winner = koWinner(f, f.homeRu, f.awayRu);
     koResults.push({ stage: k, home: f.homeRu, away: f.awayRu, gh: f.gh, ga: f.ga, winner });
   }

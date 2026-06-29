@@ -102,12 +102,16 @@ export function scoreParticipant(p: SheetParticipant, a: Actuals): Breakdown {
   }
 
   // ---- playoff matches (matched by team pairing within the stage) ----
-  let playoffMatches = 0;
-  const reachedPred: Record<string, Set<string>> = {}; // stageKey -> predicted teams (for bonus)
+  // NO double-counting: a real match can score only ONCE even if the participant
+  // wrote the same pairing in several slots (data-entry dupes) — we keep the BEST
+  // pick per real match. Teams predicted at a stage are deduped via a Set, so a
+  // team listed twice never earns its points/bonus twice.
+  const best = new Map<string, { pts: number; exact: boolean }>(); // real-match id -> best pick
+  const reachedPred: Record<string, Set<string>> = {}; // stageKey -> predicted teams (deduped, for bonus)
   for (const pick of p.bracket) {
     const k = stageKey(pick.stage);
     if (!k) continue;
-    // record predicted teams at this stage (used for the squad bonus)
+    // record predicted teams at this stage (Set → each team counts once for the bonus)
     (reachedPred[k] ??= new Set());
     if (pick.home) reachedPred[k].add(pick.home);
     if (pick.away) reachedPred[k].add(pick.away);
@@ -120,18 +124,24 @@ export function scoreParticipant(p: SheetParticipant, a: Actuals): Breakdown {
     // orient actual goals to the predicted (home, away)
     const actHome = real.home === pick.home ? real.gh : real.ga;
     const actAway = real.home === pick.home ? real.ga : real.gh;
+    let pts = 0, isExact = false;
     if (pick.gh !== null && pick.ga !== null && pick.gh === actHome && pick.ga === actAway) {
-      playoffMatches += PE; exact++;
+      pts = PE; isExact = true;
     } else {
       const predW = pick.advances || (pick.gh != null && pick.ga != null ? (pick.gh > pick.ga ? pick.home : pick.ga > pick.gh ? pick.away : "") : "");
-      if (predW && predW === real.winner) playoffMatches += PW;
+      if (predW && predW === real.winner) pts = PW;
     }
+    const id = `${real.stage}|${real.home}|${real.away}`;
+    const cur = best.get(id);
+    if (!cur || pts > cur.pts) best.set(id, { pts, exact: isExact });
   }
+  let playoffMatches = 0;
+  for (const { pts, exact: ex } of best.values()) { playoffMatches += pts; if (ex) exact++; }
 
-  // ---- squad bonus (per predicted team that reached the stage) ----
+  // ---- squad bonus (per UNIQUE predicted team that reached the stage) ----
   let squadBonus = 0;
   for (const [k, per] of Object.entries(SQUAD_BONUS) as [StageKey, number][]) {
-    const predicted = reachedPred[k];
+    const predicted = reachedPred[k]; // a Set — a team listed twice is counted once
     const reached = a.reachedStage[k];
     if (!predicted || !reached) continue;
     let n = 0;

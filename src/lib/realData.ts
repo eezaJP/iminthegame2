@@ -71,10 +71,13 @@ type Guesser = { name: string; seed: number };
 function bracketPairGuessers(sheet: SheetData): Map<string, Guesser[]> {
   const map = new Map<string, Guesser[]>();
   sheet.standings.forEach((s, i) => {
+    const seen = new Set<string>(); // a participant counts once per (stage, pair)
     for (const pick of sheet.participants[s.name]?.bracket ?? []) {
       const r = stageToRound(pick.stage);
       if (!r || !pick.home || !pick.away) continue;
       const key = `${r.key}|${pairKeyOf(pick.home, pick.away)}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push({ name: s.name, seed: i });
     }
