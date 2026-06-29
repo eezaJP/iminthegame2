@@ -103,5 +103,78 @@ const r32 = [
 const knownMatches = r32.filter((m) => m.a && m.b).length;
 eq("knownMatches counts resolved 1/16 pairs only", knownMatches, 2);
 
+// ---- src/lib/playoffScore.ts: live playoff scoring ----
+// Mirrors scorePlayoff/koResultsFromFixtures so the rule matrix is checkable
+// without an API-Football key. Canada wins its 1/16 → advances to the 1/8.
+const WIN = { r32: 3, r16: 5, qf: 8, sf: 15, third: 12, f: 25 };
+const EXACT = { r32: 8, r16: 12, qf: 18, sf: 35, third: 28, f: 55 };
+const BONUS = { r16: 2, qf: 3, sf: 5, f: 8 };
+const FEEDS = { r16: "r32", qf: "r16", sf: "qf", f: "sf" };
+const samePair = (a1, b1, a2, b2) => !!a1 && !!b1 && ((a1 === a2 && b1 === b2) || (a1 === b2 && b1 === a2));
+const stageKey = (s) => {
+  s = s.toLowerCase();
+  if (s.includes("1/16")) return "r32";
+  if (s.includes("1/8")) return "r16";
+  if (s.includes("1/4")) return "qf";
+  if (s.includes("1/2")) return "sf";
+  if (s.includes("за 3")) return "third";
+  if (s.includes("финал")) return "f";
+  return null;
+};
+function scorePlayoff(bracket, ko) {
+  const byStage = { r32: [], r16: [], qf: [], sf: [], third: [], f: [] };
+  for (const p of bracket) { const k = stageKey(p.stage); if (k) byStage[k].push(p); }
+  let matchPts = 0, exact = 0, bonus = 0;
+  for (const key of ["r32", "r16", "qf", "sf", "third", "f"]) {
+    for (const rm of ko.matches[key] ?? []) {
+      const pick = byStage[key].find((p) => samePair(p.home, p.away, rm.a, rm.b));
+      if (!pick) continue;
+      let pgh = pick.gh, pga = pick.ga;
+      if (pick.home === rm.b && pick.away === rm.a) { pgh = pick.ga; pga = pick.gh; }
+      if (pgh !== null && pga !== null && pgh === rm.gh && pga === rm.ga) { matchPts += EXACT[key]; exact++; }
+      else {
+        const predAdv = pick.advances || (pick.gh !== null && pick.ga !== null
+          ? (pick.gh > pick.ga ? pick.home : pick.ga > pick.gh ? pick.away : "") : "");
+        if (predAdv && predAdv === rm.winner) matchPts += WIN[key];
+      }
+    }
+  }
+  for (const key of ["r16", "qf", "sf", "f"]) {
+    const reached = ko.advancers[FEEDS[key]] ?? new Set();
+    if (!reached.size) continue;
+    const predicted = new Set();
+    for (const p of byStage[key]) { if (p.home) predicted.add(p.home); if (p.away) predicted.add(p.away); }
+    for (const t of predicted) if (reached.has(t)) bonus += BONUS[key];
+  }
+  return { matchPts, bonus, exact, total: matchPts + bonus };
+}
+
+// Canada beat Mexico 2:1 in the 1/16 and went through to the 1/8.
+const ko = {
+  matches: { r32: [{ a: "Канада", b: "Мексика", gh: 2, ga: 1, winner: "Канада" }], r16: [], qf: [], sf: [], third: [], f: [] },
+  advancers: { r32: new Set(["Канада"]), r16: new Set(), qf: new Set(), sf: new Set(), third: new Set(), f: new Set() },
+};
+
+// predicted Canada into the 1/8 → +2 stage bonus the moment the 1/16 ends
+eq("squad bonus +2 for a team that reached the 1/8",
+  scorePlayoff([{ stage: "1/8 финала", home: "Канада", away: "Хорватия", gh: 1, ga: 0, advances: "Канада" }], ko).bonus, 2);
+
+// predicted the exact 1/16 score → 8 match pts, no bonus (1/16 has none)
+eq("exact 1/16 score → 8 pts, no 1/16 bonus",
+  scorePlayoff([{ stage: "1/16 финала", home: "Канада", away: "Мексика", gh: 2, ga: 1, advances: "Канада" }], ko),
+  { matchPts: 8, bonus: 0, exact: 1, total: 8 });
+
+// right advancer, wrong score → 3 match pts (1/16 outcome)
+eq("right 1/16 advancer, wrong score → 3 pts",
+  scorePlayoff([{ stage: "1/16 финала", home: "Канада", away: "Мексика", gh: 3, ga: 0, advances: "Канада" }], ko).matchPts, 3);
+
+// pick stored flipped vs the real fixture still scores exact
+eq("flipped 1/16 matchup still scores exact",
+  scorePlayoff([{ stage: "1/16 финала", home: "Мексика", away: "Канада", gh: 1, ga: 2, advances: "Канада" }], ko).matchPts, 8);
+
+// a team that didn't reach the stage earns nothing
+eq("no bonus for a team that lost the 1/16",
+  scorePlayoff([{ stage: "1/8 финала", home: "Мексика", away: "Хорватия", gh: 1, ga: 0, advances: "Мексика" }], ko).bonus, 0);
+
 console.log(failed ? `\n${failed} check(s) FAILED` : "\nAll scoring checks passed ✓");
 process.exit(failed ? 1 : 0);

@@ -6,6 +6,7 @@
 // is returned as null and the components show a "pending" state — no fake numbers.
 import { getSheetData, type Score, type SheetData } from "./sources/sheet";
 import { getFixtures, type ApiFixture } from "./sources/apiFootball";
+import { koResultsFromFixtures, scorePlayoff } from "./playoffScore";
 import { TEAMS, flagOf } from "./teams";
 import { plural, ruDate } from "./utils";
 import type { Participant, TodayMatch } from "./types";
@@ -51,6 +52,10 @@ export async function getHomeData(revalidate = 60) {
     return null;
   };
 
+  // live knockout results → playoff points are computed here, not read from the
+  // sheet's manual "ПО" column (which only updates when someone edits it by hand).
+  const ko = koResultsFromFixtures(fixtures);
+
   // ---- participants (Participant[]) ----
   const players: Participant[] = sheet.standings.map((s, idx) => {
     const sp = sheet.participants[s.name];
@@ -75,6 +80,12 @@ export async function getHomeData(revalidate = 60) {
         if (Math.abs(pick.ph - res[0]) + Math.abs(pick.pa - res[1]) === 1) nearMiss++;
       }
     }
+    // Live playoff score. Once the knockouts start we own this number: replace
+    // the sheet's manual "ПО" column (s.playoffPts, already baked into s.total)
+    // with the computed match points + stage bonus so it credits automatically.
+    const po = scorePlayoff(sp?.bracket ?? [], ko);
+    const total = ko.started ? s.total - s.playoffPts + po.total : s.total;
+
     return {
       id: idx,
       name: s.name,
@@ -85,15 +96,15 @@ export async function getHomeData(revalidate = 60) {
       points: {
         groupMatches,
         groupStandings: 0,
-        playoffMatches: s.playoffPts,
-        squadBonus: 0,
+        playoffMatches: ko.started ? po.matchPts : s.playoffPts,
+        squadBonus: ko.started ? po.bonus : 0,
         finalBets: s.betPts,
-        total: s.total,
+        total,
       },
       // no per-round history available yet → only start + now (movement = pending)
       history: [
         { label: "Старт", total: 0 },
-        { label: "Сейчас", total: s.total },
+        { label: "Сейчас", total },
       ],
       stats: { exactScores, correctOutcomes, predictions, nearMiss, contrarian: 0 },
     };
