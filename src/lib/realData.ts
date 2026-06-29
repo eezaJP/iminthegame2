@@ -4,9 +4,9 @@
 //
 // Honesty rule: anything that needs per-round HISTORY (movement between rounds)
 // is returned as null and the components show a "pending" state — no fake numbers.
-import { getPoolData } from "./pool";
+import { getPoolData, buildPointsRace } from "./pool";
 import { type Score, type SheetData } from "./sources/sheet";
-import { getFixtures, type ApiFixture } from "./sources/apiFootball";
+import { getFixtures, getStandings, type ApiFixture } from "./sources/apiFootball";
 import { TEAMS, flagOf } from "./teams";
 import { plural, ruDate } from "./utils";
 import type { Participant, TodayMatch } from "./types";
@@ -125,7 +125,9 @@ const gmPoints = ([ph, pa]: Score, [gh, ga]: Score) =>
 export type HomeData = Awaited<ReturnType<typeof getHomeData>>;
 
 export async function getHomeData(revalidate = 60) {
-  const [sheet, fixtures] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate)]);
+  const [sheet, fixtures, standingsApi] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate), getStandings(revalidate)]);
+  // animated LIVE points-race across the whole tournament (home block)
+  const race = buildPointsRace(fixtures, standingsApi);
 
   // actual group results (from API-Football, via getPoolData)
   const results = new Map<string, Score>();
@@ -771,6 +773,7 @@ export async function getHomeData(revalidate = 60) {
     participantsCount: players.length,
     stats,
     players,
+    race,
     todayMatches,
     homeMatches,
     homeMatchesTitle,

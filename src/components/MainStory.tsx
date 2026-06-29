@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Flame, ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { HeroTrophy } from "./HeroTrophy";
 import { NextMatchCountdown } from "./NextMatchCountdown";
 import type { NextMatch } from "@/lib/types";
@@ -15,7 +15,6 @@ type Story = {
 };
 
 export function MainStory({ story, nextMatches }: { story: Story; nextMatches: NextMatch[] }) {
-  const hasMatches = story.matchCount > 0;
   return (
     <motion.section
       initial={{ opacity: 0, y: 18 }}
@@ -34,40 +33,26 @@ export function MainStory({ story, nextMatches }: { story: Story; nextMatches: N
         <HeroTrophy className="size-full" />
       </motion.div>
 
-      <div className="relative z-10 flex max-w-[34rem] flex-1 flex-col">
-        <span className="chip w-fit bg-gold/12 text-gold">
-          <Sparkles className="size-3.5" strokeWidth={2.6} />
-          Главная интрига дня
-        </span>
+      <div className="relative z-10 flex flex-1 flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="max-w-[34rem]">
+          <span className="chip w-fit bg-gold/12 text-gold">
+            <Sparkles className="size-3.5" strokeWidth={2.6} />
+            Главная интрига дня
+          </span>
 
-        <h1 className="mt-3 font-display text-[26px] font-extrabold leading-[1.05] tracking-tight sm:text-[34px]">
-          {story.title}
-        </h1>
-        <p className="mt-2.5 max-w-md text-[14px] font-medium leading-snug text-ink-soft sm:text-[15px]">
-          {story.text}
-        </p>
-
-        <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
-          {hasMatches ? (
-            <a
-              href="#today"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0e9f6e] to-[#0a7d55] px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition-transform active:scale-[0.97]"
-            >
-              <Flame className="size-4" strokeWidth={2.6} />
-              Смотреть матчи
-              <ArrowRight className="size-4" strokeWidth={2.6} />
-            </a>
-          ) : (
-            <a
-              href="/rating"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0e9f6e] to-[#0a7d55] px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition-transform active:scale-[0.97]"
-            >
-              Смотреть рейтинг
-              <ArrowRight className="size-4" strokeWidth={2.6} />
-            </a>
-          )}
-          {nextMatches.length > 0 && <NextMatchCountdown matches={nextMatches} />}
+          <h1 className="mt-3 font-display text-[26px] font-extrabold leading-[1.05] tracking-tight sm:text-[34px]">
+            {story.title}
+          </h1>
+          <p className="mt-2.5 max-w-md text-[14px] font-medium leading-snug text-ink-soft sm:text-[15px]">
+            {story.text}
+          </p>
         </div>
+
+        {nextMatches.length > 0 && (
+          <div className="shrink-0 self-start">
+            <NextMatchCountdown matches={nextMatches} size="lg" />
+          </div>
+        )}
       </div>
     </motion.section>
   );

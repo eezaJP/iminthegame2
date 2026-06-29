@@ -1,6 +1,6 @@
 import { initials } from "@/lib/utils";
 
-const PAIRS = [
+export const AVATAR_PAIRS = [
   ["#0e9f6e", "#0a7d55"],
   ["#e0980f", "#b9740a"],
   ["#2f7dd1", "#235fa0"],
@@ -20,7 +20,7 @@ export function Avatar({
   seed: number;
   size?: number;
 }) {
-  const [from, to] = PAIRS[seed % PAIRS.length];
+  const [from, to] = AVATAR_PAIRS[seed % AVATAR_PAIRS.length];
   return (
     <span
       className="grid shrink-0 place-items-center rounded-full font-display font-bold text-white shadow-sm ring-2 ring-white/70 dark:ring-white/25"

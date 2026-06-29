@@ -1,6 +1,6 @@
 import { SummaryBar } from "@/components/SummaryBar";
 import { MainStory } from "@/components/MainStory";
-import { TopParticipants } from "@/components/TopParticipants";
+import { GroupRace } from "@/components/GroupRace";
 import { TodayMatches } from "@/components/TodayMatches";
 import { WhoCanClimb } from "@/components/WhoCanClimb";
 import { StoriesOfDay } from "@/components/StoriesOfDay";
@@ -30,13 +30,19 @@ export default async function DashboardPage() {
     <div className="mt-3">
       <SummaryBar friends={data.participantsCount} played={data.totalPlayed} total={data.totalMatches} stats={data.stats} />
 
-      {/* hero row: main story + short leaderboard */}
-      <div className="mt-3 grid gap-3 lg:grid-cols-[1.7fr_1fr]">
+      {/* main story of the day — full width */}
+      <div className="mt-3">
         <MainStory story={data.mainStory} nextMatches={data.nextMatches} />
-        <Reveal delay={0.1}>
-          <TopParticipants players={data.players} />
-        </Reveal>
       </div>
+
+      {/* LIVE points race — before the knockout matches */}
+      {data.race && (
+        <section className="mt-6">
+          <Reveal>
+            <GroupRace days={data.race.days} rows={data.race.rows} />
+          </Reveal>
+        </section>
+      )}
 
       {/* today's matches */}
       <section id="today" className="mt-10 scroll-mt-24">

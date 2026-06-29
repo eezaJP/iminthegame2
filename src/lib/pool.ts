@@ -4,7 +4,7 @@
 // the app already consumes, so realData.ts / components are unchanged.
 import { getFixtures, getStandings, type ApiFixture } from "./sources/apiFootball";
 import { PARTICIPANTS } from "./predictions";
-import { computeStandings, dayGainItems, stageKey, type Actuals, type KoResult, type StageKey, type GroupStanding, type RecentEvents } from "./scoring";
+import { computeStandings, scoreParticipant, dayGainItems, stageKey, type Actuals, type KoResult, type StageKey, type GroupStanding, type RecentEvents } from "./scoring";
 import type { Score, SheetData, SheetParticipant, GroupResult, GainItem } from "./sources/sheet";
 
 const koWinner = (f: ApiFixture, home: string, away: string): string => {
@@ -79,6 +79,66 @@ function buildResults(fixtures: ApiFixture[]): GroupResult[] {
     out.push({ group: f.group, home: f.homeRu, away: f.awayRu, gh: f.gh, ga: f.ga, winner, penWinner: null });
   }
   return out;
+}
+
+export type PointsRace = {
+  days: string[];                                            // MSK dates (YYYY-MM-DD), in order
+  rows: { name: string; seed: number; points: number[] }[]; // cumulative TOTAL per day
+};
+
+/** Per-game-day cumulative TOTAL points for every participant across the WHOLE
+ *  tournament — drives the animated race. Each day folds in that day's group AND
+ *  knockout results (a group's standing points turn on when its last match ends;
+ *  squad bonus / final bets turn on with the deciding match). Null before kickoff. */
+export function buildPointsRace(
+  fixtures: ApiFixture[],
+  standingsApi: { group: string; rank: number; teamRu: string | null; advanced: boolean }[],
+): PointsRace | null {
+  const MSK_MS = 3 * 3600 * 1000;
+  const mskDate = (ms: number) => new Date(ms + MSK_MS).toISOString().slice(0, 10);
+  const played = fixtures.filter((f) => f.finished && f.gh !== null && f.ga !== null && f.homeRu && f.awayRu);
+  if (!played.length) return null;
+  const days = [...new Set(played.map((f) => mskDate(f.timestamp * 1000)))].sort();
+
+  // final group standings + each group's completion day (date of its last match)
+  const byGroup: Record<string, { rank: number; team: string; advanced: boolean }[]> = {};
+  for (const s of standingsApi) { if (!s.teamRu) continue; (byGroup[s.group] ??= []).push({ rank: s.rank, team: s.teamRu, advanced: s.advanced }); }
+  const standings: Record<string, GroupStanding> = {};
+  for (const [letter, rs] of Object.entries(byGroup)) {
+    const r = [...rs].sort((a, b) => a.rank - b.rank);
+    if (r.length >= 3) standings[letter] = { first: r[0].team, second: r[1].team, third: r[2].team, thirdAdvanced: !!r[2].advanced };
+  }
+  const groupClosed: Record<string, string> = {};
+  for (const f of played) if (f.roundKey === "GROUP") { const d = mskDate(f.timestamp * 1000); if (!groupClosed[f.group] || d > groupClosed[f.group]) groupClosed[f.group] = d; }
+
+  const emptyReached = (): Record<StageKey, Set<string>> => ({ r32: new Set(), r16: new Set(), qf: new Set(), sf: new Set(), third: new Set(), final: new Set() });
+  const rows = PARTICIPANTS.map((p, i) => ({ name: p.name, seed: i, points: [] as number[] }));
+
+  for (const D of days) {
+    const upto = played.filter((f) => mskDate(f.timestamp * 1000) <= D);
+    const groupResults = new Map<string, Score>();
+    const koResults: KoResult[] = [];
+    const reachedStage = emptyReached();
+    let champion: string | null = null, finalist: string | null = null, third: string | null = null;
+    for (const f of upto) {
+      if (f.roundKey === "GROUP") { groupResults.set(`${f.homeRu}|${f.awayRu}`, [f.gh!, f.ga!]); continue; }
+      const k = stageKey(f.roundKey);
+      if (!k) continue;
+      const w = koWinner(f, f.homeRu!, f.awayRu!);
+      koResults.push({ stage: k, home: f.homeRu!, away: f.awayRu!, gh: f.gh!, ga: f.ga!, winner: w });
+      if (k === "final" && w) { champion = w; finalist = w === f.homeRu ? f.awayRu! : f.homeRu!; }
+      if (k === "third" && w) third = w;
+    }
+    for (const r of koResults) {
+      const reached = PREV_TO_STAGE[r.stage]; // winner of this round reaches `reached`
+      if (reached && r.winner) reachedStage[reached].add(r.winner);
+    }
+    const gs: Record<string, GroupStanding> = {};
+    for (const [letter, st] of Object.entries(standings)) if (groupClosed[letter] && groupClosed[letter] <= D) gs[letter] = st;
+    const actuals: Actuals = { groupResults, groupStandings: gs, koResults, reachedStage, champion, finalist, third };
+    PARTICIPANTS.forEach((p, i) => rows[i].points.push(scoreParticipant(p, actuals).total));
+  }
+  return { days, rows };
 }
 
 // previous round → the bonus stage a winner of it reaches (none for sf→third)
