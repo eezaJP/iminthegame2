@@ -1,6 +1,7 @@
-// Adapter: API-Football (api-sports.io) — the live football layer the sheet
-// doesn't hold: real schedule (dates/times), venue cities, live/final scores,
-// match status. Read server-side only (key from env, never sent to client).
+// Adapter: API-Football (api-sports.io) — the live football layer: real schedule
+// (dates/times), venue cities, live/final scores, status, AND the official group
+// standings (ranks + who advanced) that drive the scoring engine.
+// Read server-side only (key from env, never sent to client).
 import { ruFromApi, groupOf } from "../teams";
 
 const BASE = "https://v3.football.api-sports.io";
@@ -58,6 +59,46 @@ type RawFixture = {
   score?: { penalty?: { home: number | null; away: number | null } };
   league: { round: string };
 };
+
+// ---- official group standings (ranks + advancement) ----
+export type ApiStanding = {
+  group: string;     // letter A..L
+  rank: number;      // 1..4 within the group
+  teamRu: string | null;
+  teamEn: string;
+  advanced: boolean; // true if the team qualified to the knockouts
+};
+
+type RawStandingRow = {
+  rank: number;
+  team: { name: string };
+  group: string;        // e.g. "Group A"
+  description: string | null;
+};
+
+/** Per-group official standings (12 group tables; ignores the cross-group thirds table). */
+export async function getStandings(revalidate = 300): Promise<ApiStanding[]> {
+  const { league, season } = cfg();
+  const raw = (await apiGet(`/standings?league=${league}&season=${season}`, revalidate)) as Array<{
+    league?: { standings?: RawStandingRow[][] };
+  }>;
+  const tables = raw[0]?.league?.standings ?? [];
+  const out: ApiStanding[] = [];
+  for (const table of tables) {
+    for (const row of table) {
+      const m = /^group\s+([a-l])$/i.exec(String(row.group).trim());
+      if (!m) continue; // skip the "Group Stage" (best-thirds) cross-group table
+      out.push({
+        group: m[1].toUpperCase(),
+        rank: row.rank,
+        teamEn: row.team.name,
+        teamRu: ruFromApi(row.team.name),
+        advanced: !!row.description,
+      });
+    }
+  }
+  return out;
+}
 
 async function apiGet(path: string, revalidate: number) {
   const { key } = cfg();

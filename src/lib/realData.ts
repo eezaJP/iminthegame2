@@ -1,15 +1,17 @@
-// Assembles the LIVE pool data (Google Sheet) + LIVE football (API-Football)
-// into the exact shapes the existing components consume. This replaces the
-// simulated lib/data.ts for the pages that have been wired to it.
+// Assembles the LIVE pool data into the exact shapes the components consume.
+// Scoring is computed in-app (getPoolData → scoring engine, from baked predictions
+// + live API-Football results); the Google Sheet is no longer a runtime dependency.
 //
 // Honesty rule: anything that needs per-round HISTORY (movement between rounds)
 // is returned as null and the components show a "pending" state — no fake numbers.
-import { getSheetData, type Score, type SheetData } from "./sources/sheet";
+import { getPoolData } from "./pool";
+import { type Score, type SheetData } from "./sources/sheet";
 import { getFixtures, type ApiFixture } from "./sources/apiFootball";
 import { TEAMS, flagOf } from "./teams";
 import { plural, ruDate } from "./utils";
 import type { Participant, TodayMatch } from "./types";
 import type { PlayoffParticipant, PoRound, PoMatch, PoTeam, ChampionAliveItem } from "./playoff";
+import { projectBracket } from "./bracket";
 
 // API venue city → our host-city id (matches map.json ids 0-15).
 const CITY_ID: Record<string, number> = {
@@ -117,9 +119,9 @@ const gmPoints = ([ph, pa]: Score, [gh, ga]: Score) =>
 export type HomeData = Awaited<ReturnType<typeof getHomeData>>;
 
 export async function getHomeData(revalidate = 60) {
-  const [sheet, fixtures] = await Promise.all([getSheetData(revalidate), getFixtures(revalidate)]);
+  const [sheet, fixtures] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate)]);
 
-  // actual group results (from the sheet — the scoring source of truth)
+  // actual group results (from API-Football, via getPoolData)
   const results = new Map<string, Score>();
   for (const r of sheet.results) if (r.gh !== null && r.ga !== null) results.set(`${r.home}|${r.away}`, [r.gh, r.ga]);
 
@@ -832,7 +834,7 @@ function buildGroupTable(letter: string, fx: ApiFixture[]): GroupTableRow[] {
 }
 
 export async function getGroupsData(revalidate = 60) {
-  const [sheet, fixtures] = await Promise.all([getSheetData(revalidate), getFixtures(revalidate)]);
+  const [sheet, fixtures] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate)]);
   const today = mskToday();
   const done = fixtures.filter((f) => f.roundKey === "GROUP" && f.finished).length >= 72;
 
@@ -963,7 +965,7 @@ function stageToRound(stage: string): { key: string; title: string } | null {
 }
 
 export async function getPlayoffData(revalidate = 60) {
-  const [sheet, fixtures] = await Promise.all([getSheetData(revalidate), getFixtures(revalidate)]);
+  const [sheet, fixtures] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate)]);
 
   // knockouts started once any non-group fixture is finished
   const started = fixtures.some((f) => f.roundKey !== "GROUP" && f.finished);
@@ -1041,21 +1043,15 @@ export async function getPlayoffData(revalidate = 60) {
     const key = RK_KEY[f.roundKey];
     if (key) realBuckets[key].push(m);
   }
-  // full bracket skeleton — every slot exists; real pairs drop in as the API
-  // resolves them (1/16 fills first, third-place qualifiers slot in last).
-  const PO_COUNTS: Record<string, number> = { r32: 16, r16: 8, qf: 4, sf: 2, f: 1 };
-  const blankMatch = (): PoMatch => ({ a: null, b: null, scoreA: null, scoreB: null, winner: undefined, played: false });
-  const realRounds: PoRound[] = ORDER.map((k) => {
-    const matches = [...realBuckets[k]];
-    while (matches.length < PO_COUNTS[k]) matches.push(blankMatch());
-    return { key: k, title: TITLES[k], matches: matches.slice(0, PO_COUNTS[k]) };
-  });
+  // Project the bracket forward from live results (don't wait for the API to
+  // publish the next round — propagate winners ourselves; see lib/bracket.ts).
+  const projected = projectBracket(realBuckets, TITLES, realThird);
   const real = {
     started,
     knownMatches: koFixtures.length,
-    rounds: realRounds,
-    third: realThird.a || realThird.b ? realThird : blankMatch(),
-    champion: realBuckets.f[0]?.winner ?? null,
+    rounds: projected.rounds,
+    third: projected.third,
+    champion: projected.champion,
   };
 
   // ---- today's (or next) knockout matches, for the "Матчи плей-офф" section ----
