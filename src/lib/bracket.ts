@@ -16,12 +16,13 @@ const loserOf = (m?: PoMatch): PoTeam =>
 export type RealBracket = { rounds: PoRound[]; third: PoMatch; champion: PoTeam };
 
 /**
- * @param buckets   per-round API matches (r32/r16/qf/sf/f), in display order.
+ * @param buckets   per-round API matches (r32/r16/qf/sf/f), SPARSE arrays indexed
+ *                  by true bracket slot (a partially-published round has gaps).
  * @param titles    round key → localized title.
  * @param apiThird  the API's own 3rd-place match, if any (else a blank match).
  */
 export function projectBracket(
-  buckets: Record<string, PoMatch[]>,
+  buckets: Record<string, (PoMatch | undefined)[]>,
   titles: Record<string, string>,
   apiThird: PoMatch
 ): RealBracket {
@@ -31,19 +32,19 @@ export function projectBracket(
   for (const k of ORDER) {
     const count = COUNTS[k];
     const api = buckets[k] ?? [];
-    let matches: PoMatch[];
-    if (!prev || api.length > 0) {
-      // 1/16, or a round the API has started publishing → trust the API (padded).
-      matches = Array.from({ length: count }, (_, i) => api[i] ?? blank());
-    } else {
-      // not yet published → project the winners forward from the previous round.
-      const p = prev;
-      matches = Array.from({ length: count }, (_, i) => ({
+    const p = prev;
+    // Merge PER SLOT: a slot the API has published is trusted as-is; an unknown
+    // slot is projected from the previous round's two feeders (slots 2i & 2i+1).
+    // This handles a round that arrives partially (some ties known, some not).
+    const matches: PoMatch[] = Array.from({ length: count }, (_, i) => {
+      if (api[i]) return api[i]!;
+      if (p) return {
         a: p[2 * i]?.winner ?? null,
         b: p[2 * i + 1]?.winner ?? null,
         scoreA: null, scoreB: null, winner: undefined, played: false,
-      }));
-    }
+      };
+      return blank();
+    });
     rounds.push({ key: k, title: titles[k], matches });
     prev = matches;
   }

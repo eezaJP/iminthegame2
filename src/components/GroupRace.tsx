@@ -9,7 +9,7 @@ import { AVATAR_PAIRS } from "./Avatar";
 type Row = { name: string; seed: number; points: number[] };
 
 const STEP_MS = 1000;       // 1 game day per second
-const MAX_PCT = 82;         // leader's line tip reaches this % (room for avatar + value)
+const MAX_PCT = 68;         // leader's line tip reaches this % (leaves room for avatar + 3-digit value, even on narrow mobile)
 const GLIDE = { duration: STEP_MS / 1000, ease: "linear" as const };
 const REORDER = { layout: { duration: 0.65, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } };
 

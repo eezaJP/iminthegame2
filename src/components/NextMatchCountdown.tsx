@@ -31,24 +31,36 @@ export function NextMatchCountdown({ matches, size = "md" }: { matches: NextMatc
 
   const fw = lg ? "h-4 w-[22px]" : "h-3 w-4";
   return (
-    <div className={`inline-flex items-center gap-3 rounded-2xl bg-white/65 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/12 ${lg ? "gap-4 px-5 py-3.5" : "px-4 py-2.5"}`}>
-      <div>
+    <div
+      className={`rounded-2xl bg-white/65 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/12 ${
+        lg
+          ? "flex w-full flex-col gap-2.5 px-5 py-3.5 sm:inline-flex sm:w-auto sm:flex-row sm:items-center sm:gap-4"
+          : "inline-flex items-center gap-3 px-4 py-2.5"
+      }`}
+    >
+      <div className="min-w-0">
         <div className={`font-bold uppercase tracking-[0.14em] text-muted ${lg ? "text-[11px]" : "text-[10px]"}`}>До следующего матча</div>
         <div className={`mt-1 flex items-center gap-1.5 font-bold ${lg ? "text-[15px]" : "text-[13px]"}`}>
           <Image src={flagUrl(state.m.homeFlag, 40)} alt="" width={22} height={16}
-            className={`${fw} rounded-[2px] object-cover`} unoptimized />
-          <span>{state.m.home}</span>
-          <span className="text-muted">—</span>
+            className={`${fw} shrink-0 rounded-[2px] object-cover`} unoptimized />
+          <span className="truncate">{state.m.home}</span>
+          <span className="shrink-0 text-muted">—</span>
           <Image src={flagUrl(state.m.awayFlag, 40)} alt="" width={22} height={16}
-            className={`${fw} rounded-[2px] object-cover`} unoptimized />
-          <span>{state.m.away}</span>
+            className={`${fw} shrink-0 rounded-[2px] object-cover`} unoptimized />
+          <span className="truncate">{state.m.away}</span>
         </div>
       </div>
-      <div className={`ml-1 border-l border-black/10 text-right dark:border-white/15 ${lg ? "pl-4" : "pl-3"}`}>
-        <div className={`font-mono font-bold tabular-nums leading-none text-ink ${lg ? "text-[34px] sm:text-[40px]" : "text-xl sm:text-2xl"}`}>
+      <div
+        className={`text-ink ${
+          lg
+            ? "flex w-full items-baseline justify-between gap-3 border-t border-black/10 pt-2.5 dark:border-white/15 sm:ml-1 sm:w-auto sm:flex-col sm:items-end sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0 sm:text-right"
+            : "ml-1 border-l border-black/10 pl-3 text-right dark:border-white/15"
+        }`}
+      >
+        <div className={`font-mono font-bold tabular-nums leading-none ${lg ? "text-[32px] sm:text-[40px]" : "text-xl sm:text-2xl"}`}>
           {state.left}
         </div>
-        <div className={`mt-1 font-medium text-muted ${lg ? "text-[11px]" : "text-[10px]"}`}>{state.m.time} МСК</div>
+        <div className={`font-medium text-muted ${lg ? "text-[11px] sm:mt-1" : "mt-1 text-[10px]"}`}>{state.m.time} МСК</div>
       </div>
     </div>
   );

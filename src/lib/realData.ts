@@ -974,6 +974,25 @@ export type GroupInsightReal = ReturnType<typeof insight>;
 // ============================ PLAYOFF PAGE ============================
 const teamRef = (n: string): PoTeam => (n ? { n, f: flagOf(n) } : null);
 
+// Real FIFA WC2026 knockout bracket — the 16 Round-of-32 ties in BRACKET order
+// (top→bottom of the tree, NOT chronological), keyed by group-position slot
+// ("1E" = winner E, "2B" = runner-up B, "3D" = best third from D). Consecutive
+// ties feed the next round (ties 2i & 2i+1 → 1/8 slot i), so this single ordering
+// drives the whole projected tree (see lib/bracket.ts). The API publishes
+// knockout fixtures in kickoff order, which is NOT bracket order — we place each
+// at its true bracket slot so the real sketch + projection match the official
+// bracket exactly (verified: 1/8 slot 1 = win(2A/2B) vs win(1F/2C) = Канада vs
+// Марокко, exactly as the API now has it).
+// Source: en.wikipedia.org/wiki/2026_FIFA_World_Cup_knockout_stage (RoundN bracket).
+const R32_BRACKET: ReadonlyArray<readonly [string, string]> = [
+  ["1E", "3D"], ["1I", "3F"], ["2A", "2B"], ["1F", "2C"], // GER/PAR FRA/SWE RSA/CAN NED/MAR
+  ["2K", "2L"], ["1H", "2J"], ["1D", "3B"], ["1G", "3I"], // POR/CRO ESP/AUT USA/BIH BEL/SEN
+  ["1C", "2F"], ["2E", "2I"], ["1A", "3E"], ["1L", "3K"], // BRA/JPN CIV/NOR MEX/ECU ENG/COD
+  ["1J", "2H"], ["2D", "2G"], ["1B", "3J"], ["1K", "3L"], // ARG/CPV AUS/EGY SUI/ALG COL/GHA
+];
+// round key → how many R32 ties collapse into one tie of that round
+const ROUND_POW: Record<string, number> = { r32: 1, r16: 2, qf: 4, sf: 8, f: 16 };
+
 function stageToRound(stage: string): { key: string; title: string } | null {
   const s = stage.toLowerCase();
   if (s.includes("1/16")) return { key: "r32", title: "1/16 финала" };
@@ -986,7 +1005,7 @@ function stageToRound(stage: string): { key: string; title: string } | null {
 }
 
 export async function getPlayoffData(revalidate = 60) {
-  const [sheet, fixtures] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate)]);
+  const [sheet, fixtures, standings] = await Promise.all([getPoolData(revalidate), getFixtures(revalidate), getStandings(revalidate)]);
 
   // knockouts started once any non-group fixture is finished
   const started = fixtures.some((f) => f.roundKey !== "GROUP" && f.finished);
@@ -1037,12 +1056,32 @@ export async function getPlayoffData(revalidate = 60) {
   const favourite = championAlive[0] ?? null;
 
   // ---- REAL bracket from live knockout fixtures (TBD until knockouts start) ----
+  // The API publishes knockout fixtures in KICKOFF order, which is NOT bracket
+  // order, AND a round arrives PARTIALLY (a 1/8 tie appears as soon as both its
+  // 1/16 feeders finish). So we map every fixture to its TRUE bracket slot via
+  // the official FIFA template and place it there (sparse) — never packed by
+  // arrival order. projectBracket() then fills the still-unknown slots from the
+  // previous round's winners. team (RU) → FIFA slot ("1A".."3L") → its R32 tie
+  // index 0..15 (both teams in a tie share it, so a later-round winner keeps its
+  // leaf position, which collapses cleanly into its 1/8, 1/4… slot).
+  const slotToTeam = new Map<string, string>();
+  for (const s of standings) if (s.teamRu) slotToTeam.set(`${s.rank}${s.group}`, s.teamRu);
+  const r32IndexOf = new Map<string, number>();
+  R32_BRACKET.forEach(([s1, s2], i) => {
+    const t1 = slotToTeam.get(s1), t2 = slotToTeam.get(s2);
+    if (t1) r32IndexOf.set(t1, i);
+    if (t2) r32IndexOf.set(t2, i);
+  });
+  const bracketSlot = (m: PoMatch, key: string): number => {
+    const team = m.a?.n ?? m.b?.n;
+    const bi = team != null ? r32IndexOf.get(team) : undefined;
+    return bi === undefined ? -1 : Math.floor(bi / ROUND_POW[key]);
+  };
+
   const RK_KEY: Record<string, string> = { R32: "r32", R16: "r16", QF: "qf", SF: "sf", FINAL: "f" };
-  const realBuckets: Record<string, PoMatch[]> = { r32: [], r16: [], qf: [], sf: [], f: [] };
+  const realBuckets: Record<string, (PoMatch | undefined)[]> = { r32: [], r16: [], qf: [], sf: [], f: [] };
   let realThird: PoMatch = { a: null, b: null };
-  const koFixtures = fixtures
-    .filter((f) => f.roundKey !== "GROUP" && f.roundKey !== "OTHER")
-    .sort((a, b) => a.timestamp - b.timestamp);
+  const koFixtures = fixtures.filter((f) => f.roundKey !== "GROUP" && f.roundKey !== "OTHER");
   for (const f of koFixtures) {
     const a = teamRef(f.homeRu ?? "");
     const b = teamRef(f.awayRu ?? "");
@@ -1062,14 +1101,17 @@ export async function getPlayoffData(revalidate = 60) {
     };
     if (f.roundKey === "THIRD") { realThird = m; continue; }
     const key = RK_KEY[f.roundKey];
-    if (key) realBuckets[key].push(m);
+    if (!key) continue;
+    const slot = bracketSlot(m, key);
+    if (slot >= 0) realBuckets[key][slot] = m; // place at its true bracket slot
   }
-  // Project the bracket forward from live results (don't wait for the API to
-  // publish the next round — propagate winners ourselves; see lib/bracket.ts).
+
+  // Fill the still-unknown slots by propagating winners forward from live
+  // results (don't wait for the API to publish the next round; see lib/bracket.ts).
   const projected = projectBracket(realBuckets, TITLES, realThird);
   const real = {
     started,
-    knownMatches: koFixtures.length,
+    knownMatches: realBuckets.r32.filter(Boolean).length, // 1/16 ties known (of 16)
     rounds: projected.rounds,
     third: projected.third,
     champion: projected.champion,
