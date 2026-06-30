@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "verify:bracket": "node scripts/verify-bracket.mjs",
+    "prebuild": "node scripts/verify-bracket.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

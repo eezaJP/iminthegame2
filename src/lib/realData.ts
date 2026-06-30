@@ -12,6 +12,7 @@ import { plural, ruDate } from "./utils";
 import type { Participant, TodayMatch } from "./types";
 import type { PlayoffParticipant, PoRound, PoMatch, PoTeam, ChampionAliveItem } from "./playoff";
 import { projectBracket } from "./bracket";
+import wcBracket from "./wc2026-bracket.json";
 
 // API venue city → our host-city id (matches map.json ids 0-15).
 const CITY_ID: Record<string, number> = {
@@ -974,24 +975,16 @@ export type GroupInsightReal = ReturnType<typeof insight>;
 // ============================ PLAYOFF PAGE ============================
 const teamRef = (n: string): PoTeam => (n ? { n, f: flagOf(n) } : null);
 
-// Real FIFA WC2026 knockout bracket — the 16 Round-of-32 ties in BRACKET order
-// (top→bottom of the tree, NOT chronological), keyed by group-position slot
-// ("1E" = winner E, "2B" = runner-up B, "3D" = best third from D). Consecutive
-// ties feed the next round (ties 2i & 2i+1 → 1/8 slot i), so this single ordering
-// drives the whole projected tree (see lib/bracket.ts). The API publishes
-// knockout fixtures in kickoff order, which is NOT bracket order — we place each
-// at its true bracket slot so the real sketch + projection match the official
-// bracket exactly (verified: 1/8 slot 1 = win(2A/2B) vs win(1F/2C) = Канада vs
-// Марокко, exactly as the API now has it).
-// Source: en.wikipedia.org/wiki/2026_FIFA_World_Cup_knockout_stage (RoundN bracket).
-const R32_BRACKET: ReadonlyArray<readonly [string, string]> = [
-  ["1E", "3D"], ["1I", "3F"], ["2A", "2B"], ["1F", "2C"], // GER/PAR FRA/SWE RSA/CAN NED/MAR
-  ["2K", "2L"], ["1H", "2J"], ["1D", "3B"], ["1G", "3I"], // POR/CRO ESP/AUT USA/BIH BEL/SEN
-  ["1C", "2F"], ["2E", "2I"], ["1A", "3E"], ["1L", "3K"], // BRA/JPN CIV/NOR MEX/ECU ENG/COD
-  ["1J", "2H"], ["2D", "2G"], ["1B", "3J"], ["1K", "3L"], // ARG/CPV AUS/EGY SUI/ALG COL/GHA
-];
+// Real FIFA WC2026 knockout bracket — the 16 Round-of-32 ties in BRACKET order,
+// keyed by group-position slot. SINGLE SOURCE OF TRUTH lives in the JSON (also
+// consumed by scripts/verify-bracket.mjs, which checks it against the live API).
+// The API publishes knockout fixtures in kickoff order, which is NOT bracket
+// order — we place each at its true bracket slot so the real sketch + projection
+// match the official bracket exactly (1/8 slot 1 = win(2A/2B) vs win(1F/2C) =
+// Канада vs Марокко). Re-validate any time with `npm run verify:bracket`.
+const R32_BRACKET = wcBracket.r32 as unknown as ReadonlyArray<readonly [string, string]>;
 // round key → how many R32 ties collapse into one tie of that round
-const ROUND_POW: Record<string, number> = { r32: 1, r16: 2, qf: 4, sf: 8, f: 16 };
+const ROUND_POW: Record<string, number> = wcBracket.roundPow;
 
 function stageToRound(stage: string): { key: string; title: string } | null {
   const s = stage.toLowerCase();
