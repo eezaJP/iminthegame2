@@ -74,6 +74,51 @@ function parseParticipant(name) {
 const standings = parseStandingsNames();
 const participants = standings.map((s) => parseParticipant(s.name));
 
+// ---- Verified transcription corrections (audited 2026-07-01) ----
+// The master workbook has a handful of data-entry typos where a later-round /
+// placing cell holds a team that is IMPOSSIBLE for that slot (didn't advance from
+// the feeding tie / isn't in that group). Each fix below is confirmed against the
+// participant's OWN bracket structure, scores and downstream rounds, so it only
+// removes the typo — it never reinterprets a genuine (if illogical) blind pick.
+// We patch here (not in the xlsx) so re-bakes stay correct; guards throw if a
+// target row ever moves, so a correction can never silently miss.
+function applyCorrections(list) {
+  const P = (name) => { const p = list.find((x) => x.name === name); if (!p) throw new Error(`correction: no participant ${name}`); return p; };
+  const tie = (p, stage, pred, ctx) => { const e = p.bracket.find((b) => b.stage.includes(stage) && pred(b)); if (!e) throw new Error(`correction: no ${ctx}`); return e; };
+  // idempotent + drift-guarded: fix if the known typo is present, skip if already
+  // corrected, throw if the value is something unexpected (source drifted).
+  const fix = (e, field, wrong, right, ctx) => {
+    if (e[field] === right) return;                 // already fixed upstream
+    if (e[field] === wrong) { e[field] = right; return; }
+    throw new Error(`correction drift: ${ctx} — expected "${wrong}"/"${right}", got "${e[field]}"`);
+  };
+  // Владимир П.: 1/8 "Бразилия — Кюрасао" → Кот-д'Ивуар (Кюрасао не выходил ни из одной его пары 1/16)
+  fix(tie(P("Владимир П."), "1/8", (b) => b.home === "Бразилия", "ВП 1/8 Бразилия"), "away", "Кюрасао", "Кот-д'Ивуар", "ВП 1/8 Бразилия away");
+  // Маршал: 1/8 "Турция — Бельгия" → Босния и Гер. (Турция не проходила; из его 1/16 вышла Босния)
+  fix(tie(P("Маршал"), "1/8", (b) => b.away === "Бельгия", "Маршал 1/8 –Бельгия"), "home", "Турция", "Босния и Гер.", "Маршал 1/8 home");
+  // Маршал: 1/8 "Аргентина — Египет" → США (Египет не проходил; из его 1/16 вышли США)
+  fix(tie(P("Маршал"), "1/8", (b) => b.home === "Аргентина", "Маршал 1/8 Аргентина"), "away", "Египет", "США", "Маршал 1/8 away");
+  // Денис: 1/8 "Колумбия — Испания" — «проходит»=Колумбия, но счёт 0:2 и весь путь ниже за Испанию
+  fix(tie(P("Денис"), "1/8", (b) => b.home === "Колумбия" && b.away === "Испания", "Денис 1/8 Колумбия-Испания"), "advances", "Колумбия", "Испания", "Денис 1/8 adv");
+  // Денис: 1/8 "Швейцария — Португалия" — «проходит»=Швейцария, но счёт 0:2 и весь путь ниже за Португалию
+  fix(tie(P("Денис"), "1/8", (b) => b.home === "Швейцария" && b.away === "Португалия", "Денис 1/8 Швейцария-Португалия"), "advances", "Швейцария", "Португалия", "Денис 1/8 adv");
+  // Денис: placing группы E, 3-е = Швеция (Швеция в группе F!) → Кот-д'Ивуар (его прогноз матчей E ставит Кот-д'Ивуар 3-м)
+  const de = P("Денис"); if (!de.placings.E) throw new Error("Денис: нет placing E");
+  if (de.placings.E[2] === "Швеция") de.placings.E[2] = "Кот-д'Ивуар";
+  else if (de.placings.E[2] !== "Кот-д'Ивуар") throw new Error(`Денис E 3rd drift: ${de.placings.E[2]}`);
+  // «Проходит»-опечатки в НИЧЕЙНЫХ парах: колонка победителя расходится с командами
+  // следующих раундов И с финальными ставками участника (champion/finalist/3-е).
+  // Команды сетки + ставки — два независимых сигнала — совпадают против одной ячейки adv,
+  // поэтому правим adv к тому, кто реально идёт дальше по его же сетке.
+  // Маршал (ставки Испания/Англия/Португалия): 1/2 "Англия 1:1 Португалия" проходит Англия (финалист), Португалия — 3-е
+  fix(tie(P("Маршал"), "1/2", (b) => b.home === "Англия" && b.away === "Португалия", "Маршал 1/2 Англия-Португалия"), "advances", "Португалия", "Англия", "Маршал 1/2 adv");
+  // Волк (ставки Испания/Франция/Австрия): 1/4 "Испания 2:2 Турция" проходит Испания (его чемпион по сетке)
+  fix(tie(P("Волк"), "1/4", (b) => b.home === "Испания" && b.away === "Турция", "Волк 1/4 Испания-Турция"), "advances", "Турция", "Испания", "Волк 1/4 adv");
+  // Волк: 1/2 "Франция 0:0 Австрия" проходит Франция (финалист), Австрия — 3-е
+  fix(tie(P("Волк"), "1/2", (b) => b.home === "Франция" && b.away === "Австрия", "Волк 1/2 Франция-Австрия"), "advances", "Австрия", "Франция", "Волк 1/2 adv");
+}
+applyCorrections(participants);
+
 // sanity
 console.log("Участники:", participants.length);
 for (let i = 0; i < participants.length; i++) {

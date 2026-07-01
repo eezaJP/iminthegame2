@@ -1556,7 +1556,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
       "E": [
         "Германия",
         "Эквадор",
-        "Швеция"
+        "Кот-д'Ивуар"
       ],
       "F": [
         "Нидерланды",
@@ -1745,7 +1745,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
         "away": "Испания",
         "gh": 0,
         "ga": 2,
-        "advances": "Колумбия"
+        "advances": "Испания"
       },
       {
         "stage": "1/8 финала",
@@ -1785,7 +1785,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
         "away": "Португалия",
         "gh": 0,
         "ga": 2,
-        "advances": "Швейцария"
+        "advances": "Португалия"
       },
       {
         "stage": "1/4 финала",
@@ -2985,7 +2985,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
       },
       {
         "stage": "1/8 финала",
-        "home": "Турция",
+        "home": "Босния и Гер.",
         "away": "Бельгия",
         "gh": 0,
         "ga": 2,
@@ -3010,7 +3010,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
       {
         "stage": "1/8 финала",
         "home": "Аргентина",
-        "away": "Египет",
+        "away": "США",
         "gh": 3,
         "ga": 1,
         "advances": "Аргентина"
@@ -3069,7 +3069,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
         "away": "Португалия",
         "gh": 1,
         "ga": 1,
-        "advances": "Португалия"
+        "advances": "Англия"
       },
       {
         "stage": "За 3-е место",
@@ -4230,7 +4230,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
       {
         "stage": "1/8 финала",
         "home": "Бразилия",
-        "away": "Кюрасао",
+        "away": "Кот-д'Ивуар",
         "gh": 3,
         "ga": 1,
         "advances": "Бразилия"
@@ -7363,7 +7363,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
         "away": "Турция",
         "gh": 2,
         "ga": 2,
-        "advances": "Турция"
+        "advances": "Испания"
       },
       {
         "stage": "1/4 финала",
@@ -7395,7 +7395,7 @@ export const PARTICIPANTS: SheetParticipant[] = [
         "away": "Австрия",
         "gh": 0,
         "ga": 0,
-        "advances": "Австрия"
+        "advances": "Франция"
       },
       {
         "stage": "За 3-е место",

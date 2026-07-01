@@ -17,6 +17,15 @@ const koWinner = (f: ApiFixture, home: string, away: string): string => {
 
 const PREV_STAGE: Partial<Record<StageKey, StageKey>> = { r16: "r32", qf: "r16", sf: "qf", final: "sf" };
 
+// Football "game day" key (YYYY-MM-DD). MSK with a NOON cutoff, so an evening's
+// slate — including matches that spill past midnight (WC2026 is in the Americas,
+// kickoffs run ~19:00–06:00 MSK with a clear midday gap) — groups into ONE day.
+// Without this, a late match's points land on the next calendar date and get split
+// from the same evening's earlier matches in the "Сводка за игровой день"
+// (e.g. Норвегия 20:00 МСК vs Франция 00:00 МСК were two different days).
+const MSK_MS = 3 * 3600 * 1000;
+const gameDay = (ms: number) => new Date(ms + MSK_MS - 12 * 3600 * 1000).toISOString().slice(0, 10);
+
 /** Build the live actuals (RU name space) from API fixtures + standings. */
 export function buildActuals(fixtures: ApiFixture[], standings: { group: string; rank: number; teamRu: string | null; advanced: boolean }[]): Actuals {
   // group match results
@@ -94,8 +103,7 @@ export function buildPointsRace(
   fixtures: ApiFixture[],
   standingsApi: { group: string; rank: number; teamRu: string | null; advanced: boolean }[],
 ): PointsRace | null {
-  const MSK_MS = 3 * 3600 * 1000;
-  const mskDate = (ms: number) => new Date(ms + MSK_MS).toISOString().slice(0, 10);
+  const mskDate = gameDay;
   const played = fixtures.filter((f) => f.finished && f.gh !== null && f.ga !== null && f.homeRu && f.awayRu);
   if (!played.length) return null;
   const days = [...new Set(played.map((f) => mskDate(f.timestamp * 1000)))].sort();
@@ -177,8 +185,7 @@ export async function getPoolData(revalidate = 60): Promise<SheetData> {
   // without that day's matches, so it covers match points, squad bonus AND final
   // bets — never invented. The day rolls forward as soon as a newer match finishes.
   const now = Date.now();
-  const MSK_MS = 3 * 3600 * 1000;
-  const mskDate = (ms: number) => new Date(ms + MSK_MS).toISOString().slice(0, 10);
+  const mskDate = gameDay;
   const playedDates = fixtures.filter((f) => f.finished).map((f) => mskDate(f.timestamp * 1000)).sort();
   const dayDate = playedDates.length ? playedDates[playedDates.length - 1] : mskDate(now);
   const recent = (f: ApiFixture) => f.finished && mskDate(f.timestamp * 1000) === dayDate;
