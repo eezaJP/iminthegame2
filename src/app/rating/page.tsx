@@ -57,7 +57,7 @@ export default async function RatingPage() {
       {r.pairLeaders.some((l) => l.count > 0) && (
         <>
           <SectionHeader kicker="Король сетки" title="Угадал больше всех пар" />
-          <PairLeaders leaders={r.pairLeaders} />
+          <PairLeaders leaders={r.pairLeaders} stages={r.pairStages} />
         </>
       )}
 

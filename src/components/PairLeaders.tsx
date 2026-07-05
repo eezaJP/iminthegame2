@@ -19,17 +19,24 @@ const STAGE_CHIP: Record<string, string> = {
 
 const RANK_TONE = ["bg-gold/15 text-gold", "bg-black/[0.07] text-ink-soft dark:bg-white/12", "bg-[#cf8b4d]/15 text-[#cf8b4d]"];
 
-export function PairLeaders({ leaders }: { leaders: Leader[] }) {
+export function PairLeaders({ leaders, stages: activeStages }: { leaders: Leader[]; stages?: string[] }) {
   const [sel, setSel] = useState<Leader | null>(null);
   const [stage, setStage] = useState<string>("all");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // stages that actually have at least one guessed pair (tournament order)
+  // stages to show as chips: every knockout stage that has actually STARTED (a real
+  // pair exists), passed from the server — so a stage's chip appears the moment its
+  // pairs are known, even if nobody guessed one yet. Falls back to stages that have
+  // a guessed pair if the prop is absent. Kept in tournament order.
   const stages = useMemo(() => {
     const present = new Set<string>();
-    for (const l of leaders) for (const p of l.pairs) present.add(p.stage);
+    if (activeStages && activeStages.length) {
+      for (const s of activeStages) present.add(s);
+    } else {
+      for (const l of leaders) for (const p of l.pairs) present.add(p.stage);
+    }
     return STAGE_ORDER.filter((s) => present.has(s));
-  }, [leaders]);
+  }, [leaders, activeStages]);
 
   // re-rank leaders by their guessed-pair count for the active stage filter
   const ranked = useMemo(() => {

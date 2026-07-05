@@ -10,11 +10,17 @@ export function ChampionAlive({ items }: { items: ChampionAliveItem[] }) {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => (
-        <div key={c.team} className="glass p-4">
+        <div key={c.team} className={`glass p-4 ${c.alive ? "" : "ring-1 ring-rose/25"}`}>
           <div className="flex items-center gap-2.5">
             <Flag code={c.flag} name={c.team} w={26} />
-            <span className="font-display text-[15px] font-extrabold">{c.team}</span>
-            <span className="chip ml-auto bg-green/12 px-2 py-0.5 text-[10.5px] text-green-deep">{c.status}</span>
+            <span className={`font-display text-[15px] font-extrabold ${c.alive ? "" : "text-muted line-through decoration-rose/50"}`}>{c.team}</span>
+            <span
+              className={`chip ml-auto px-2 py-0.5 text-[10.5px] ${
+                c.alive ? "bg-green/12 text-green-deep" : "bg-rose/15 text-rose"
+              }`}
+            >
+              {c.status}
+            </span>
           </div>
           <div className="mt-1.5 text-[12px] font-semibold text-ink-soft">
             {c.count} {c.count === 1 ? "голос" : c.count < 5 ? "голоса" : "голосов"}

@@ -435,6 +435,10 @@ export async function getHomeData(revalidate = 60) {
       return { id: p.id, name: p.name, avatarSeed: p.avatarSeed, count: pairs.length, pairs };
     })
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  // knockout stages that have actually STARTED (a real pair is known) — drives the
+  // filter chips, so a stage's chip appears as soon as its pairs exist, even if
+  // nobody guessed one yet (then it just shows "0 пар" for everyone).
+  const pairStages = KO_ORDER.filter((rk) => realKo.some((f) => f.roundKey === rk)).map((rk) => KO_STAGE[rk].label);
 
   // home "matches" block: current knockout round in playoff phase, else today's games
   const usePlayoffRound = groupStageDone && roundMatches.length > 0;
@@ -758,6 +762,7 @@ export async function getHomeData(revalidate = 60) {
     bestByCategory,
     potentials,
     pairLeaders,
+    pairStages,
   };
 
   // whole-tournament match count: 72 group + 32 knockout (16+8+4+2+1+1) = 104
@@ -1043,10 +1048,25 @@ export async function getPlayoffData(revalidate = 60) {
     if (!champMap.has(c)) champMap.set(c, { count: 0, participants: [] });
     const e = champMap.get(c)!; e.count++; e.participants.push(s.name);
   }
+  // teams knocked out of the playoffs (lost a finished knockout match) → shown red
+  const eliminated = new Set<string>();
+  for (const f of fixtures) {
+    if (f.roundKey === "GROUP" || f.roundKey === "OTHER") continue;
+    if (!f.finished || f.gh === null || f.ga === null || !f.homeRu || !f.awayRu) continue;
+    let w: string | null = null;
+    if (f.gh > f.ga) w = f.homeRu;
+    else if (f.ga > f.gh) w = f.awayRu;
+    else if (f.penHome !== null && f.penAway !== null) w = f.penHome > f.penAway ? f.homeRu : f.awayRu;
+    if (w) eliminated.add(w === f.homeRu ? f.awayRu : f.homeRu);
+  }
   const championAlive: ChampionAliveItem[] = [...champMap.entries()]
-    .map(([team, e]) => ({ team, flag: flagOf(team), count: e.count, alive: true, status: "в игре", participants: e.participants }))
-    .sort((a, b) => b.count - a.count);
-  const favourite = championAlive[0] ?? null;
+    .map(([team, e]) => {
+      const out = eliminated.has(team);
+      return { team, flag: flagOf(team), count: e.count, alive: !out, status: out ? "вылетела" : "в игре", participants: e.participants };
+    })
+    // alive teams first, then by popularity — so the "фаворит" is a team still in it
+    .sort((a, b) => Number(b.alive) - Number(a.alive) || b.count - a.count);
+  const favourite = championAlive.find((c) => c.alive) ?? championAlive[0] ?? null;
 
   // ---- REAL bracket from live knockout fixtures (TBD until knockouts start) ----
   // The API publishes knockout fixtures in KICKOFF order, which is NOT bracket
