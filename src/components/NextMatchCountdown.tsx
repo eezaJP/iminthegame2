@@ -4,8 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { flagUrl } from "@/lib/utils";
 import type { NextMatch } from "@/lib/types";
+import { EasterEgg } from "./EasterEgg";
+import { EGG_MATCH_VIDEOS } from "@/lib/easterEggs";
 
 const pad = (n: number) => String(n).padStart(2, "0");
+
+/** Flag + team name; if the team is an easter-egg one, tapping it plays its video. */
+function CdTeam({ name, flag, fw }: { name: string; flag: string; fw: string }) {
+  const inner = (
+    <>
+      <Image src={flagUrl(flag, 40)} alt="" width={22} height={16}
+        className={`${fw} shrink-0 rounded-[2px] object-cover`} unoptimized />
+      <span className="truncate">{name}</span>
+    </>
+  );
+  const video = EGG_MATCH_VIDEOS[name];
+  if (video) {
+    return (
+      <EasterEgg videoSrc={video} label={name} className="flex min-w-0 cursor-pointer items-center gap-1.5 transition-transform active:scale-[0.97]">
+        {inner}
+      </EasterEgg>
+    );
+  }
+  return <span className="flex min-w-0 items-center gap-1.5">{inner}</span>;
+}
 
 /** Next not-yet-started match, by real kickoff timestamp (timezone-independent). */
 export function NextMatchCountdown({ matches, size = "md" }: { matches: NextMatch[]; size?: "md" | "lg" }) {
@@ -41,13 +63,9 @@ export function NextMatchCountdown({ matches, size = "md" }: { matches: NextMatc
       <div className="min-w-0">
         <div className={`font-bold uppercase tracking-[0.14em] text-muted ${lg ? "text-[11px]" : "text-[10px]"}`}>До следующего матча</div>
         <div className={`mt-1 flex items-center gap-1.5 font-bold ${lg ? "text-[15px]" : "text-[13px]"}`}>
-          <Image src={flagUrl(state.m.homeFlag, 40)} alt="" width={22} height={16}
-            className={`${fw} shrink-0 rounded-[2px] object-cover`} unoptimized />
-          <span className="truncate">{state.m.home}</span>
+          <CdTeam name={state.m.home} flag={state.m.homeFlag} fw={fw} />
           <span className="shrink-0 text-muted">—</span>
-          <Image src={flagUrl(state.m.awayFlag, 40)} alt="" width={22} height={16}
-            className={`${fw} shrink-0 rounded-[2px] object-cover`} unoptimized />
-          <span className="truncate">{state.m.away}</span>
+          <CdTeam name={state.m.away} flag={state.m.awayFlag} fw={fw} />
         </div>
       </div>
       <div
