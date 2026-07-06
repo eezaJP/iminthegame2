@@ -5,7 +5,7 @@ import { ruWeekday, ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
 import { PairGuessers } from "./PairGuessers";
 import { EasterEgg } from "./EasterEgg";
-import { EGG_TEAM_VIDEOS } from "@/lib/easterEggs";
+import { EGG_MATCH_VIDEOS } from "@/lib/easterEggs";
 
 /** One team's side of a match; if it's an easter-egg team (in a knockout tie),
  *  tapping that specific team opens its short video. */
@@ -18,7 +18,7 @@ function TeamSide({ name, flag, side, knockout }: { name: string; flag: string; 
     side === "home"
       ? (<><span className="truncate">{name}</span><Flag code={flag} name={name} w={20} /></>)
       : (<><Flag code={flag} name={name} w={20} /><span className="truncate">{name}</span></>);
-  const video = knockout ? EGG_TEAM_VIDEOS[name] : undefined;
+  const video = knockout ? EGG_MATCH_VIDEOS[name] : undefined;
   if (video) {
     return (
       <EasterEgg videoSrc={video} label={name} className={`${cls} cursor-pointer transition-transform active:scale-[0.97]`}>
