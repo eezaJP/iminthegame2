@@ -5,30 +5,28 @@ import { ruWeekday, ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
 import { PairGuessers } from "./PairGuessers";
 import { EasterEgg } from "./EasterEgg";
+import { EGG_TEAM_VIDEOS } from "@/lib/easterEggs";
 
-// hidden easter-eggs: tapping one of these knockout ties opens a short video
-const EGG_MATCHES: { a: string; b: string; video: string }[] = [
-  { a: "Бразилия", b: "Норвегия", video: "/brazil-out.mp4" },
-  { a: "США", b: "Бельгия", video: "/usa-belgium.mp4" },
-];
-const eggFor = (m: TodayMatch) =>
-  m.isKnockout
-    ? EGG_MATCHES.find((e) => (m.home === e.a && m.away === e.b) || (m.home === e.b && m.away === e.a)) ?? null
-    : null;
-
-/** Team block, wrapped as an easter-egg trigger for the special ties. */
-function TeamsCell({ m }: { m: TodayMatch }) {
-  const egg = eggFor(m);
-  if (!egg) return <Teams m={m} />;
-  return (
-    <EasterEgg
-      videoSrc={egg.video}
-      label={`${m.home} — ${m.away}`}
-      className="block w-full cursor-pointer rounded-xl text-left transition-transform active:scale-[0.98]"
-    >
-      <Teams m={m} />
-    </EasterEgg>
-  );
+/** One team's side of a match; if it's an easter-egg team (in a knockout tie),
+ *  tapping that specific team opens its short video. */
+function TeamSide({ name, flag, side, knockout }: { name: string; flag: string; side: "home" | "away"; knockout: boolean }) {
+  const cls =
+    side === "home"
+      ? "flex flex-1 items-center justify-end gap-1.5 truncate text-right text-[14px] font-bold"
+      : "flex flex-1 items-center gap-1.5 truncate text-[14px] font-bold";
+  const inner =
+    side === "home"
+      ? (<><span className="truncate">{name}</span><Flag code={flag} name={name} w={20} /></>)
+      : (<><Flag code={flag} name={name} w={20} /><span className="truncate">{name}</span></>);
+  const video = knockout ? EGG_TEAM_VIDEOS[name] : undefined;
+  if (video) {
+    return (
+      <EasterEgg videoSrc={video} label={name} className={`${cls} cursor-pointer transition-transform active:scale-[0.97]`}>
+        {inner}
+      </EasterEgg>
+    );
+  }
+  return <span className={cls}>{inner}</span>;
 }
 
 /** "ПН, 29 июня" from an MSK date string (YYYY-MM-DD). */
@@ -65,15 +63,9 @@ function Score({ m }: { m: TodayMatch }) {
 function Teams({ m }: { m: TodayMatch }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex flex-1 items-center justify-end gap-1.5 truncate text-right text-[14px] font-bold">
-        <span className="truncate">{m.home}</span>
-        <Flag code={m.homeFlag} name={m.home} w={20} />
-      </span>
+      <TeamSide name={m.home} flag={m.homeFlag} side="home" knockout={!!m.isKnockout} />
       <Score m={m} />
-      <span className="flex flex-1 items-center gap-1.5 truncate text-[14px] font-bold">
-        <Flag code={m.awayFlag} name={m.away} w={20} />
-        <span className="truncate">{m.away}</span>
-      </span>
+      <TeamSide name={m.away} flag={m.awayFlag} side="away" knockout={!!m.isKnockout} />
     </div>
   );
 }
@@ -111,7 +103,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
       {/* desktop: single aligned row */}
       <div className="hidden items-center gap-4 md:grid md:grid-cols-[88px_minmax(0,1fr)_132px_104px_92px_36px]">
         <GroupTime m={m} />
-        <TeamsCell m={m} />
+        <Teams m={m} />
         <div className="min-w-0">
           <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Лига ставит на" : "Большинство"}</div>
           <div className="truncate text-[13px] font-bold">{fav}</div>
@@ -167,7 +159,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
             </span>
           )}
         </div>
-        <TeamsCell m={m} />
+        <Teams m={m} />
         <div className="mt-2.5 flex items-center justify-between gap-2 text-[12px]">
           {m.isKnockout ? (
             <>

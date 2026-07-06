@@ -2,6 +2,7 @@ import { Trophy, Target, Flame, Medal } from "lucide-react";
 import type { PoMatch, PoRound, PoTeam } from "@/lib/playoff";
 import { Flag } from "./Flag";
 import { EasterEgg } from "./EasterEgg";
+import { EGG_TEAM_VIDEOS } from "@/lib/easterEggs";
 
 type Mode = "real" | "majority" | "participant";
 type Fill = "win" | "out" | "none";
@@ -12,12 +13,6 @@ const CARD_W = 154;
 const GAP = 24;
 const FINAL_W = 198;
 const CELL_MIN = 60;
-
-// hidden easter-eggs: a bracket row for one of these teams plays a short video when tapped
-const EGG_TEAMS: Record<string, string> = {
-  "США": "/usa-belgium.mp4",
-  "Бразилия": "/brazil-out.mp4",
-};
 
 function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; fill: Fill }) {
   const bg = fill === "win" ? "bg-green/15" : fill === "out" ? "bg-rose/[0.09] opacity-55" : "";
@@ -40,7 +35,7 @@ function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; 
       )}
     </div>
   );
-  const eggVideo = team ? EGG_TEAMS[team.n] : undefined;
+  const eggVideo = team ? EGG_TEAM_VIDEOS[team.n] : undefined;
   if (eggVideo) {
     return (
       <EasterEgg videoSrc={eggVideo} label={team!.n} className="block w-full cursor-pointer text-left">
