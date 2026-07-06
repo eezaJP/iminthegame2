@@ -84,12 +84,22 @@ export async function getStandings(revalidate = 300): Promise<ApiStanding[]> {
   }>;
   const tables = raw[0]?.league?.standings ?? [];
   const out: ApiStanding[] = [];
+  // ⚠️ API-Football sometimes returns a group's rows MORE THAN ONCE (seen mid-
+  // tournament: groups H/I/J/K/L came back with each team duplicated). Left un-
+  // deduped, sorting a group by rank puts the 1st-place team's DUPLICATE where the
+  // 2nd/3rd should be, which corrupts the group-standing scoring (silently dropped
+  // ~30-40 pts per participant). De-dup by (group, team), keeping the first row.
+  const seen = new Set<string>();
   for (const table of tables) {
     for (const row of table) {
       const m = /^group\s+([a-l])$/i.exec(String(row.group).trim());
       if (!m) continue; // skip the "Group Stage" (best-thirds) cross-group table
+      const group = m[1].toUpperCase();
+      const key = `${group}|${row.team.name}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
       out.push({
-        group: m[1].toUpperCase(),
+        group,
         rank: row.rank,
         teamEn: row.team.name,
         teamRu: ruFromApi(row.team.name),
