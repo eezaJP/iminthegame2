@@ -13,9 +13,11 @@ const GAP = 24;
 const FINAL_W = 198;
 const CELL_MIN = 60;
 
-// hidden easter-egg: a bracket row for this team plays a short video when tapped
-const EGG_TEAM = "США";
-const EGG_VIDEO = "/usa-belgium.mp4";
+// hidden easter-eggs: a bracket row for one of these teams plays a short video when tapped
+const EGG_TEAMS: Record<string, string> = {
+  "США": "/usa-belgium.mp4",
+  "Бразилия": "/brazil-out.mp4",
+};
 
 function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; fill: Fill }) {
   const bg = fill === "win" ? "bg-green/15" : fill === "out" ? "bg-rose/[0.09] opacity-55" : "";
@@ -38,9 +40,10 @@ function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; 
       )}
     </div>
   );
-  if (team?.n === EGG_TEAM) {
+  const eggVideo = team ? EGG_TEAMS[team.n] : undefined;
+  if (eggVideo) {
     return (
-      <EasterEgg videoSrc={EGG_VIDEO} label={EGG_TEAM} className="block w-full cursor-pointer text-left">
+      <EasterEgg videoSrc={eggVideo} label={team!.n} className="block w-full cursor-pointer text-left">
         {row}
       </EasterEgg>
     );
