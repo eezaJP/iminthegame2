@@ -4,6 +4,26 @@ import type { TodayMatch } from "@/lib/types";
 import { ruWeekday, ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
 import { PairGuessers } from "./PairGuessers";
+import { EasterEgg } from "./EasterEgg";
+
+// hidden easter-egg: tapping the Бразилия–Норвегия knockout tie opens a short video
+const isEggMatch = (m: TodayMatch) =>
+  m.isKnockout &&
+  ((m.home === "Бразилия" && m.away === "Норвегия") || (m.home === "Норвегия" && m.away === "Бразилия"));
+
+/** Team block, wrapped as an easter-egg trigger for the special tie. */
+function TeamsCell({ m }: { m: TodayMatch }) {
+  if (!isEggMatch(m)) return <Teams m={m} />;
+  return (
+    <EasterEgg
+      videoSrc="/brazil-out.mp4"
+      label="Бразилия — Норвегия"
+      className="block w-full cursor-pointer rounded-xl text-left transition-transform active:scale-[0.98]"
+    >
+      <Teams m={m} />
+    </EasterEgg>
+  );
+}
 
 /** "ПН, 29 июня" from an MSK date string (YYYY-MM-DD). */
 function whenLabel(date?: string): string {
@@ -85,7 +105,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
       {/* desktop: single aligned row */}
       <div className="hidden items-center gap-4 md:grid md:grid-cols-[88px_minmax(0,1fr)_132px_104px_92px_36px]">
         <GroupTime m={m} />
-        <Teams m={m} />
+        <TeamsCell m={m} />
         <div className="min-w-0">
           <div className="text-[10px] font-bold uppercase tracking-wide text-muted">{m.isKnockout ? "Лига ставит на" : "Большинство"}</div>
           <div className="truncate text-[13px] font-bold">{fav}</div>
@@ -141,7 +161,7 @@ function Row({ m, total }: { m: TodayMatch; total?: number }) {
             </span>
           )}
         </div>
-        <Teams m={m} />
+        <TeamsCell m={m} />
         <div className="mt-2.5 flex items-center justify-between gap-2 text-[12px]">
           {m.isKnockout ? (
             <>
