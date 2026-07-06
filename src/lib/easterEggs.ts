@@ -1,12 +1,16 @@
-// Hidden easter-eggs: tapping one of these teams opens a short video WITH SOUND.
-// Videos live in /public. Single source of truth for TodayMatches + PlayoffBracket.
+// Hidden easter-eggs: tapping one of these teams opens a short clip in a modal.
+// The media can be a video (played with sound) OR an image (EasterEgg detects the
+// type by extension). Files live in /public. Single source of truth for
+// TodayMatches + PlayoffBracket + NextMatchCountdown.
 
 // Base teams — the egg fires EVERYWHERE: the "Матчи 1/8" / "Матчи плей-офф сегодня"
-// match rows AND the bracket sketch rows.
+// match rows, the countdown, AND the bracket sketch rows.
 export const EGG_TEAM_VIDEOS: Record<string, string> = {
   "США": "/usa-belgium.mp4",
   "Бразилия": "/brazil-out.mp4",
   "Норвегия": "/norway.mp4",
+  "Мексика": "/mexico-england.jpg",
+  "Англия": "/mexico-england.jpg",
 };
 
 // Match-only teams — the egg fires ONLY in the match rows, NOT in the bracket

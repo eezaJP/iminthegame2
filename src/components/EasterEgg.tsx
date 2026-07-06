@@ -4,12 +4,14 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
+const IMAGE_RE = /\.(png|jpe?g|gif|webp|avif)$/i;
+
 /**
  * Hidden easter-egg: wraps any content in a button that, on click, opens a
- * centered modal playing a short video WITH SOUND. Because the modal is opened
- * by the user's click (a user gesture), the subsequent play() is allowed to be
- * unmuted; if a browser still blocks it, the native controls let them press play.
- * Rendered via a portal to <body> so the fixed overlay is viewport-relative.
+ * centered modal showing a short clip. The media source can be a VIDEO (played
+ * WITH SOUND — unmuted playback is allowed because the modal is opened by the
+ * user's click) or an IMAGE (detected by file extension). Rendered via a portal
+ * to <body> so the fixed overlay is viewport-relative.
  */
 export function EasterEgg({
   videoSrc,
@@ -25,6 +27,7 @@ export function EasterEgg({
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isImage = IMAGE_RE.test(videoSrc);
 
   useEffect(() => setMounted(true), []);
 
@@ -74,15 +77,24 @@ export function EasterEgg({
               >
                 <X className="size-5" strokeWidth={2.4} />
               </button>
-              <video
-                ref={videoRef}
-                src={videoSrc}
-                controls
-                playsInline
-                autoPlay
-                onEnded={() => setOpen(false)}
-                className="mx-auto max-h-[82vh] w-auto max-w-full rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]"
-              />
+              {isImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={videoSrc}
+                  alt={label}
+                  className="mx-auto max-h-[82vh] w-auto max-w-full rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]"
+                />
+              ) : (
+                <video
+                  ref={videoRef}
+                  src={videoSrc}
+                  controls
+                  playsInline
+                  autoPlay
+                  onEnded={() => setOpen(false)}
+                  className="mx-auto max-h-[82vh] w-auto max-w-full rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]"
+                />
+              )}
             </div>
           </div>,
           document.body,
