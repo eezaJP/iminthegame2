@@ -1,6 +1,7 @@
 import { Trophy, Target, Flame, Medal } from "lucide-react";
 import type { PoMatch, PoRound, PoTeam } from "@/lib/playoff";
 import { Flag } from "./Flag";
+import { EasterEgg } from "./EasterEgg";
 
 type Mode = "real" | "majority" | "participant";
 type Fill = "win" | "out" | "none";
@@ -12,10 +13,14 @@ const GAP = 24;
 const FINAL_W = 198;
 const CELL_MIN = 60;
 
+// hidden easter-egg: a bracket row for this team plays a short video when tapped
+const EGG_TEAM = "США";
+const EGG_VIDEO = "/usa-belgium.mp4";
+
 function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; fill: Fill }) {
   const bg = fill === "win" ? "bg-green/15" : fill === "out" ? "bg-rose/[0.09] opacity-55" : "";
   const strip = fill === "win" ? "bg-green" : "bg-transparent";
-  return (
+  const row = (
     <div className={`flex items-center gap-2 px-2.5 py-1.5 ${bg}`}>
       <span className={`-ml-2.5 h-6 w-[3px] rounded-r ${strip}`} />
       {team ? (
@@ -33,6 +38,14 @@ function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; 
       )}
     </div>
   );
+  if (team?.n === EGG_TEAM) {
+    return (
+      <EasterEgg videoSrc={EGG_VIDEO} label={EGG_TEAM} className="block w-full cursor-pointer text-left">
+        {row}
+      </EasterEgg>
+    );
+  }
+  return row;
 }
 
 function tonesFor(m: PoMatch, mode: Mode): { aFill: Fill; bFill: Fill } {

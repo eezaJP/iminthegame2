@@ -6,18 +6,24 @@ import { Flag } from "./Flag";
 import { PairGuessers } from "./PairGuessers";
 import { EasterEgg } from "./EasterEgg";
 
-// hidden easter-egg: tapping the Бразилия–Норвегия knockout tie opens a short video
-const isEggMatch = (m: TodayMatch) =>
-  m.isKnockout &&
-  ((m.home === "Бразилия" && m.away === "Норвегия") || (m.home === "Норвегия" && m.away === "Бразилия"));
+// hidden easter-eggs: tapping one of these knockout ties opens a short video
+const EGG_MATCHES: { a: string; b: string; video: string }[] = [
+  { a: "Бразилия", b: "Норвегия", video: "/brazil-out.mp4" },
+  { a: "США", b: "Бельгия", video: "/usa-belgium.mp4" },
+];
+const eggFor = (m: TodayMatch) =>
+  m.isKnockout
+    ? EGG_MATCHES.find((e) => (m.home === e.a && m.away === e.b) || (m.home === e.b && m.away === e.a)) ?? null
+    : null;
 
-/** Team block, wrapped as an easter-egg trigger for the special tie. */
+/** Team block, wrapped as an easter-egg trigger for the special ties. */
 function TeamsCell({ m }: { m: TodayMatch }) {
-  if (!isEggMatch(m)) return <Teams m={m} />;
+  const egg = eggFor(m);
+  if (!egg) return <Teams m={m} />;
   return (
     <EasterEgg
-      videoSrc="/brazil-out.mp4"
-      label="Бразилия — Норвегия"
+      videoSrc={egg.video}
+      label={`${m.home} — ${m.away}`}
       className="block w-full cursor-pointer rounded-xl text-left transition-transform active:scale-[0.98]"
     >
       <Teams m={m} />
