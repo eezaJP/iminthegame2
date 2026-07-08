@@ -5,6 +5,8 @@ import { TopNav } from "@/components/TopNav";
 import { Background } from "@/components/Background";
 import { BackToTop } from "@/components/BackToTop";
 import { AutoRefresh } from "@/components/AutoRefresh";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const display = Unbounded({
   subsets: ["latin", "cyrillic"],
@@ -64,6 +66,8 @@ export default function RootLayout({
           {children}
         </main>
         <BackToTop />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
