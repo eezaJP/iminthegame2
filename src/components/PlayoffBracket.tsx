@@ -2,7 +2,7 @@ import { Trophy, Target, Flame, Medal } from "lucide-react";
 import type { PoMatch, PoRound, PoTeam } from "@/lib/playoff";
 import { Flag } from "./Flag";
 import { EasterEgg } from "./EasterEgg";
-import { EGG_TEAM_VIDEOS } from "@/lib/easterEggs";
+import { eggMediaFor } from "@/lib/easterEggs";
 
 type Mode = "real" | "majority" | "participant";
 type Fill = "win" | "out" | "none";
@@ -14,7 +14,7 @@ const GAP = 24;
 const FINAL_W = 198;
 const CELL_MIN = 60;
 
-function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; fill: Fill }) {
+function TeamLine({ team, opponent, score, fill }: { team: PoTeam; opponent?: string; score?: number | null; fill: Fill }) {
   const bg = fill === "win" ? "bg-green/15" : fill === "out" ? "bg-rose/[0.09] opacity-55" : "";
   const strip = fill === "win" ? "bg-green" : "bg-transparent";
   const row = (
@@ -35,7 +35,7 @@ function TeamLine({ team, score, fill }: { team: PoTeam; score?: number | null; 
       )}
     </div>
   );
-  const eggVideo = team ? EGG_TEAM_VIDEOS[team.n] : undefined;
+  const eggVideo = team ? eggMediaFor(team.n, opponent) : undefined;
   if (eggVideo) {
     return (
       <EasterEgg videoSrc={eggVideo} label={team!.n} className="block w-full cursor-pointer text-left">
@@ -66,9 +66,9 @@ function PoMatchCard({ m, mode, gold }: { m: PoMatch; mode: Mode; gold?: boolean
   const exact = mode === "participant" && m.state === "exact";
   return (
     <div className={`w-full overflow-hidden rounded-xl border ${gold ? "border-gold/50 bg-gradient-to-br from-gold-soft/45 to-gold/10 shadow-[0_10px_26px_-12px_rgba(224,152,15,0.55)] dark:from-gold-soft/20 dark:to-gold/5" : "glass-soft"} ${dead ? "ring-1 ring-black/5 dark:ring-white/10" : ""}`}>
-      <TeamLine team={m.a} score={m.scoreA} fill={aFill} />
+      <TeamLine team={m.a} opponent={m.b?.n} score={m.scoreA} fill={aFill} />
       <div className="h-px bg-black/[0.06] dark:bg-white/10" />
-      <TeamLine team={m.b} score={m.scoreB} fill={bFill} />
+      <TeamLine team={m.b} opponent={m.a?.n} score={m.scoreB} fill={bFill} />
       {mode === "real" && m.pens && (
         <div className="bg-black/[0.03] px-2 py-0.5 text-[10.5px] dark:bg-white/[0.05] font-semibold text-muted">по пен. · счёт ОТ</div>
       )}
@@ -147,8 +147,8 @@ function BronzeNode({ third, mode }: { third: PoMatch; mode: Mode }) {
       </div>
       {third.a && third.b ? (
         <>
-          <TeamLine team={third.a} score={third.scoreA} fill={t.aFill} />
-          <TeamLine team={third.b} score={third.scoreB} fill={t.bFill} />
+          <TeamLine team={third.a} opponent={third.b?.n} score={third.scoreA} fill={t.aFill} />
+          <TeamLine team={third.b} opponent={third.a?.n} score={third.scoreB} fill={t.bFill} />
           {!decided && <div className="px-2 pt-0.5 text-[10.5px] text-muted">{mode === "real" ? "ещё впереди" : "прогноз"}</div>}
         </>
       ) : (
