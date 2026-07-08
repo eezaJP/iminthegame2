@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import NumberFlow from "@number-flow/react";
 import Image from "next/image";
-import { Crown, ArrowUp, ArrowDown, Minus, Info } from "lucide-react";
+import { Crown, ArrowUp, ArrowDown, Minus, Info, X } from "lucide-react";
 import type { Participant } from "@/lib/types";
 import { flagUrl } from "@/lib/utils";
 import { flagOf } from "@/lib/teams";
@@ -11,13 +11,14 @@ import { Avatar } from "./Avatar";
 
 type Move = { id: number; delta: number };
 
-function Champion({ name }: { name: string }) {
+function Champion({ name, out }: { name: string; out?: boolean }) {
   if (!name) return <span className="text-muted">—</span>;
   const code = flagOf(name);
   return (
     <span className="flex items-center gap-1.5 truncate">
-      {code && <Image src={flagUrl(code, 40)} alt="" width={18} height={13} className="h-[13px] w-[18px] shrink-0 rounded-[2px] object-cover" unoptimized />}
-      <span className="truncate text-[13px] font-semibold">{name}</span>
+      {code && <Image src={flagUrl(code, 40)} alt="" width={18} height={13} className={`h-[13px] w-[18px] shrink-0 rounded-[2px] object-cover ${out ? "opacity-55" : ""}`} unoptimized />}
+      <span className={`truncate text-[13px] font-semibold ${out ? "text-muted line-through decoration-rose decoration-2" : ""}`}>{name}</span>
+      {out && <X className="size-3.5 shrink-0 text-rose" strokeWidth={3.5} />}
     </span>
   );
 }
@@ -98,7 +99,7 @@ export function RatingTable({ players, movement }: { players: Participant[]; mov
                 </span>
                 <span className="text-center text-[14px] font-bold tabular-nums text-gold">{p.stats.exactScores}</span>
                 <span className="text-center text-[14px] font-bold tabular-nums text-ink-soft">{p.stats.correctOutcomes}</span>
-                <Champion name={p.champion} />
+                <Champion name={p.champion} out={p.championOut} />
                 <span className="flex justify-center"><Delta delta={d} /></span>
               </div>
 

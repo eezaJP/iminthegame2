@@ -5,12 +5,13 @@ import Image from "next/image";
 import { flagUrl } from "@/lib/utils";
 import type { NextMatch } from "@/lib/types";
 import { EasterEgg } from "./EasterEgg";
-import { EGG_MATCH_VIDEOS } from "@/lib/easterEggs";
+import { eggMediaFor } from "@/lib/easterEggs";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Flag + team name; if the team is an easter-egg one, tapping it plays its video. */
-function CdTeam({ name, flag, fw }: { name: string; flag: string; fw: string }) {
+/** Flag + team name; if the team is an easter-egg one, tapping it opens its clip
+ *  (a pair-specific egg for this exact match wins over the per-team one). */
+function CdTeam({ name, opponent, flag, fw }: { name: string; opponent: string; flag: string; fw: string }) {
   const inner = (
     <>
       <Image src={flagUrl(flag, 40)} alt="" width={22} height={16}
@@ -18,7 +19,7 @@ function CdTeam({ name, flag, fw }: { name: string; flag: string; fw: string }) 
       <span className="truncate">{name}</span>
     </>
   );
-  const video = EGG_MATCH_VIDEOS[name];
+  const video = eggMediaFor(name, opponent);
   if (video) {
     return (
       <EasterEgg videoSrc={video} label={name} className="flex min-w-0 cursor-pointer items-center gap-1.5 transition-transform active:scale-[0.97]">
@@ -63,9 +64,9 @@ export function NextMatchCountdown({ matches, size = "md" }: { matches: NextMatc
       <div className="min-w-0">
         <div className={`font-bold uppercase tracking-[0.14em] text-muted ${lg ? "text-[11px]" : "text-[10px]"}`}>До следующего матча</div>
         <div className={`mt-1 flex items-center gap-1.5 font-bold ${lg ? "text-[15px]" : "text-[13px]"}`}>
-          <CdTeam name={state.m.home} flag={state.m.homeFlag} fw={fw} />
+          <CdTeam name={state.m.home} opponent={state.m.away} flag={state.m.homeFlag} fw={fw} />
           <span className="shrink-0 text-muted">—</span>
-          <CdTeam name={state.m.away} flag={state.m.awayFlag} fw={fw} />
+          <CdTeam name={state.m.away} opponent={state.m.home} flag={state.m.awayFlag} fw={fw} />
         </div>
       </div>
       <div

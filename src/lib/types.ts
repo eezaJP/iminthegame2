@@ -78,6 +78,7 @@ export type Participant = {
   name: string;
   avatarSeed: number;
   champion: string;
+  championOut?: boolean; // predicted champion has been eliminated from the playoffs
   skill: number;
   rank: number;
   points: {

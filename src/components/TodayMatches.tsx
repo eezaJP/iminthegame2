@@ -5,11 +5,12 @@ import { ruWeekday, ruDate } from "@/lib/utils";
 import { Flag } from "./Flag";
 import { PairGuessers } from "./PairGuessers";
 import { EasterEgg } from "./EasterEgg";
-import { EGG_MATCH_VIDEOS } from "@/lib/easterEggs";
+import { eggMediaFor } from "@/lib/easterEggs";
 
 /** One team's side of a match; if it's an easter-egg team (in a knockout tie),
- *  tapping that specific team opens its short video. */
-function TeamSide({ name, flag, side, knockout }: { name: string; flag: string; side: "home" | "away"; knockout: boolean }) {
+ *  tapping that specific team opens its clip. A pair-specific egg (by opponent)
+ *  wins over the per-team one. */
+function TeamSide({ name, opponent, flag, side, knockout }: { name: string; opponent: string; flag: string; side: "home" | "away"; knockout: boolean }) {
   const cls =
     side === "home"
       ? "flex flex-1 items-center justify-end gap-1.5 truncate text-right text-[14px] font-bold"
@@ -18,7 +19,7 @@ function TeamSide({ name, flag, side, knockout }: { name: string; flag: string; 
     side === "home"
       ? (<><span className="truncate">{name}</span><Flag code={flag} name={name} w={20} /></>)
       : (<><Flag code={flag} name={name} w={20} /><span className="truncate">{name}</span></>);
-  const video = knockout ? EGG_MATCH_VIDEOS[name] : undefined;
+  const video = knockout ? eggMediaFor(name, opponent) : undefined;
   if (video) {
     return (
       <EasterEgg videoSrc={video} label={name} className={`${cls} cursor-pointer transition-transform active:scale-[0.97]`}>
@@ -63,9 +64,9 @@ function Score({ m }: { m: TodayMatch }) {
 function Teams({ m }: { m: TodayMatch }) {
   return (
     <div className="flex items-center gap-2.5">
-      <TeamSide name={m.home} flag={m.homeFlag} side="home" knockout={!!m.isKnockout} />
+      <TeamSide name={m.home} opponent={m.away} flag={m.homeFlag} side="home" knockout={!!m.isKnockout} />
       <Score m={m} />
-      <TeamSide name={m.away} flag={m.awayFlag} side="away" knockout={!!m.isKnockout} />
+      <TeamSide name={m.away} opponent={m.home} flag={m.awayFlag} side="away" knockout={!!m.isKnockout} />
     </div>
   );
 }

@@ -143,6 +143,19 @@ export async function getHomeData(revalidate = 60) {
   };
 
   // ---- participants (Participant[]) ----
+  // teams knocked out of the playoffs (lost a finished KO match) — to strike out
+  // an eliminated champion pick in the rating table
+  const eliminated = new Set<string>();
+  for (const f of fixtures) {
+    if (f.roundKey === "GROUP" || f.roundKey === "OTHER") continue;
+    if (!f.finished || f.gh === null || f.ga === null || !f.homeRu || !f.awayRu) continue;
+    let w: string | null = null;
+    if (f.gh > f.ga) w = f.homeRu;
+    else if (f.ga > f.gh) w = f.awayRu;
+    else if (f.penHome !== null && f.penAway !== null) w = f.penHome > f.penAway ? f.homeRu : f.awayRu;
+    if (w) eliminated.add(w === f.homeRu ? f.awayRu : f.homeRu);
+  }
+
   const players: Participant[] = sheet.standings.map((s, idx) => {
     const sp = sheet.participants[s.name];
     let groupMatches = 0, correctOutcomes = 0, nearMiss = 0, predictions = 0;
@@ -162,6 +175,7 @@ export async function getHomeData(revalidate = 60) {
       name: s.name,
       avatarSeed: idx,
       champion: sp?.bets.champion || "",
+      championOut: !!sp?.bets.champion && eliminated.has(sp.bets.champion),
       skill: 0,
       rank: s.rank,
       points: {
