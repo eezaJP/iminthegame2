@@ -15,7 +15,7 @@ const EGG_MATCHES: { teams: [string, string]; media: EggMedia }[] = [
   { teams: ["Бразилия", "Норвегия"], media: { perTeam: { "Бразилия": "/brazil-out.mp4", "Норвегия": "/norway.mp4" } } },
   { teams: ["США", "Бельгия"], media: { perTeam: { "США": "/usa-belgium.mp4" } } },
   { teams: ["Мексика", "Англия"], media: { both: "/mexico-england.jpg" } },
-  { teams: ["Португалия", "Испания"], media: { both: "/portugal-spain.mp4" } },
+  { teams: ["Португалия", "Испания"], media: { both: "/por-esp.mp4" } },
   { teams: ["Норвегия", "Англия"], media: { both: "/norway-england.mp4" } },
 ];
 
