@@ -4,6 +4,18 @@ import { useEffect, useRef, useState, type ReactNode, type RefObject } from "rea
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
+import { track } from "@vercel/analytics";
+
+// group the many per-item labels into a few analytics buckets
+// (PairGuessers "Угадали пару X — Y", PairLeaders "Пары, которые угадал X",
+//  DaySummary "Очки X за 24 часа")
+function modalKind(label?: string): string {
+  const l = (label ?? "").toLowerCase();
+  if (l.includes("которые угадал")) return "pair_leader";
+  if (l.includes("угадал")) return "pair_guessers";
+  if (l.includes("очки") || l.includes("24 часа") || l.includes("сводка")) return "day_breakdown";
+  return "other";
+}
 
 const overlayV = { hidden: { opacity: 0 }, show: { opacity: 1 } };
 const sheetV = {
@@ -47,6 +59,7 @@ export function Sheet({
 
   useEffect(() => {
     if (!open) return;
+    track("modal_open", { kind: modalKind(label) });
     const ret = returnFocusRef?.current;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";

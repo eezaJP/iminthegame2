@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { Flame, Medal, LayoutGrid, GitFork, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
+import { track } from "@vercel/analytics";
 
 const TABS = [
   { href: "/", label: "Сегодня", icon: Flame },
@@ -51,6 +52,7 @@ export function TopNav() {
                   href={t.href}
                   aria-label={t.label}
                   aria-current={active ? "page" : undefined}
+                  onClick={() => { if (!active) track("nav_tab", { tab: t.label }); }}
                   className={cn(
                     "relative flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-semibold transition-[color,transform] active:scale-[0.96]",
                     active ? "text-ink" : "text-muted hover:text-ink"

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 const IMAGE_RE = /\.(png|jpe?g|gif|webp|avif)$/i;
 
@@ -55,7 +56,15 @@ export function EasterEgg({
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} aria-label={label} className={className}>
+      <button
+        type="button"
+        onClick={() => {
+          track("easter_egg", { media: videoSrc, trigger: label });
+          setOpen(true);
+        }}
+        aria-label={label}
+        className={className}
+      >
         {children}
       </button>
 
