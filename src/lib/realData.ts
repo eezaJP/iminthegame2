@@ -541,16 +541,67 @@ export async function getHomeData(revalidate = 60) {
 
   if (groupStageDone) {
     // ---- playoff stories from the blind brackets (group-day stories no longer apply) ----
+    // teams already through to the final (won a finished semifinal)
+    const finalists = new Set<string>();
+    for (const f of fixtures) {
+      if (f.roundKey !== "SF" || !f.finished || f.gh === null || f.ga === null || !f.homeRu || !f.awayRu) continue;
+      let w: string | null = null;
+      if (f.gh > f.ga) w = f.homeRu;
+      else if (f.ga > f.gh) w = f.awayRu;
+      else if (f.penHome !== null && f.penAway !== null) w = f.penHome > f.penAway ? f.homeRu : f.awayRu;
+      if (w) finalists.add(w);
+    }
     const fav = leagueChampions[0];
-    if (fav) stories.push({ kind: "favorite", title: "Фаворит лиги", tone: "gold", name: fav.team, id: 0, flag: fav.flag, isTeam: true, text: `${fav.count} из ${players.length} поставили на этот трофей до старта.`, metric: `${fav.count} ${plural(fav.count, "голос", "голоса", "голосов")}` });
+    const favOut = !!fav && eliminated.has(fav.team);
+    if (fav) stories.push({
+      kind: "favorite", title: "Фаворит лиги", tone: "gold", name: fav.team, id: 0, flag: fav.flag, isTeam: true,
+      text: favOut
+        ? `${fav.count} из ${players.length} поставили на этот трофей — и все дружно остались без чемпиона.`
+        : finalists.has(fav.team)
+          ? `${fav.count} из ${players.length} поставили на этот трофей — и ставка уже в финале. ${fav.count} довольных лиц в лиге.`
+          : `${fav.count} из ${players.length} поставили на этот трофей до старта.`,
+      metric: `${fav.count} ${plural(fav.count, "голос", "голоса", "голосов")}`,
+    });
     const rare = [...leagueChampions].reverse().find((c) => c.count >= 1);
     if (rare && (!fav || rare.team !== fav.team)) {
       const fan = players.find((p) => p.champion === rare.team);
-      if (fan) stories.push({ kind: "darkhorse", title: "Тёмная лошадка", tone: "sky", name: fan.name, id: fan.id, flag: rare.flag, text: `Верит в ${rare.team} — самый редкий выбор чемпиона в лиге.`, metric: rare.team });
+      if (fan && eliminated.has(rare.team)) {
+        const gap = leader.points.total - fan.points.total;
+        stories.push({
+          kind: "against", title: "Потерял надежду", tone: "rose", name: fan.name, id: fan.id, flag: rare.flag,
+          text: `Его выбор чемпиона — ${rare.team} — уже дома. Догнать лидера теперь можно разве что чудом.`,
+          metric: gap > 0 ? `−${gap} от лидера` : "надежды нет",
+        });
+      } else if (fan) {
+        stories.push({ kind: "darkhorse", title: "Тёмная лошадка", tone: "sky", name: fan.name, id: fan.id, flag: rare.flag, text: `Верит в ${rare.team} — самый редкий выбор чемпиона в лиге.`, metric: rare.team });
+      }
     }
     if (fav) {
       const rebels = players.filter((p) => p.champion && p.champion !== fav.team);
-      if (rebels[0]) stories.push({ kind: "against", title: "Против фаворита", tone: "rose", name: rebels[0].name, id: rebels[0].id, flag: flagOf(rebels[0].champion), text: `Не верит в ${fav.team} — поставил на ${rebels[0].champion}.`, metric: `${rebels.length} ${plural(rebels.length, "скептик", "скептика", "скептиков")}` });
+      const orphans = rebels.filter((p) => p.championOut);
+      if (!favOut && rebels.length > 0 && orphans.length === rebels.length) {
+        // everyone who bet against the favourite has lost their champion — now they
+        // root for whoever can still stop it: the other finalist, or the underdog
+        // (least backed by the league) of the pending semifinal
+        let spite = [...finalists].find((t) => t !== fav.team) ?? "";
+        if (!spite) {
+          const pending = roundMatches.find((m) => m.status !== "finished");
+          if (pending) spite = pending.dist.home <= pending.dist.away ? pending.home : pending.away;
+        }
+        const names = orphans.map((o) => o.name);
+        const listed = names.length > 1 ? `${names.slice(0, -1).join(", ")} и ${names[names.length - 1]}` : names[0];
+        stories.push({
+          kind: "against", title: "Клуб брошенных болельщиков", tone: "sky",
+          name: listed, id: orphans[0].id,
+          flag: spite ? flagOf(spite) : undefined, isTeam: !!spite,
+          text: spite
+            ? `Их чемпионы уже дома, так что у клуба новый фаворит — ${spite}: кто угодно, лишь бы не ${fav.team}.`
+            : `Их чемпионы уже дома — болеть больше не за кого, разве что против фаворита лиги.`,
+          metric: `${orphans.length} без чемпиона`,
+        });
+      } else if (rebels[0]) {
+        stories.push({ kind: "against", title: "Против фаворита", tone: "rose", name: rebels[0].name, id: rebels[0].id, flag: flagOf(rebels[0].champion), text: `Не верит в ${fav.team} — поставил на ${rebels[0].champion}.`, metric: `${rebels.length} ${plural(rebels.length, "скептик", "скептика", "скептиков")}` });
+      }
     }
     const oracleP = [...players].sort((a, b) => b.stats.exactScores - a.stats.exactScores)[0];
     if (oracleP) stories.push({ kind: "oracle", title: "Оракул группового", tone: "green", name: oracleP.name, id: oracleP.id, text: "Больше всех точных счётов в группах — острый глаз перед плей-офф.", metric: `${oracleP.stats.exactScores} точных` });
@@ -713,7 +764,9 @@ export async function getHomeData(revalidate = 60) {
       ? { key: "potential", title: "Лидер по потенциалу", tone: "gold", icon: "flame", name: byPotential.name, id: byPotential.id, value: `${byPotential.max}`, sub: "очков максимум" }
       : null,
     rarestChampion
-      ? { key: "darkhorse", title: "Тёмная лошадка", tone: "sky", icon: "gem", name: rarestChampion.name, id: rarestChampion.id, value: rarestChampion.champion, sub: "ставит на редкого чемпиона" }
+      ? (rarestChampion.championOut
+          ? { key: "darkhorse", title: "Потерял надежду", tone: "rose", icon: "gem", name: rarestChampion.name, id: rarestChampion.id, value: rarestChampion.champion, sub: "чемпион вылетел — надежды больше нет" }
+          : { key: "darkhorse", title: "Тёмная лошадка", tone: "sky", icon: "gem", name: rarestChampion.name, id: rarestChampion.id, value: rarestChampion.champion, sub: "ставит на редкого чемпиона" })
       : null,
     chaser
       ? { key: "chaser", title: "Главный претендент", tone: "rose", icon: "swords", name: chaser.name, id: chaser.id, value: `−${(players[0]?.points.total ?? 0) - chaser.points.total}`, sub: "до лидера" }
