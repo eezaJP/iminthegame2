@@ -5,6 +5,7 @@ import { TopNav } from "@/components/TopNav";
 import { Background } from "@/components/Background";
 import { BackToTop } from "@/components/BackToTop";
 import { AutoRefresh } from "@/components/AutoRefresh";
+import { SplashEgg } from "@/components/SplashEgg";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -66,6 +67,7 @@ export default function RootLayout({
           {children}
         </main>
         <BackToTop />
+        <SplashEgg />
         <Analytics />
         <SpeedInsights />
       </body>
