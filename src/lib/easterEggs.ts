@@ -19,6 +19,7 @@ const EGG_MATCHES: { teams: [string, string]; media: EggMedia }[] = [
   { teams: ["Норвегия", "Англия"], media: { both: "/norway-england.mp4" } },
   { teams: ["Франция", "Испания"], media: { both: "/fra-esp-semi.mp4" } },
   { teams: ["Англия", "Аргентина"], media: { both: "/eng-arg.mp4" } },
+  { teams: ["Франция", "Англия"], media: { both: "/fra-eng.mp4" } },
 ];
 
 /** Media for `team` when it plays `opponent` — bound to that exact tie, so a clip
